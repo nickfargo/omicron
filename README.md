@@ -66,7 +66,7 @@ Use it like ES5 `forEach`: with a `callback` signature of `value, key, obj`.
 
 ## The Extending
 
-### extend( [ true, ] target, ...sources )
+### extend( [ deep, ] target, ...sources )
 
 Like jQuery. A total heist.
 
