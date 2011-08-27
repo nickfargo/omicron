@@ -1,0 +1,15 @@
+{
+	'name'			: 'z-core',
+	'version'		: '0.1.0',
+	'description'	: 'The quality, the texture, the intoxicating aroma — these functions have it.',
+	'homepage'		: '',
+	'keywords'		: [ 'util', 'core', 'functions' ],
+	'author'		: 'Nick Fargo <nick@zvector.com>',
+	'contributors'	: [],
+	'dependencies'	: [],
+	'repository'	: {
+		'type'		: 'git',
+		'url'		: 'git://github.com/zvector/z-core.git'
+	},
+	'main'			: 'z-core.js'
+}
