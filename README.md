@@ -1,3 +1,3 @@
 # Z-core
 
-<img src="images/intoxicating_aroma.jpg" />
+<img src="/zvector/z-core/blob/master/images/intoxicating_aroma.jpg?raw=true" />
