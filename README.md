@@ -1,5 +1,7 @@
 # Z-core
 
+The decidedly dorkish API:
+
 ## The Caching
 
 ### hasOwn
@@ -44,7 +46,7 @@ Come here `[ you ]`.
 
 ### isFunction( fn )
 
-`typeof fn === 'function'`, you'd think they'd get that right.
+One would hope.
 
 ### isPlainObject( obj )
 
@@ -58,11 +60,11 @@ Set `andPrototype` to something truthy and `obj` will have to be empty all the w
 
 ### each( obj, callback )
 
-Use it like jQuery: with a `callback` signature of `key, value, obj`.
+Use it like jQuery, with a `callback` signature of `key, value, obj`.
 
 ### forEach
 
-Use it like ES5 `forEach`: with a `callback` signature of `value, key, obj`.
+Use it like ES5 `forEach`, with a `callback` signature of `value, key, obj`.
 
 ## The Extending
 
@@ -77,7 +79,7 @@ Like jQuery. A total heist.
 Empty nesting:
 
 	wtf = [ , [ , , [ , ], [ ] ], [], [ , [ , ], [ , [ , , ], [ ] ] ] ];
-	flatten( wtf ); // [ , , , , , , , , , , , , , , , , , ] or something
+	flatten( wtf ); // [ , , , , , , , , , , , , , , , ... ] or something
 
 ### keys( obj )
 
@@ -119,4 +121,4 @@ I beg your pardon.
 
 <img src="/zvector/z-core/blob/master/images/intoxicating_aroma.jpg?raw=true" />
 
-Your palate's unrefined.
+I thought they smelled pretty nice.
