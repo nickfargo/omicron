@@ -1,8 +1,6 @@
 # Z-core
 
-The decidedly dorkish API:
-
-## The Caching
+## Caching
 
 ### hasOwn
 
@@ -20,7 +18,7 @@ The decidedly dorkish API:
 
 `String.prototype.trim`
 
-## The Nothing
+## Nothing
 
 ### noop
 
@@ -30,7 +28,7 @@ Sometimes you want to return nothing, and when you do, you'll want one unique fu
 
 Or sometimes you want to return next-to-nothing. Use this for nulling the implementation of a method that's meant to be chained.
 
-## The Typing
+## Typing
 
 ### type( obj )
 
@@ -38,7 +36,7 @@ A safer bet than `typeof`.
 
 ### isNumber( number )
 
-`NaN` you GTFO.
+`NaN` you gtfo.
 
 ### isArray( array )
 
@@ -56,7 +54,7 @@ Like the kind you make.
 
 Set `andPrototype` to something truthy and `obj` will have to be empty all the way through.
 
-## The Iterating
+## Iterating
 
 ### each( obj, callback )
 
@@ -66,13 +64,13 @@ Use it like jQuery, with a `callback` signature of `key, value, obj`.
 
 Use it like ES5 `forEach`, with a `callback` signature of `value, key, obj`.
 
-## The Extending
+## Extending
 
 ### extend( [ deep, ] target, ...sources )
 
 Like jQuery. A total heist.
 
-## The Composing
+## Composing
 
 ### flatten
 
@@ -101,17 +99,17 @@ Set every key in `obj` to `null`.
 
 Given an `array` of keys, return an object with those keys all set to `null`.
 
-## The Circling
+## Circling
 
 ### stringFunction( fn )
 
-Return the function `fn`, with its `toString` method set to itself. Breaks stuff, like `type`, but can be useful for, say, devtools-inspecting the value of a getter.
+Return the function `fn`, with its `toString` method set to itself. Might break stuff, like `type`, but can be useful for, say, devtools-inspecting the value of a getter.
 
 ### valueFunction( fn )
 
 Same as above, but for `valueOf` instead of `toString`.
 
-## The Returning
+## Returning
 
 ### noConflict
 
