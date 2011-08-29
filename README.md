@@ -115,8 +115,6 @@ Same as above, but for `valueOf` instead of `toString`.
 
 I beg your pardon.
 
-## The English Patient
+## I've got investors all lined up
 
 <img src="/zvector/zcore/blob/master/docs/images/intoxicating_aroma.jpg?raw=true" />
-
-I thought they smelled pretty nice.
