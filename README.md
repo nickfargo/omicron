@@ -117,6 +117,6 @@ I beg your pardon.
 
 ## The English Patient
 
-<img src="/zvector/z-core/blob/master/docs/images/intoxicating_aroma.jpg?raw=true" />
+<img src="/zvector/zcore/blob/master/docs/images/intoxicating_aroma.jpg?raw=true" />
 
 I thought they smelled pretty nice.
