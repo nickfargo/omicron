@@ -1,1 +1,1 @@
-module.exports = require('./z-core');
+module.exports = require('./zcore');

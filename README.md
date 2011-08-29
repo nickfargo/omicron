@@ -1,4 +1,4 @@
-# Z-core
+# Zcore
 
 ## Caching
 
