@@ -1,13 +1,14 @@
-( function ( exports, undefined ) {
+( function ( undefined ) {
 
 var	global = this,
-	autochthon = global.Z,
-	noConflict = function () {
-		global.Z = autochthon;
-		return this;
+
+	exports = {
+		version: '0.1.1',
+		env: {
+			server: typeof module !== 'undefined' && !!( module.require && module.exports ),
+			client: typeof window !== 'undefined' && window === global
+		}
 	},
-	version = exports.version =
-		'0.1.0',
 	
 	toString = exports.toString =
 		Object.prototype.toString,
@@ -24,6 +25,14 @@ var	global = this,
 	slice = exports.slice =
 		Array.prototype.slice;
 
+
+exports.noConflict = ( function () {
+	var autochthon = global.Z;
+	return function () {
+		global.Z = autochthon;
+		return this;
+	};
+})();
 
 /**
  * General-purpose empty function. May also be deemed suitable as a unique alternative "nil" type for
@@ -63,8 +72,16 @@ each( 'Array Boolean Date Function Number Object RegExp String'.split(' '), func
 	type.map[ "[object " + name + "]" ] = name.toLowerCase();
 });
 
+/** isBoolean */
+function isBoolean ( obj ) { return type( obj ) === 'boolean'; }
+exports.isBoolean = isBoolean;
+
+/** isString */
+function isString ( obj ) { return type( obj ) === 'string'; }
+exports.isString = isString;
+
 /** isNumber */
-function isNumber ( n ) { return !isNaN( parseFloat( n ) && isFinite( n ) ); }
+function isNumber ( n ) { return !isNaN( parseFloat( n ) ) && isFinite( n ); }
 exports.isNumber = isNumber;
 
 /** isArray */
@@ -135,7 +152,7 @@ function each ( obj, fn ) {
 exports.each = each;
 
 /**
- * ES5-style `Object.forEach`, with callback signature of `value, key, object`.
+ * ES5-style `Array.prototype.forEach`, with callback signature of `value, key, object`.
  */
 function forEach ( obj, fn, context ) {
 	var	n, l, key, i;
@@ -162,15 +179,20 @@ exports.forEach = forEach;
  * Near-straight port of jQuery `$.extend` method.
  */
 function extend () {
-	var options, name, src, copy, copyIsArray, clone,
+	var	flags = {},
+		options, name, src, copy, copyIsArray, clone,
 		target = arguments[0] || {},
 		i = 1,
-		length = arguments.length,
-		deep = false;
+		length = arguments.length;
 
 	// Handle a deep copy situation
-	if ( typeof target === "boolean" ) {
-		deep = target;
+	if ( typeof target === 'string' ) {
+		flags = splitToHash( target, ' ' );
+		target = arguments[1] || {};
+		i = 2;
+	}
+	else if ( typeof target === 'boolean' ) {
+		flags.deep = target;
 		target = arguments[1] || {};
 		// skip the boolean and the target
 		i = 2;
@@ -183,9 +205,9 @@ function extend () {
 
 	for ( ; i < length; i++ ) {
 		// Only deal with non-null/undefined values
-		if ( ( options = arguments[i] ) != null ) {
+		if ( ( options = arguments[i] ) != null || flags.nullable ) {
 			// Extend the base object
-			for ( name in options ) {
+			for ( name in options ) if ( flags.own || hasOwn.call( options, name ) ) {
 				src = target[ name ];
 				copy = options[ name ];
 
@@ -194,21 +216,21 @@ function extend () {
 					continue;
 				}
 
-				// Recurse if we're merging plain objects or arrays
-				if ( deep && copy && ( isPlainObject( copy ) || ( copyIsArray = isArray( copy ) ) ) ) {
+				// Recurse if we're merging objects, functions or arrays
+				if ( attr.deep && copy && ( isPlainObject( copy ) || ( copyIsArray = isArray( copy ) ) ) ) {
 					if ( copyIsArray ) {
 						copyIsArray = false;
 						clone = src && isArray( src ) ? src : [];
 					} else {
-						clone = src && isPlainObject( src ) ? src : {};
+						clone = src && ( isFunction( src ) || type( src ) === 'object' ) ? src : {};
 					}
 					
 					// Never move original objects, clone them
-					target[ name ] = extend( deep, clone, copy );
+					target[ name ] = extend( keys( flags ).join(' '), clone, copy );
 					
 				// 
 				// Don't bring in undefined values
-				} else if ( copy !== undefined ) {
+				} else if ( copy !== undefined || flags.nullable ) {
 					target[ name ] = copy;
 				}
 			}
@@ -246,7 +268,7 @@ function keys ( obj ) {
 	for ( key in obj ) hasOwn.call( obj, key ) && result.push( key );
 	return result;
 }
-exports.keys = isFunction( Object.keys ) ? Object.keys || keys;
+exports.keys = keys = isFunction( Object.keys ) ? Object.keys : keys;
 
 /**
  * Returns a hashmap that is the key-value inversion of the supplied string array
@@ -282,6 +304,88 @@ function nullify ( obj ) {
 exports.nullify = nullify;
 
 /**
+ * Returns an object whose keys are the elements of `string.split()` and whose values are all `true`.
+ */
+function splitToHash ( string, delimiter, value ) {
+	return setAll( invert( string.split( delimiter || (/\s+/) ) ), value !== undefined ? value : true );
+}
+exports.splitToHash = splitToHash;
+
+/**
+ * Lazy evaluator; returns a function that returns the enclosed argument
+ */
+function thunk ( obj ) {
+	return function () { return obj; };
+}
+exports.thunk = thunk;
+
+/**
+ * Retrieves the value at the location indicated by the provided `path` string inside a
+ * nested object `obj`.
+ * 
+ * E.g.:
+ * 	var x = { a: { b: 42 } };
+ *  lookup( x, 'a' ) // => { "b": 42 }
+ * 	lookup( x, 'a.b' ) // => 42
+ * 	lookup( x, 'a.b.c' ) // => undefined
+ */
+function lookup ( obj, path, separator ) {
+	var cursor = obj, i = 0, l = ( path = path.split( separator || '.' ) ).length, name;
+	while ( i < l && cursor != null ) {
+		if ( hasOwn.call( cursor, name = path[ i++ ] ) ) {
+			cursor = cursor[ name ];
+		} else {
+			return undefined;
+		}
+	}
+	return cursor;
+}
+exports.lookup = lookup;
+
+/**
+ * Reference to or shim for Object.create
+ */
+function create ( prototype, properties ) {
+	var object, constructor;
+	( constructor = function () {} ).prototype = prototype;
+	( object = new constructor ).constructor = constructor;
+	return properties ? extend( object, properties ) : object;
+}
+exports.create = isFunction( Object.create ) ? ( create = Object.create ) : create;
+
+/**
+ * Prototypal inheritance facilitator
+ * 
+ * inherit( Function child, [ Function parent ], [ Object properties ], [ Object statics ] )
+ * 
+ *   * `child` and `parent` are constructor functions, such that
+ *         `new child instanceof parent === true`
+ *   * `child` also inherits static members that are direct properties of `parent`
+ *   * `properties` is an object containing properties to be added to the prototype of `child`
+ *   * `statics` is an object containing properties to be added to `child` itself.
+ */
+function inherit ( child, parent, properties, statics ) {
+	isFunction( parent ) ?
+		( ( extend( child, parent ).prototype = create( parent.prototype ) ).constructor = child ) :
+		( statics = properties, properties = parent );
+	properties && extend( child.prototype, properties );
+	statics && extend( child, statics );
+	return child;
+}
+exports.inherit = inherit;
+
+/**
+ * Returns an object's prototype. In environments without native support, this may only work if
+ * the object's constructor and its prototype are properly associated, e.g., as facilitated by
+ * the `create` function.
+ */
+function getPrototypeOf ( obj ) {
+	return obj.__proto__ || obj.constructor.prototype;
+}
+exports.getPrototypeOf = isFunction( Object.getPrototypeOf ) ?
+	( getPrototypeOf = Object.getPrototypeOf ) : getPrototypeOf;
+
+/**
  * Produces a hashmap whose keys are the supplied string array, with values all set to `null`
  */
 function nullHash( keys ) { return nullify( invert( keys ) ); }
@@ -300,5 +404,7 @@ function stringFunction ( fn ) { return fn.toString = fn; }
 exports.stringFunction = stringFunction;
 
 
+exports.env.server && ( module.exports = exports );
+exports.env.client && ( global['Z'] = extend( global['Z'] || {}, exports ) );
 
-})( typeof module !== 'undefined' ? module.exports : this['Z'] );
+})();
