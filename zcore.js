@@ -67,10 +67,11 @@ function __native ( item, obj /* , ... */ ) {
 function type ( obj ) {
 	return obj == null ? String( obj ) : type.map[ toString.call( obj ) ] || 'object';
 }
-( exports.type = type ).map = {};
+type.map = {};
 each( 'Array Boolean Date Function Number Object RegExp String'.split(' '), function( i, name ) {
 	type.map[ "[object " + name + "]" ] = name.toLowerCase();
 });
+exports.type = type;
 
 /** isBoolean */
 function isBoolean ( obj ) { return type( obj ) === 'boolean'; }
@@ -176,69 +177,45 @@ function forEach ( obj, fn, context ) {
 exports.forEach = forEach;
 
 /**
- * Near-straight port of jQuery `$.extend` method.
+ * Based on jQuery `$.extend` method. Optional first argument may be Boolean `deep`, and may also
+ * accept a `flags` String:
+ *     'deep' : Same as the optional Boolean flag in jQuery
+ *     'own' : Restricts extended properties to those filtered by `Object.hasOwnProperty`
+ *     'all' : Includes keys with undefined values
  */
 function extend () {
-	var	flags = {},
-		options, name, src, copy, copyIsArray, clone,
-		target = arguments[0] || {},
-		i = 1,
-		length = arguments.length;
-
-	// Handle a deep copy situation
-	if ( typeof target === 'string' ) {
-		flags = splitToHash( target, ' ' );
-		target = arguments[1] || {};
-		i = 2;
-	}
-	else if ( typeof target === 'boolean' ) {
-		flags.deep = target;
-		target = arguments[1] || {};
-		// skip the boolean and the target
-		i = 2;
-	}
-
-	// Handle case when target is a string or something (possible in deep copy)
-	if ( typeof target !== "object" && !isFunction( target ) ) {
-		target = {};
-	}
-
-	for ( ; i < length; i++ ) {
-		// Only deal with non-null/undefined values
-		if ( ( options = arguments[i] ) != null || flags.nullable ) {
-			// Extend the base object
-			for ( name in options ) if ( flags.own || hasOwn.call( options, name ) ) {
-				src = target[ name ];
-				copy = options[ name ];
-
-				// Prevent never-ending loop
-				if ( target === copy ) {
-					continue;
+	var	args = slice.call( arguments ),
+		t = type( args[0] ),
+		flags =
+			t === 'boolean' ? { deep: args.shift() } :
+			t === 'string' ? splitToHash( args.shift(), ' ' ) :
+			{},
+		subject = args.shift(),
+		i = 0, l = args.length,
+		obj, key, value, valueIsArray, target, clone;
+	
+	typeof subject === 'object' || isFunction( subject ) || ( subject = {} );
+	for ( ; i < l && ( obj = args[i] ) != null; i++ ) {
+		for ( key in obj ) if ( !flags.own || hasOwn.call( obj, key ) ) {
+			value = obj[ key ];
+			if ( value === subject ) {
+				continue;
+			}
+			if ( flags.deep && value && ( isPlainObject( value ) || ( valueIsArray = isArray( value ) ) ) ) {
+				target = subject[ key ];
+				if ( valueIsArray ) {
+					valueIsArray = false;
+					clone = target && isArray( target ) ? target : [];
+				} else {
+					clone = target && ( isFunction( target ) || type( target ) === 'object' ) ? target : {};
 				}
-
-				// Recurse if we're merging objects, functions or arrays
-				if ( attr.deep && copy && ( isPlainObject( copy ) || ( copyIsArray = isArray( copy ) ) ) ) {
-					if ( copyIsArray ) {
-						copyIsArray = false;
-						clone = src && isArray( src ) ? src : [];
-					} else {
-						clone = src && ( isFunction( src ) || type( src ) === 'object' ) ? src : {};
-					}
-					
-					// Never move original objects, clone them
-					target[ name ] = extend( keys( flags ).join(' '), clone, copy );
-					
-				// 
-				// Don't bring in undefined values
-				} else if ( copy !== undefined || flags.nullable ) {
-					target[ name ] = copy;
-				}
+				subject[ key ] = extend( keys( flags ).join(' '), clone, value );
+			} else if ( flags.all || value !== undefined ) {
+				subject[ key ] = value;
 			}
 		}
 	}
-
-	// Return the modified object
-	return target;
+	return subject;
 }
 exports.extend = extend;
 
@@ -265,7 +242,7 @@ exports.flatten = flatten;
 function keys ( obj ) {
 	var key, result = [];
 	if ( !( isPlainObject( obj ) || isFunction( obj ) ) ) { throw new TypeError; }
-	for ( key in obj ) hasOwn.call( obj, key ) && result.push( key );
+	for ( key in obj ) { hasOwn.call( obj, key ) && result.push( key ); }
 	return result;
 }
 exports.keys = keys = isFunction( Object.keys ) ? Object.keys : keys;
