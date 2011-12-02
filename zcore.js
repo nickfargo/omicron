@@ -325,7 +325,7 @@ exports.lookup = lookup;
 function create ( prototype, properties ) {
 	var object, constructor;
 	( constructor = function () {} ).prototype = prototype;
-	( object = new constructor ).constructor = constructor;
+	( object = new constructor ).constructor = prototype.constructor;
 	return properties ? extend( object, properties ) : object;
 }
 exports.create = isFunction( Object.create ) ? ( create = Object.create ) : create;
