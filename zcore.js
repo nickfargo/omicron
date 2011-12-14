@@ -323,9 +323,11 @@ exports.lookup = lookup;
  * Reference to or shim for Object.create
  */
 function create ( prototype, properties ) {
-	var object, constructor;
-	( constructor = function () {} ).prototype = prototype;
-	( object = new constructor ).constructor = prototype.constructor;
+	var object, constructor = function () {};
+	constructor.prototype = prototype;
+	object = new constructor;
+	object.__proto__ = prototype;
+	object.constructor = prototype.constructor;
 	return properties ? extend( object, properties ) : object;
 }
 exports.create = isFunction( Object.create ) ? ( create = Object.create ) : create;
