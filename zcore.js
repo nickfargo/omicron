@@ -320,15 +320,15 @@ function lookup ( obj, path, separator ) {
 exports.lookup = lookup;
 
 /**
- * Reference to or shim for Object.create
+ * Reference to or partial shim for Object.create
  */
-function create ( prototype, properties ) {
+function create ( prototype ) {
 	var object, constructor = function () {};
 	constructor.prototype = prototype;
 	object = new constructor;
 	object.__proto__ = prototype;
 	object.constructor = prototype.constructor;
-	return properties ? extend( object, properties ) : object;
+	return object;
 }
 exports.create = isFunction( Object.create ) ? ( create = Object.create ) : create;
 
