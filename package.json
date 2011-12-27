@@ -3,7 +3,7 @@
 	"version"       : "0.1.1",
 	"description"   : "",
 	"homepage"      : "",
-	"keywords"      : [ "util", "core", "functions" ],
+	"keywords"      : [ "utility", "util", "core", "functions" ],
 	"author"        : "Nick Fargo <nick@zvector.com>",
 	"contributors"  : [],
 	"dependencies"  : [],
