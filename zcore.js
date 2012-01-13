@@ -10,6 +10,10 @@ var	global = this,
 		}
 	},
 	
+	regexp = exports.regexp = {
+		whitespace: /\s+/
+	},
+
 	toString = exports.toString =
 		Object.prototype.toString,
 	
@@ -284,7 +288,10 @@ exports.nullify = nullify;
  * Returns an object whose keys are the elements of `string.split()` and whose values are all `true`.
  */
 function splitToHash ( string, delimiter, value ) {
-	return setAll( invert( string.split( delimiter || (/\s+/) ) ), value !== undefined ? value : true );
+	return setAll(
+		invert( string.split( delimiter || regexp.whitespace ) ),
+		value !== undefined ? value : true
+	);
 }
 exports.splitToHash = splitToHash;
 
