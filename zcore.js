@@ -389,6 +389,30 @@ exports.valueFunction = valueFunction;
 function stringFunction ( fn ) { return fn.toString = fn; }
 exports.stringFunction = stringFunction;
 
+/**
+ * Rigs partially applied functions, obtained from `functionSource`, as methods on a `object`. This
+ * facilitates implementation of reusable privileged methods by abstracting the "privileged" subset
+ * of variables available to the method into another level of scope. Because of this separation, the
+ * actual logic portion of the method can then be used by other objects ("subclasses" and the like),
+ * whose constructors can simply call this function themselves with their own private free variables.
+ * 
+ * Functions supplied by `functionSource` accept the set of closed variables as arguments, and return
+ * a function that will become the `object`'s method.
+ * 
+ * The `map` argument maps a space-delimited set of method names to an array of free variables. These
+ * variables are passed as arguments to each of the named methods as found within `functionSource`.
+ */
+function constructPrivilegedMethods ( object, functionSource, map ) {
+	each( map, function ( names, args ) {
+		each( names.split(' '), function ( i, methodName ) {
+			var method = functionSource[ methodName ].apply( undefined, args );
+			object[ methodName ] = function () { return method.apply( this, arguments ); };
+		});
+	});
+	return object;
+}
+exports.constructPrivilegedMethods = constructPrivilegedMethods;
+
 
 exports.env.server && ( module.exports = exports );
 exports.env.client && ( global['Z'] = extend( global['Z'] || {}, exports ) );
