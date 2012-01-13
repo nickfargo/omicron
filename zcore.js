@@ -190,7 +190,7 @@ function extend () {
 			t === 'boolean' ? { deep: args.shift() } :
 			t === 'string' ? splitToHash( args.shift(), ' ' ) :
 			{},
-		subject = args.shift(),
+		subject = args.shift() || {},
 		i = 0, l = args.length,
 		obj, key, value, valueIsArray, target, clone;
 	
