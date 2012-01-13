@@ -199,7 +199,10 @@ function extend () {
 		obj, key, value, valueIsArray, target, clone;
 	
 	typeof subject === 'object' || isFunction( subject ) || ( subject = {} );
-	for ( ; i < l && ( obj = args[i] ) != null; i++ ) {
+	for ( ; i < l; i++ ) {
+		if ( ( obj = args[i] ) == null ) {
+			continue;
+		}
 		for ( key in obj ) if ( !flags.own || hasOwn.call( obj, key ) ) {
 			value = obj[ key ];
 			if ( value === subject ) {
