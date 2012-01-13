@@ -309,9 +309,9 @@ exports.thunk = thunk;
  * 
  * E.g.:
  * 	var x = { a: { b: 42 } };
- *  lookup( x, 'a' ) // => { "b": 42 }
- * 	lookup( x, 'a.b' ) // => 42
- * 	lookup( x, 'a.b.c' ) // => undefined
+ *  lookup( x, 'a' ) // { "b": 42 }
+ * 	lookup( x, 'a.b' ) // 42
+ * 	lookup( x, 'a.b.c' ) // undefined
  */
 function lookup ( obj, path, separator ) {
 	var cursor = obj, i = 0, l = ( path = path.split( separator || '.' ) ).length, name;
