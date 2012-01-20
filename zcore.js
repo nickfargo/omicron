@@ -301,6 +301,21 @@ function splitToHash ( string, delimiter, value ) {
 exports.splitToHash = splitToHash;
 
 /**
+ * Copies the values of members of an object to one or more different keys on that same object.
+ */
+function alias ( object, map ) {
+	var key, value, names, i, l;
+	for ( key in map ) if ( key in object ) {
+		names = map[ key ].split( regexp.whitespace );
+		for ( i = 0, l = names.length; i < l; i++ ) {
+			object[ names[i] ] = object[ key ];
+		}
+	}
+	return object;
+}
+exports.alias = alias;
+
+/**
  * Lazy evaluator; returns a function that returns the enclosed argument
  */
 function thunk ( obj ) {
@@ -407,7 +422,7 @@ exports.stringFunction = stringFunction;
  * The `map` argument maps a space-delimited set of method names to an array of free variables. These
  * variables are passed as arguments to each of the named methods as found within `functionSource`.
  */
-function constructPrivilegedMethods ( object, functionSource, map ) {
+function privilege ( object, functionSource, map ) {
 	each( map, function ( names, args ) {
 		each( names.split(' '), function ( i, methodName ) {
 			var method = functionSource[ methodName ].apply( undefined, args );
@@ -416,7 +431,7 @@ function constructPrivilegedMethods ( object, functionSource, map ) {
 	});
 	return object;
 }
-exports.constructPrivilegedMethods = constructPrivilegedMethods;
+exports.privilege = privilege;
 
 
 exports.env.server && ( module.exports = exports );
