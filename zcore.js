@@ -252,6 +252,22 @@ function excise ( deep, target ) {
 exports.excise = excise;
 
 /**
+ * Facilitates assignments of a value to one or more keys of an object
+ */
+function assign ( target, map ) {
+	var key, value, list, i, l;
+	for ( key in map ) if ( hasOwn.call( map, key ) ) {
+		value = map[ key ];
+		list = key.split( regexp.whitespace );
+		for ( i = 0, l = list.length; i < l; i++ ) {
+			target[ list[i] ] = value;
+		}
+	}
+	return target;
+}
+exports.assign = assign;
+
+/**
  * Extracts elements of nested arrays
  */
 function flatten ( array ) {
