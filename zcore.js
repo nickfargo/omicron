@@ -227,6 +227,31 @@ function extend () {
 exports.extend = extend;
 
 /**
+ * Deletes portions of an object and returns the difference
+ */
+function excise ( deep, target ) {
+	var	args = slice.call( arguments ),
+		i, l, key, value, obj,
+		delta = {};
+	deep === !!deep && args.shift();
+	target = args[0];
+	for ( i = 1, l = args.length; i < l; i++ ) {
+		obj = args[i];
+		for ( key in obj ) if ( hasOwn.call( obj, key ) ) {
+			value = obj[ key ];
+			if ( deep && isPlainObject( value ) ) {
+				delta[ key ] = excise( true, target[ key ], value );
+			} else if ( value != null ) {
+				delta[ key ] = target[ key ];
+				delete target[ key ];
+			}
+		}
+	}
+	return delta;
+}
+exports.excise = excise;
+
+/**
  * Extracts elements of nested arrays
  */
 function flatten ( array ) {
