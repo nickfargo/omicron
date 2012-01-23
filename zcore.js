@@ -254,8 +254,18 @@ exports.excise = excise;
 /**
  * Facilitates assignments of a value to one or more keys of an object
  */
-function assign ( target, map ) {
-	var key, value, list, i, l;
+function assign ( target, map, value ) {
+	var key, list, i, l;
+
+	if ( typeof target === 'string' ) {
+		value = arguments.length === 1 ? true : map, map = target, target = {};
+	} else if ( map === undefined ) {
+		map = target, target = {};
+	}
+	if ( typeof map === 'string' ) {
+		key = map, map = {}, map[ key ] = value;
+	}
+
 	for ( key in map ) if ( hasOwn.call( map, key ) ) {
 		value = map[ key ];
 		list = key.split( regexp.whitespace );
@@ -263,6 +273,7 @@ function assign ( target, map ) {
 			target[ list[i] ] = value;
 		}
 	}
+
 	return target;
 }
 exports.assign = assign;
