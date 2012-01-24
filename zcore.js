@@ -476,7 +476,7 @@ exports.stringFunction = stringFunction;
  */
 function privilege ( object, functionSource, map ) {
 	each( map, function ( names, args ) {
-		each( names.split(' '), function ( i, methodName ) {
+		each( names.split( regexp.whitespace ), function ( i, methodName ) {
 			var method = functionSource[ methodName ].apply( undefined, args );
 			object[ methodName ] = function () { return method.apply( this, arguments ); };
 		});
