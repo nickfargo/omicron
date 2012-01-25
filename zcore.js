@@ -5,7 +5,7 @@ var	global = this,
 	exports = {
 		version: '0.1.2',
 		env: {
-			server: typeof module !== 'undefined' && !!( module.require && module.exports ),
+			server: typeof module !== 'undefined' && typeof require !== 'undefined' && !!module.exports,
 			client: typeof window !== 'undefined' && window === global
 		}
 	},
