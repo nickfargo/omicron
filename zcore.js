@@ -192,37 +192,46 @@ function extend () {
 		t = type( args[0] ),
 		flags =
 			t === 'boolean' ? { deep: args.shift() } :
-			t === 'string' ? splitToHash( args.shift(), ' ' ) :
+			t === 'string' ? assign( args.shift() ) :
 			{},
 		subject = args.shift() || {},
-		i = 0, l = args.length,
-		obj, key, value, valueIsArray, target, clone;
+		i, l, key, value, valueIsArray, source, target, delta, clone, result;
 	
 	typeof subject === 'object' || isFunction( subject ) || ( subject = {} );
-	for ( ; i < l; i++ ) {
-		if ( ( obj = args[i] ) == null ) {
-			continue;
-		}
-		for ( key in obj ) if ( !flags.own || hasOwn.call( obj, key ) ) {
-			value = obj[ key ];
-			if ( value === subject ) {
-				continue;
+	flags.delta && ( delta = isArray( subject ) ? [] : {} );
+	for ( i = 0, l = args.length; i < l; i++ ) {
+		source = args[i];
+		if ( source == null ) continue;
+		for ( key in source ) if ( !flags.own || hasOwn.call( source, key ) ) {
+			value = source[ key ];
+			if ( value === subject ) continue;
+
+			if ( value === DELETE ) {
+				delta && ( delta[ key ] = subject[ key ] );
+				delete subject[ key ];
 			}
-			if ( flags.deep && value && ( isPlainObject( value ) || ( valueIsArray = isArray( value ) ) ) ) {
+			else if ( flags.deep && value &&
+				( isPlainObject( value ) || ( valueIsArray = isArray( value ) ) )
+			) {
 				target = subject[ key ];
+				delta && ( delta[ key ] = target );
 				if ( valueIsArray ) {
 					valueIsArray = false;
 					clone = target && isArray( target ) ? target : [];
 				} else {
 					clone = target && ( isFunction( target ) || type( target ) === 'object' ) ? target : {};
 				}
-				subject[ key ] = extend( keys( flags ).join(' '), clone, value );
-			} else if ( flags.all || value !== undefined ) {
+				result = extend( keys( flags ).join(' '), clone, value );
+				delta && ( delta[ key ] = result );
+				subject[ key ] = clone;
+			}
+			else if ( value !== undefined || flags.all ) {
+				delta && ( delta[ key ] = subject[ key ] );
 				subject[ key ] = value;
 			}
 		}
 	}
-	return subject;
+	return flags.delta ? delta : subject;
 }
 exports.extend = extend;
 
