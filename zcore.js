@@ -5,32 +5,56 @@ var	global = this,
 	exports = {
 		VERSION: '0.1.3',
 		env: {
-			server: typeof module !== 'undefined' && typeof require !== 'undefined' && !!module.exports,
+			server: typeof module !== 'undefined' && typeof require !== 'undefined' &&
+				!!module.exports,
 			client: typeof window !== 'undefined' && window === global
 		}
 	},
 	
+	// #### regexp
+	// 
+	// Store of commonly used regular expression instances.
 	regexp = exports.regexp = {
 		whitespace: /\s+/
 	},
 
+	// #### DELETE
+	// 
+	// Unique directive object. In the object arguments of `extend`, a property whose value is set
+	// to `DELETE` indicates that the corresponding property on the subject is to be deleted.
 	DELETE = exports.DELETE = {},
+
+	// #### toString
+	// 
 	toString = exports.toString =
 		Object.prototype.toString,
 	
+	// #### hasOwn
+	// 
 	hasOwn = exports.hasOwn =
 		Object.prototype.hasOwnProperty,
 	
-	/** jQuery-style "trim", using native method on `String.prototype` if available. */
+	// #### trim
+	//
+	// jQuery-style end-whitespace trimmer; uses the native `String.prototype.trim` if available.
 	trim = exports.trim =
 		String.prototype.trim ?
-			function ( text ) { return text == null ? '' : String.prototype.trim.call( text ); } :
-			function ( text ) { return text == null ? '' : text.toString().replace( /^\s+/, '' ).replace( /\s+$/, '' ); },
+			function ( text ) {
+				return text == null ? '' : String.prototype.trim.call( text );
+			} :
+			function ( text ) {
+				return text == null ? '' :
+					text.toString().replace( /^\s+/, '' ).replace( /\s+$/, '' );
+			},
 	
+	// #### slice
+	//
 	slice = exports.slice =
 		Array.prototype.slice;
 
 
+// #### noConflict
+//
 exports.noConflict = ( function () {
 	var autochthon = global.Z;
 	return function () {
@@ -39,36 +63,33 @@ exports.noConflict = ( function () {
 	};
 })();
 
-/**
- * General-purpose empty function. May also be deemed suitable as a unique alternative "nil" type for
- * strict-equal matches whenever it's desirable to avoid traditional `null` and `undefined`.
- */
+// #### noop
+// 
+// General-purpose empty function. May also be deemed suitable as a unique alternative “nil” type
+// for strict-equal matches whenever it’s desirable to avoid traditional `null` and `undefined`.
 function noop () {}
 exports.noop = noop;
 
-/**
- * Like `noop`, except suited for substitution on methods designed to be chainable.
- */
+// #### getThis
+// 
+// Like `noop`, except suited for substitution on methods designed to be chainable.
 function getThis () { return this; }
 exports.getThis = getThis;
 
-/**
- * Calls the specified native function if it exists and returns its result; if no such function exists on
- * `obj` as registered in `__native.fn`, returns our unique `noop` (as opposed to `null` or `undefined`,
- * which may be a valid result from the native function itself).
- */
+// Calls the specified native function if it exists and returns its result; if no such function
+// exists on `obj` as registered in `__native.fn`, returns our unique `noop` (as opposed to `null`
+// or `undefined`, which may be a valid result from the native function itself).
 function __native ( item, obj /* , ... */ ) {
-	var n = __native.fn[item];
-	return n && obj[item] === n ? n.apply( obj, slice.call( arguments, 2 ) ) : noop;
+	var n = __native.fn[ item ];
+	return n && obj[ item ] === n ? n.apply( obj, slice.call( arguments, 2 ) ) : noop;
 }
-( exports.__native = __native ).fn = {
+( __native ).fn = {
 	forEach: Array.prototype.forEach
 };
 
-/**
- * A more browser-safe alternative to `typeof`, implemented similarly to jQuery and elsewhere, which
- * checks the string output returned by a plain `toString()` call.
- */
+// #### type
+// 
+// A safe alternative to `typeof` that checks against `Object.prototype.toString()`.
 function type ( obj ) {
 	return obj == null ? String( obj ) : type.map[ toString.call( obj ) ] || 'object';
 }
@@ -78,29 +99,29 @@ each( 'Array Boolean Date Function Number Object RegExp String'.split(' '), func
 });
 exports.type = type;
 
-/** isBoolean */
+// #### isBoolean
 function isBoolean ( obj ) { return type( obj ) === 'boolean'; }
 exports.isBoolean = isBoolean;
 
-/** isString */
+// #### isString
 function isString ( obj ) { return type( obj ) === 'string'; }
 exports.isString = isString;
 
-/** isNumber */
+// #### isNumber
 function isNumber ( n ) { return !isNaN( parseFloat( n ) ) && isFinite( n ); }
 exports.isNumber = isNumber;
 
-/** isArray */
+// #### isArray
 function isArray ( obj ) { return type( obj ) === 'array'; }
 exports.isArray = isArray;
 
-/** isFunction */
+// #### isFunction
 function isFunction ( obj ) { return type( obj ) === 'function'; }
 exports.isFunction = isFunction;
 
-/**
- * Near-straight port of jQuery `isPlainObject`
- */
+// #### isPlainObject
+// 
+// Near-straight port of jQuery `isPlainObject`
 function isPlainObject ( obj ) {
 	var key;
 	if ( !obj || type( obj ) !== 'object' || obj.nodeType || obj === global ||
@@ -115,11 +136,11 @@ function isPlainObject ( obj ) {
 }
 exports.isPlainObject = isPlainObject;
 
-/**
- * Returns a boolean indicating whether the object or array at `obj` contains any members. For an
- * `Object` type, if `andPrototype` is included and truthy, `obj` must be empty throughout its
- * prototype chain as well.
- */
+// #### isEmpty
+// 
+// Returns a boolean indicating whether the object or array at `obj` contains any members. For an
+// `Object` type, if `andPrototype` is included and truthy, `obj` must be empty throughout its
+// prototype chain as well.
 function isEmpty ( obj, andPrototype ) {
 	var key;
 	if ( isArray( obj ) && obj.length ) {
@@ -134,9 +155,9 @@ function isEmpty ( obj, andPrototype ) {
 }
 exports.isEmpty = isEmpty;
 
-/**
- * jQuery-style `$.each`, with callback signature of `key, value, object`.
- */
+// #### each
+// 
+// Functional iterator with jQuery-style callback signature of `key, value, object`.
 function each ( obj, fn ) {
 	if ( !obj ) { return; }
 	var	key, i, l = obj.length;
@@ -157,9 +178,9 @@ function each ( obj, fn ) {
 }
 exports.each = each;
 
-/**
- * ES5-style `Array.prototype.forEach`, with callback signature of `value, key, object`.
- */
+// #### forEach
+// 
+// Functional iterator with ES5-style callback signature of `value, key, object`.
 function forEach ( obj, fn, context ) {
 	var	n, l, key, i;
 	if ( obj == null ) { return; }
@@ -181,13 +202,17 @@ function forEach ( obj, fn, context ) {
 }
 exports.forEach = forEach;
 
-/**
- * Based on jQuery `$.extend` method. Optional first argument may be Boolean `deep`, and may also
- * accept a `flags` String:
- *     'deep' : Same as the optional Boolean flag in jQuery
- *     'own' : Restricts extended properties to those filtered by `Object.hasOwnProperty`
- *     'all' : Includes keys with undefined values
- */
+// #### extend
+// 
+// Based on the jQuery `extend` method. Returns the first object-typed argument as `subject`
+// (unless directed otherwise), to which any subsequent object arguments are copied in order.
+// Optionally the first argument may be a Boolean `deep`, or a whitespace-delimited `flags`
+// String containing any of the following keywords:
+// 
+// * 'deep' : If a property is an object or array, a structured clone is created on the subject.
+// * 'own' : Restricts extended properties to those filtered by `Object.hasOwnProperty`.
+// * 'all' : Includes properties with undefined values.
+// * 'delta' : Returns a structured clone of any overwritten properties.
 function extend () {
 	var	args = slice.call( arguments ),
 		t = type( args[0] ),
@@ -237,9 +262,9 @@ function extend () {
 }
 exports.extend = extend;
 
-/**
- * Deletes portions of an object and returns the difference
- */
+// #### excise
+// 
+// Deletes portions of an object and returns the difference.
 function excise ( deep, target ) {
 	var	args = slice.call( arguments ),
 		i, l, key, value, obj,
@@ -262,9 +287,9 @@ function excise ( deep, target ) {
 }
 exports.excise = excise;
 
-/**
- * Facilitates assignments of a value to one or more keys of an object
- */
+// #### assign
+// 
+// Facilitates assignment operations of a value to one or more keys of an object.
 function assign ( target, map, value ) {
 	var key, list, i, l;
 
@@ -289,9 +314,9 @@ function assign ( target, map, value ) {
 }
 exports.assign = assign;
 
-/**
- * Extracts elements of nested arrays
- */
+// #### flatten
+// 
+// Extracts elements of nested arrays into a single flat array.
 function flatten ( array ) {
 	isArray( array ) || ( array = [ array ] );
 	var	i = 0,
@@ -306,9 +331,9 @@ function flatten ( array ) {
 }
 exports.flatten = flatten;
 
-/**
- * Returns an array containing the keys of a hashmap
- */
+// #### keys
+// 
+// Returns an array containing the keys of a hashmap.
 function keys ( obj ) {
 	var key, result = [];
 	if ( !( isPlainObject( obj ) || isFunction( obj ) ) ) { throw new TypeError; }
@@ -317,9 +342,9 @@ function keys ( obj ) {
 }
 exports.keys = keys = isFunction( Object.keys ) ? Object.keys : keys;
 
-/**
- * Returns a hashmap that is the key-value inversion of the supplied string array
- */
+// #### invert
+// 
+// Returns a hashmap that is the key-value inversion of the supplied string array.
 function invert ( array ) {
 	for ( var i = 0, l = array.length, map = {}; i < l; ) {
 		map[ array[i] ] = i++;
@@ -328,9 +353,8 @@ function invert ( array ) {
 }
 exports.invert = invert;
 
-/**
- * Sets all of an object's values to a specified value
- */
+// **DEPRECATE** (`assign`) :
+// Sets all of an object’s values to a specified value.
 function setAll ( obj, value ) {
 	for ( var i in obj ) if ( hasOwn.call( obj, i ) ) {
 		obj[i] = value;
@@ -339,9 +363,8 @@ function setAll ( obj, value ) {
 }
 exports.setAll = setAll;
 
-/**
- * Sets all of an object's values to `null`
- */
+// **DEPRECATE** (`assign`) :
+// Sets all of an object’s values to `null`.
 function nullify ( obj ) {
 	for ( var i in obj ) if ( hasOwn.call( obj, i ) ) {
 		obj[i] = null;
@@ -350,9 +373,9 @@ function nullify ( obj ) {
 }
 exports.nullify = nullify;
 
-/**
- * Returns an object whose keys are the elements of `string.split()` and whose values are all `true`.
- */
+// **DEPRECATE** (`assign`) :
+// Returns an object whose keys are the elements of `string.split()` and whose values are all
+// `true`.
 function splitToHash ( string, delimiter, value ) {
 	return string ?
 		setAll(
@@ -363,9 +386,9 @@ function splitToHash ( string, delimiter, value ) {
 }
 exports.splitToHash = splitToHash;
 
-/**
- * Copies the values of members of an object to one or more different keys on that same object.
- */
+// #### alias
+// 
+// Copies the values of members of an object to one or more different keys on that same object.
 function alias ( object, map ) {
 	var key, value, names, i, l;
 	for ( key in map ) if ( key in object ) {
@@ -378,24 +401,25 @@ function alias ( object, map ) {
 }
 exports.alias = alias;
 
-/**
- * Lazy evaluator; returns a function that returns the enclosed argument
- */
+// #### thunk
+// 
+// Creates and returns a lazy evaluator, a function that returns the enclosed argument.
 function thunk ( obj ) {
 	return function () { return obj; };
 }
 exports.thunk = thunk;
 
-/**
- * Retrieves the value at the location indicated by the provided `path` string inside a
- * nested object `obj`.
- * 
- * E.g.:
- * 	var x = { a: { b: 42 } };
- *  lookup( x, 'a' ) // { "b": 42 }
- * 	lookup( x, 'a.b' ) // 42
- * 	lookup( x, 'a.b.c' ) // undefined
- */
+// #### lookup
+// 
+// Retrieves the value at the location indicated by the provided `path` string inside a
+// nested object `obj`. For example:
+// 
+// ```
+// var x = { a: { b: 42 } };
+// lookup( x, 'a' ); // { "b": 42 }
+// lookup( x, 'a.b' ); // 42
+// lookup( x, 'a.b.c' ); // undefined
+// ```
 function lookup ( obj, path, separator ) {
 	var cursor = obj, i = 0, l = ( path = path.split( separator || '.' ) ).length, name;
 	while ( i < l && cursor != null ) {
@@ -409,9 +433,9 @@ function lookup ( obj, path, separator ) {
 }
 exports.lookup = lookup;
 
-/**
- * Reference to or partial shim for Object.create
- */
+// #### create
+// 
+// Reference to or partial shim for `Object.create`.
 function create ( prototype ) {
 	var object, constructor = function () {};
 	constructor.prototype = prototype;
@@ -422,17 +446,17 @@ function create ( prototype ) {
 }
 exports.create = isFunction( Object.create ) ? ( create = Object.create ) : create;
 
-/**
- * Prototypal inheritance facilitator
- * 
- * inherit( Function child, [ Function parent ], [ Object properties ], [ Object statics ] )
- * 
- *   * `child` and `parent` are constructor functions, such that
- *         `new child instanceof parent === true`
- *   * `child` also inherits static members that are direct properties of `parent`
- *   * `properties` is an object containing properties to be added to the prototype of `child`
- *   * `statics` is an object containing properties to be added to `child` itself.
- */
+// #### inherit
+// 
+// Prototypal inheritance facilitator.
+// 
+// `inherit( Function child, [ Function parent ], [ Object properties ], [ Object statics ] )`
+// 
+// * `child` and `parent` are constructor functions, such that
+//       `new child instanceof parent === true`
+// * `child` also inherits static members that are direct properties of `parent`
+// * `properties` is an object containing properties to be added to the prototype of `child`
+// * `statics` is an object containing properties to be added to `child` itself.
 function inherit ( child, parent, properties, statics ) {
 	isFunction( parent ) ?
 		( ( extend( child, parent ).prototype = create( parent.prototype ) ).constructor = child ) :
@@ -443,53 +467,51 @@ function inherit ( child, parent, properties, statics ) {
 }
 exports.inherit = inherit;
 
-/**
- * Returns an object's prototype. In environments without native support, this may only work if
- * the object's constructor and its prototype are properly associated, e.g., as facilitated by
- * the `create` function.
- */
+// #### getPrototypeOf
+// 
+// Returns an object’s prototype. In environments without native support, this may only work if
+// the object’s constructor and its prototype are properly associated, e.g., as facilitated by
+// the `create` function.
 function getPrototypeOf ( obj ) {
 	return obj.__proto__ || obj.constructor.prototype;
 }
 exports.getPrototypeOf = isFunction( Object.getPrototypeOf ) ?
 	( getPrototypeOf = Object.getPrototypeOf ) : getPrototypeOf;
 
-/**
- * Produces a hashmap whose keys are the supplied string array, with values all set to `null`
- */
+// **DEPRECATE** (`assign`) :
+// Produces a hashmap whose keys are the supplied string array, with values all set to `null`.
 function nullHash( keys ) { return nullify( invert( keys ) ); }
 exports.nullHash = nullHash;
 
-/**
- * Mirrors a function's output as the function's `valueOf`, occasionally useful in debugging/devtools
- */
+// #### valueFunction
+// 
+// Cyclically references a function’s output as its own `valueOf` property.
 function valueFunction ( fn ) { return fn.valueOf = fn; }
 exports.valueFunction = valueFunction;
 
-/**
- * Mirrors a function's output as the function's `toString`, occasionally useful in debugging/devtools
- */
+// #### stringFunction
+// 
+// Cyclically references a function’s output as its own `toString` property.
 function stringFunction ( fn ) { return fn.toString = fn; }
 exports.stringFunction = stringFunction;
 
-/**
- * Rigs partially applied functions, obtained from `functionSource`, as methods on a `object`. This
- * facilitates implementation of reusable privileged methods by abstracting the "privileged" subset
- * of variables available to the method into another level of scope. Because of this separation, the
- * actual logic portion of the method can then be used by other objects ("subclasses" and the like),
- * whose constructors can simply call this function themselves with their own private free variables.
- * 
- * Functions supplied by `functionSource` accept the set of closed variables as arguments, and return
- * a function that will become the `object`'s method.
- * 
- * The `map` argument maps a space-delimited set of method names to an array of free variables. These
- * variables are passed as arguments to each of the named methods as found within `functionSource`.
- */
+// #### privilege
+// 
+// Rigs partially applied functions, obtained from `functionSource`, as methods on a `object`. This
+// facilitates implementation of reusable privileged methods by abstracting the “privileged” subset
+// of variables available to the method into another level of scope. Because of this separation, the
+// actual logic portion of the method can thus be reused by other objects, classes, inheritors, etc.,
+// whose constructors can simply call this function themselves with their own private free variables.
+// 
+// Functions supplied by `functionSource` accept the set of closed variables as arguments, and return
+// a function that will become the `object`’s method.
+// 
+// The `map` argument maps a space-delimited set of method names to an array of free variables. These
+// variables are passed as arguments to each of the named methods as found within `functionSource`.
 function privilege ( object, functionSource, map ) {
 	each( map, function ( names, args ) {
 		each( names.split( regexp.whitespace ), function ( i, methodName ) {
-			var method = functionSource[ methodName ].apply( undefined, args );
-			object[ methodName ] = function () { return method.apply( this, arguments ); };
+			object[ methodName ] = functionSource[ methodName ].apply( undefined, args );
 		});
 	});
 	return object;
@@ -497,7 +519,8 @@ function privilege ( object, functionSource, map ) {
 exports.privilege = privilege;
 
 
+// 
 exports.env.server && ( module.exports = exports );
-exports.env.client && ( global['Z'] = extend( global['Z'] || {}, exports ) );
+exports.env.client && ( global['Z'] = exports );
 
 })();
