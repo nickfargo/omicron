@@ -1,66 +1,66 @@
 ( function ( undefined ) {
 
-var	global = this,
+var global = this,
 
-	exports = {
-		VERSION: '0.1.3',
-		env: {
-			server: typeof module !== 'undefined' && typeof require !== 'undefined' &&
-				!!module.exports,
-			client: typeof window !== 'undefined' && window === global
-		}
-	},
-	
-	// #### regexp
-	// 
-	// Store of commonly used regular expression instances.
-	regexp = exports.regexp = {
-		whitespace: /\s+/
-	},
+    exports = {
+        VERSION: '0.1.3',
+        env: {
+            server: typeof module !== 'undefined' && typeof require !== 'undefined' &&
+                !!module.exports,
+            client: typeof window !== 'undefined' && window === global
+        }
+    },
+    
+    // #### regexp
+    // 
+    // Store of commonly used regular expression instances.
+    regexp = exports.regexp = {
+        whitespace: /\s+/
+    },
 
-	// #### DELETE
-	// 
-	// Unique directive object. In the object arguments of `extend`, a property whose value is set
-	// to `DELETE` indicates that the corresponding property on the subject is to be deleted.
-	DELETE = exports.DELETE = {},
+    // #### DELETE
+    // 
+    // Unique directive object. In the object arguments of `extend`, a property whose value is set
+    // to `DELETE` indicates that the corresponding property on the subject is to be deleted.
+    DELETE = exports.DELETE = {},
 
-	// #### toString
-	// 
-	toString = exports.toString =
-		Object.prototype.toString,
-	
-	// #### hasOwn
-	// 
-	hasOwn = exports.hasOwn =
-		Object.prototype.hasOwnProperty,
-	
-	// #### trim
-	//
-	// jQuery-style end-whitespace trimmer; uses the native `String.prototype.trim` if available.
-	trim = exports.trim =
-		String.prototype.trim ?
-			function ( text ) {
-				return text == null ? '' : String.prototype.trim.call( text );
-			} :
-			function ( text ) {
-				return text == null ? '' :
-					text.toString().replace( /^\s+/, '' ).replace( /\s+$/, '' );
-			},
-	
-	// #### slice
-	//
-	slice = exports.slice =
-		Array.prototype.slice;
+    // #### toString
+    // 
+    toString = exports.toString =
+        Object.prototype.toString,
+    
+    // #### hasOwn
+    // 
+    hasOwn = exports.hasOwn =
+        Object.prototype.hasOwnProperty,
+    
+    // #### trim
+    //
+    // jQuery-style end-whitespace trimmer; uses the native `String.prototype.trim` if available.
+    trim = exports.trim =
+        String.prototype.trim ?
+            function ( text ) {
+                return text == null ? '' : String.prototype.trim.call( text );
+            } :
+            function ( text ) {
+                return text == null ? '' :
+                    text.toString().replace( /^\s+/, '' ).replace( /\s+$/, '' );
+            },
+    
+    // #### slice
+    //
+    slice = exports.slice =
+        Array.prototype.slice;
 
 
 // #### noConflict
 //
 exports.noConflict = ( function () {
-	var autochthon = global.Z;
-	return function () {
-		global.Z = autochthon;
-		return this;
-	};
+    var autochthon = global.Z;
+    return function () {
+        global.Z = autochthon;
+        return this;
+    };
 })();
 
 // #### noop
@@ -80,22 +80,22 @@ exports.getThis = getThis;
 // exists on `obj` as registered in `__native.fn`, returns our unique `noop` (as opposed to `null`
 // or `undefined`, which may be a valid result from the native function itself).
 function __native ( item, obj /* , ... */ ) {
-	var n = __native.fn[ item ];
-	return n && obj[ item ] === n ? n.apply( obj, slice.call( arguments, 2 ) ) : noop;
+    var n = __native.fn[ item ];
+    return n && obj[ item ] === n ? n.apply( obj, slice.call( arguments, 2 ) ) : noop;
 }
 ( __native ).fn = {
-	forEach: Array.prototype.forEach
+    forEach: Array.prototype.forEach
 };
 
 // #### type
 // 
 // A safe alternative to `typeof` that checks against `Object.prototype.toString()`.
 function type ( obj ) {
-	return obj == null ? String( obj ) : type.map[ toString.call( obj ) ] || 'object';
+    return obj == null ? String( obj ) : type.map[ toString.call( obj ) ] || 'object';
 }
 type.map = {};
 each( 'Array Boolean Date Function Number Object RegExp String'.split(' '), function( i, name ) {
-	type.map[ "[object " + name + "]" ] = name.toLowerCase();
+    type.map[ "[object " + name + "]" ] = name.toLowerCase();
 });
 exports.type = type;
 
@@ -123,16 +123,16 @@ exports.isFunction = isFunction;
 // 
 // Near-straight port of jQuery `isPlainObject`
 function isPlainObject ( obj ) {
-	var key;
-	if ( !obj || type( obj ) !== 'object' || obj.nodeType || obj === global ||
-		obj.constructor &&
-		!hasOwn.call( obj, 'constructor' ) &&
-		!hasOwn.call( obj.constructor.prototype, 'isPrototypeOf' )
-	) {
-		return false;
-	}
-	for ( key in obj ) {}
-	return key === undefined || hasOwn.call( obj, key );
+    var key;
+    if ( !obj || type( obj ) !== 'object' || obj.nodeType || obj === global ||
+        obj.constructor &&
+        !hasOwn.call( obj, 'constructor' ) &&
+        !hasOwn.call( obj.constructor.prototype, 'isPrototypeOf' )
+    ) {
+        return false;
+    }
+    for ( key in obj ) {}
+    return key === undefined || hasOwn.call( obj, key );
 }
 exports.isPlainObject = isPlainObject;
 
@@ -142,16 +142,16 @@ exports.isPlainObject = isPlainObject;
 // `Object` type, if `andPrototype` is included and truthy, `obj` must be empty throughout its
 // prototype chain as well.
 function isEmpty ( obj, andPrototype ) {
-	var key;
-	if ( isArray( obj ) && obj.length ) {
-		return false;
-	}
-	for ( key in obj ) {
-		if ( andPrototype || hasOwn.call( obj, key ) ) {
-			return false;
-		}
-	}
-	return true;
+    var key;
+    if ( isArray( obj ) && obj.length ) {
+        return false;
+    }
+    for ( key in obj ) {
+        if ( andPrototype || hasOwn.call( obj, key ) ) {
+            return false;
+        }
+    }
+    return true;
 }
 exports.isEmpty = isEmpty;
 
@@ -159,22 +159,22 @@ exports.isEmpty = isEmpty;
 // 
 // Functional iterator with jQuery-style callback signature of `key, value, object`.
 function each ( obj, fn ) {
-	if ( !obj ) { return; }
-	var	key, i, l = obj.length;
-	if ( l === undefined || isFunction( obj ) ) {
-		for ( key in obj ) {
-			if ( fn.call( obj[key], key, obj[key], obj ) === false ) {
-				break;
-			}
-		}
-	} else {
-		for ( i = 0, l = obj.length; i < l; ) {
-			if ( fn.call( obj[i], i, obj[i++], obj ) === false ) {
-				break;
-			}
-		}
-	}
-	return obj;
+    if ( !obj ) { return; }
+    var key, i, l = obj.length;
+    if ( l === undefined || isFunction( obj ) ) {
+        for ( key in obj ) {
+            if ( fn.call( obj[key], key, obj[key], obj ) === false ) {
+                break;
+            }
+        }
+    } else {
+        for ( i = 0, l = obj.length; i < l; ) {
+            if ( fn.call( obj[i], i, obj[i++], obj ) === false ) {
+                break;
+            }
+        }
+    }
+    return obj;
 }
 exports.each = each;
 
@@ -182,23 +182,23 @@ exports.each = each;
 // 
 // Functional iterator with ES5-style callback signature of `value, key, object`.
 function forEach ( obj, fn, context ) {
-	var	n, l, key, i;
-	if ( obj == null ) { return; }
-	if ( ( n = __native( 'forEach', obj, fn, context ) ) !== noop ) { return n; }
-	if ( ( l = obj.length ) === undefined || isFunction( obj ) ) {
-		for ( key in obj ) {
-			if ( fn.call( context || obj[key], obj[key], key, obj ) === false ) {
-				break;
-			}
-		}
-	} else {
-		for ( i = 0, l = obj.length; i < l; ) {
-			if ( fn.call( context || obj[i], obj[i], i++, obj ) === false ) {
-				break;
-			}
-		}
-	}
-	return obj;
+    var n, l, key, i;
+    if ( obj == null ) { return; }
+    if ( ( n = __native( 'forEach', obj, fn, context ) ) !== noop ) { return n; }
+    if ( ( l = obj.length ) === undefined || isFunction( obj ) ) {
+        for ( key in obj ) {
+            if ( fn.call( context || obj[key], obj[key], key, obj ) === false ) {
+                break;
+            }
+        }
+    } else {
+        for ( i = 0, l = obj.length; i < l; ) {
+            if ( fn.call( context || obj[i], obj[i], i++, obj ) === false ) {
+                break;
+            }
+        }
+    }
+    return obj;
 }
 exports.forEach = forEach;
 
@@ -214,51 +214,51 @@ exports.forEach = forEach;
 // * 'all' : Includes properties with undefined values.
 // * 'delta' : Returns a structured clone of any overwritten properties.
 function extend () {
-	var	args = slice.call( arguments ),
-		t = type( args[0] ),
-		flags =
-			t === 'boolean' ? { deep: args.shift() } :
-			t === 'string' ? assign( args.shift() ) :
-			{},
-		subject = args.shift() || {},
-		i, l, key, value, valueIsArray, source, target, delta, clone, result;
-	
-	typeof subject === 'object' || isFunction( subject ) || ( subject = {} );
-	flags.delta && ( delta = isArray( subject ) ? [] : {} );
-	for ( i = 0, l = args.length; i < l; i++ ) {
-		source = args[i];
-		if ( source == null ) continue;
-		for ( key in source ) if ( !flags.own || hasOwn.call( source, key ) ) {
-			value = source[ key ];
-			if ( value === subject ) continue;
+    var args = slice.call( arguments ),
+        t = type( args[0] ),
+        flags =
+            t === 'boolean' ? { deep: args.shift() } :
+            t === 'string' ? assign( args.shift() ) :
+            {},
+        subject = args.shift() || {},
+        i, l, key, value, valueIsArray, source, target, delta, clone, result;
+    
+    typeof subject === 'object' || isFunction( subject ) || ( subject = {} );
+    flags.delta && ( delta = isArray( subject ) ? [] : {} );
+    for ( i = 0, l = args.length; i < l; i++ ) {
+        source = args[i];
+        if ( source == null ) continue;
+        for ( key in source ) if ( !flags.own || hasOwn.call( source, key ) ) {
+            value = source[ key ];
+            if ( value === subject ) continue;
 
-			if ( value === DELETE ) {
-				delta && ( delta[ key ] = subject[ key ] );
-				delete subject[ key ];
-			}
-			else if ( flags.deep && value &&
-				( isPlainObject( value ) || ( valueIsArray = isArray( value ) ) )
-			) {
-				target = subject[ key ];
-				delta && ( delta[ key ] = target );
-				if ( valueIsArray ) {
-					valueIsArray = false;
-					clone = target && isArray( target ) ? target : [];
-				} else {
-					clone = target && ( isFunction( target ) || typeof target === 'object' ) ?
-						target : {};
-				}
-				result = extend( keys( flags ).join(' '), clone, value );
-				delta && ( delta[ key ] = result );
-				subject[ key ] = clone;
-			}
-			else if ( value !== undefined || flags.all ) {
-				delta && ( delta[ key ] = subject[ key ] );
-				subject[ key ] = value;
-			}
-		}
-	}
-	return flags.delta ? delta : subject;
+            if ( value === DELETE ) {
+                delta && ( delta[ key ] = subject[ key ] );
+                delete subject[ key ];
+            }
+            else if ( flags.deep && value &&
+                ( isPlainObject( value ) || ( valueIsArray = isArray( value ) ) )
+            ) {
+                target = subject[ key ];
+                delta && ( delta[ key ] = target );
+                if ( valueIsArray ) {
+                    valueIsArray = false;
+                    clone = target && isArray( target ) ? target : [];
+                } else {
+                    clone = target && ( isFunction( target ) || typeof target === 'object' ) ?
+                        target : {};
+                }
+                result = extend( keys( flags ).join(' '), clone, value );
+                delta && ( delta[ key ] = result );
+                subject[ key ] = clone;
+            }
+            else if ( value !== undefined || flags.all ) {
+                delta && ( delta[ key ] = subject[ key ] );
+                subject[ key ] = value;
+            }
+        }
+    }
+    return flags.delta ? delta : subject;
 }
 exports.extend = extend;
 
@@ -266,24 +266,24 @@ exports.extend = extend;
 // 
 // Deletes portions of an object and returns the difference.
 function excise ( deep, target ) {
-	var	args = slice.call( arguments ),
-		i, l, key, value, obj,
-		delta = {};
-	deep === !!deep && args.shift();
-	target = args[0];
-	for ( i = 1, l = args.length; i < l; i++ ) {
-		obj = args[i];
-		for ( key in obj ) if ( hasOwn.call( obj, key ) ) {
-			value = obj[ key ];
-			if ( deep && isPlainObject( value ) ) {
-				delta[ key ] = excise( true, target[ key ], value );
-			} else if ( value != null ) {
-				delta[ key ] = target[ key ];
-				delete target[ key ];
-			}
-		}
-	}
-	return delta;
+    var args = slice.call( arguments ),
+        i, l, key, value, obj,
+        delta = {};
+    deep === !!deep && args.shift();
+    target = args[0];
+    for ( i = 1, l = args.length; i < l; i++ ) {
+        obj = args[i];
+        for ( key in obj ) if ( hasOwn.call( obj, key ) ) {
+            value = obj[ key ];
+            if ( deep && isPlainObject( value ) ) {
+                delta[ key ] = excise( true, target[ key ], value );
+            } else if ( value != null ) {
+                delta[ key ] = target[ key ];
+                delete target[ key ];
+            }
+        }
+    }
+    return delta;
 }
 exports.excise = excise;
 
@@ -291,26 +291,26 @@ exports.excise = excise;
 // 
 // Facilitates assignment operations of a value to one or more keys of an object.
 function assign ( target, map, value ) {
-	var key, list, i, l;
+    var key, list, i, l;
 
-	if ( typeof target === 'string' ) {
-		value = arguments.length === 1 ? true : map, map = target, target = {};
-	} else if ( map === undefined ) {
-		map = target, target = {};
-	}
-	if ( typeof map === 'string' ) {
-		key = map, map = {}, map[ key ] = value;
-	}
+    if ( typeof target === 'string' ) {
+        value = arguments.length === 1 ? true : map, map = target, target = {};
+    } else if ( map === undefined ) {
+        map = target, target = {};
+    }
+    if ( typeof map === 'string' ) {
+        key = map, map = {}, map[ key ] = value;
+    }
 
-	for ( key in map ) if ( hasOwn.call( map, key ) ) {
-		value = map[ key ];
-		list = key.split( regexp.whitespace );
-		for ( i = 0, l = list.length; i < l; i++ ) {
-			target[ list[i] ] = value;
-		}
-	}
+    for ( key in map ) if ( hasOwn.call( map, key ) ) {
+        value = map[ key ];
+        list = key.split( regexp.whitespace );
+        for ( i = 0, l = list.length; i < l; i++ ) {
+            target[ list[i] ] = value;
+        }
+    }
 
-	return target;
+    return target;
 }
 exports.assign = assign;
 
@@ -318,16 +318,16 @@ exports.assign = assign;
 // 
 // Extracts elements of nested arrays into a single flat array.
 function flatten ( array ) {
-	isArray( array ) || ( array = [ array ] );
-	var	i = 0,
-		l = array.length,
-		item,
-		result = [];
-	while ( i < l ) {
-		item = array[i++];
-		isArray( item ) ? ( result = result.concat( flatten( item ) ) ) : result.push( item );
-	}
-	return result;
+    isArray( array ) || ( array = [ array ] );
+    var i = 0,
+        l = array.length,
+        item,
+        result = [];
+    while ( i < l ) {
+        item = array[i++];
+        isArray( item ) ? ( result = result.concat( flatten( item ) ) ) : result.push( item );
+    }
+    return result;
 }
 exports.flatten = flatten;
 
@@ -335,10 +335,10 @@ exports.flatten = flatten;
 // 
 // Returns an array containing the keys of a hashmap.
 function keys ( obj ) {
-	var key, result = [];
-	if ( !( isPlainObject( obj ) || isFunction( obj ) ) ) { throw new TypeError; }
-	for ( key in obj ) { hasOwn.call( obj, key ) && result.push( key ); }
-	return result;
+    var key, result = [];
+    if ( !( isPlainObject( obj ) || isFunction( obj ) ) ) { throw new TypeError; }
+    for ( key in obj ) { hasOwn.call( obj, key ) && result.push( key ); }
+    return result;
 }
 exports.keys = keys = isFunction( Object.keys ) ? Object.keys : keys;
 
@@ -346,30 +346,30 @@ exports.keys = keys = isFunction( Object.keys ) ? Object.keys : keys;
 // 
 // Returns a hashmap that is the key-value inversion of the supplied string array.
 function invert ( array ) {
-	for ( var i = 0, l = array.length, map = {}; i < l; ) {
-		map[ array[i] ] = i++;
-	}
-	return map;
+    for ( var i = 0, l = array.length, map = {}; i < l; ) {
+        map[ array[i] ] = i++;
+    }
+    return map;
 }
 exports.invert = invert;
 
 // **DEPRECATE** (`assign`) :
 // Sets all of an object’s values to a specified value.
 function setAll ( obj, value ) {
-	for ( var i in obj ) if ( hasOwn.call( obj, i ) ) {
-		obj[i] = value;
-	}
-	return obj;
+    for ( var i in obj ) if ( hasOwn.call( obj, i ) ) {
+        obj[i] = value;
+    }
+    return obj;
 }
 exports.setAll = setAll;
 
 // **DEPRECATE** (`assign`) :
 // Sets all of an object’s values to `null`.
 function nullify ( obj ) {
-	for ( var i in obj ) if ( hasOwn.call( obj, i ) ) {
-		obj[i] = null;
-	}
-	return obj;
+    for ( var i in obj ) if ( hasOwn.call( obj, i ) ) {
+        obj[i] = null;
+    }
+    return obj;
 }
 exports.nullify = nullify;
 
@@ -377,12 +377,12 @@ exports.nullify = nullify;
 // Returns an object whose keys are the elements of `string.split()` and whose values are all
 // `true`.
 function splitToHash ( string, delimiter, value ) {
-	return string ?
-		setAll(
-			invert( string.split( delimiter || regexp.whitespace ) ),
-			value !== undefined ? value : true
-		) :
-		{};
+    return string ?
+        setAll(
+            invert( string.split( delimiter || regexp.whitespace ) ),
+            value !== undefined ? value : true
+        ) :
+        {};
 }
 exports.splitToHash = splitToHash;
 
@@ -390,14 +390,14 @@ exports.splitToHash = splitToHash;
 // 
 // Copies the values of members of an object to one or more different keys on that same object.
 function alias ( object, map ) {
-	var key, value, names, i, l;
-	for ( key in map ) if ( key in object ) {
-		names = map[ key ].split( regexp.whitespace );
-		for ( i = 0, l = names.length; i < l; i++ ) {
-			object[ names[i] ] = object[ key ];
-		}
-	}
-	return object;
+    var key, value, names, i, l;
+    for ( key in map ) if ( key in object ) {
+        names = map[ key ].split( regexp.whitespace );
+        for ( i = 0, l = names.length; i < l; i++ ) {
+            object[ names[i] ] = object[ key ];
+        }
+    }
+    return object;
 }
 exports.alias = alias;
 
@@ -405,7 +405,7 @@ exports.alias = alias;
 // 
 // Creates and returns a lazy evaluator, a function that returns the enclosed argument.
 function thunk ( obj ) {
-	return function () { return obj; };
+    return function () { return obj; };
 }
 exports.thunk = thunk;
 
@@ -421,15 +421,15 @@ exports.thunk = thunk;
 // lookup( x, 'a.b.c' ); // undefined
 // ```
 function lookup ( obj, path, separator ) {
-	var cursor = obj, i = 0, l = ( path = path.split( separator || '.' ) ).length, name;
-	while ( i < l && cursor != null ) {
-		if ( hasOwn.call( cursor, name = path[ i++ ] ) ) {
-			cursor = cursor[ name ];
-		} else {
-			return undefined;
-		}
-	}
-	return cursor;
+    var cursor = obj, i = 0, l = ( path = path.split( separator || '.' ) ).length, name;
+    while ( i < l && cursor != null ) {
+        if ( hasOwn.call( cursor, name = path[ i++ ] ) ) {
+            cursor = cursor[ name ];
+        } else {
+            return undefined;
+        }
+    }
+    return cursor;
 }
 exports.lookup = lookup;
 
@@ -437,12 +437,12 @@ exports.lookup = lookup;
 // 
 // Reference to or partial shim for `Object.create`.
 function create ( prototype ) {
-	var object, constructor = function () {};
-	constructor.prototype = prototype;
-	object = new constructor;
-	object.__proto__ = prototype;
-	object.constructor = prototype.constructor;
-	return object;
+    var object, constructor = function () {};
+    constructor.prototype = prototype;
+    object = new constructor;
+    object.__proto__ = prototype;
+    object.constructor = prototype.constructor;
+    return object;
 }
 exports.create = isFunction( Object.create ) ? ( create = Object.create ) : create;
 
@@ -458,12 +458,12 @@ exports.create = isFunction( Object.create ) ? ( create = Object.create ) : crea
 // * `properties` is an object containing properties to be added to the prototype of `child`
 // * `statics` is an object containing properties to be added to `child` itself.
 function inherit ( child, parent, properties, statics ) {
-	isFunction( parent ) ?
-		( ( extend( child, parent ).prototype = create( parent.prototype ) ).constructor = child ) :
-		( statics = properties, properties = parent );
-	properties && extend( child.prototype, properties );
-	statics && extend( child, statics );
-	return child;
+    isFunction( parent ) ?
+        ( ( extend( child, parent ).prototype = create( parent.prototype ) ).constructor = child ) :
+        ( statics = properties, properties = parent );
+    properties && extend( child.prototype, properties );
+    statics && extend( child, statics );
+    return child;
 }
 exports.inherit = inherit;
 
@@ -473,10 +473,10 @@ exports.inherit = inherit;
 // the object’s constructor and its prototype are properly associated, e.g., as facilitated by
 // the `create` function.
 function getPrototypeOf ( obj ) {
-	return obj.__proto__ || obj.constructor.prototype;
+    return obj.__proto__ || obj.constructor.prototype;
 }
 exports.getPrototypeOf = isFunction( Object.getPrototypeOf ) ?
-	( getPrototypeOf = Object.getPrototypeOf ) : getPrototypeOf;
+    ( getPrototypeOf = Object.getPrototypeOf ) : getPrototypeOf;
 
 // **DEPRECATE** (`assign`) :
 // Produces a hashmap whose keys are the supplied string array, with values all set to `null`.
@@ -509,12 +509,12 @@ exports.stringFunction = stringFunction;
 // The `map` argument maps a space-delimited set of method names to an array of free variables. These
 // variables are passed as arguments to each of the named methods as found within `functionSource`.
 function privilege ( object, functionSource, map ) {
-	each( map, function ( names, args ) {
-		each( names.split( regexp.whitespace ), function ( i, methodName ) {
-			object[ methodName ] = functionSource[ methodName ].apply( undefined, args );
-		});
-	});
-	return object;
+    each( map, function ( names, args ) {
+        each( names.split( regexp.whitespace ), function ( i, methodName ) {
+            object[ methodName ] = functionSource[ methodName ].apply( undefined, args );
+        });
+    });
+    return object;
 }
 exports.privilege = privilege;
 
