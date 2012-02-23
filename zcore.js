@@ -14,6 +14,7 @@ var	global = this,
 		whitespace: /\s+/
 	},
 
+	DELETE = exports.DELETE = {},
 	toString = exports.toString =
 		Object.prototype.toString,
 	
