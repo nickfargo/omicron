@@ -220,7 +220,8 @@ function extend () {
 					valueIsArray = false;
 					clone = target && isArray( target ) ? target : [];
 				} else {
-					clone = target && ( isFunction( target ) || type( target ) === 'object' ) ? target : {};
+					clone = target && ( isFunction( target ) || typeof target === 'object' ) ?
+						target : {};
 				}
 				result = extend( keys( flags ).join(' '), clone, value );
 				delta && ( delta[ key ] = result );
