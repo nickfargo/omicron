@@ -84,7 +84,7 @@ function __native ( item, obj /* , ... */ ) {
     var n = __native.fn[ item ];
     return n && obj[ item ] === n ? n.apply( obj, slice.call( arguments, 2 ) ) : noop;
 }
-( __native ).fn = {
+__native.fn = {
     forEach: Array.prototype.forEach
 };
 
@@ -362,12 +362,11 @@ exports.thunk = thunk;
 // Retrieves the value at the location indicated by the provided `path` string inside a
 // nested object `obj`. For example:
 // 
-// ```
-// var x = { a: { b: 42 } };
-// lookup( x, 'a' ); // { "b": 42 }
-// lookup( x, 'a.b' ); // 42
-// lookup( x, 'a.b.c' ); // undefined
-// ```
+//      var x = { a: { b: 42 } };
+//      lookup( x, 'a' );        // { "b": 42 }
+//      lookup( x, 'a.b' );      // 42
+//      lookup( x, 'a.b.c' );    // undefined
+//
 function lookup ( obj, path, separator ) {
     var cursor = obj, i = 0, l = ( path = path.split( separator || '.' ) ).length, name;
     while ( i < l && cursor != null ) {
@@ -398,14 +397,17 @@ exports.create = isFunction( Object.create ) ? ( create = Object.create ) : crea
 // 
 // Prototypal inheritance facilitator.
 // 
-// `inherit( Function child, [ Function parent ], [ Object properties ], [ Object statics ] )`
-// 
 // * `child` and `parent` are constructor functions, such that
 //       `new child instanceof parent === true`
 // * `child` also inherits static members that are direct properties of `parent`
 // * `properties` is an object containing properties to be added to the prototype of `child`
 // * `statics` is an object containing properties to be added to `child` itself.
-function inherit ( child, parent, properties, statics ) {
+function inherit (
+    /*Function*/ child,
+    /*Function*/ parent,      // optional
+      /*Object*/ properties,  // optional
+      /*Object*/ statics      // optional
+) {
     isFunction( parent ) ?
         ( ( extend( child, parent ).prototype = create( parent.prototype ) ).constructor = child ) :
         ( statics = properties, properties = parent );
@@ -440,21 +442,23 @@ exports.stringFunction = stringFunction;
 
 // #### privilege
 // 
-// Rigs partially applied functions, obtained from `functionSource`, as methods on a `object`. This
-// facilitates implementation of reusable privileged methods by abstracting the “privileged” subset
-// of variables available to the method into another level of scope. Because of this separation, the
-// actual logic portion of the method can thus be reused by other objects, classes, inheritors, etc.,
-// whose constructors can simply call this function themselves with their own private free variables.
+// Generates partially applied functions for use as methods on an `object`.
 // 
-// Functions supplied by `functionSource` accept the set of closed variables as arguments, and return
-// a function that will become the `object`’s method.
+// Functions sourced from `methodStore` accept as arguments the set of variables to be closed over,
+// and return the enclosed function that will become the `object`’s method.
 // 
-// The `map` argument maps a space-delimited set of method names to an array of free variables. These
-// variables are passed as arguments to each of the named methods as found within `functionSource`.
-function privilege ( object, functionSource, map ) {
+// The `map` argument maps a space-delimited set of method names to an array of free variables.
+// These variables are passed as arguments to each of the named methods as found within
+// `methodStore`.
+// 
+// This approach promotes reuse of a method’s logic by decoupling the function from the native
+// scope of its free variables. A subsequent call to `privilege`, then, can be used on behalf of a
+// distinct (though likely related) `object` to generate methods that are identical but closed
+// over a distinct set of variables.
+function privilege ( object, methodStore, map ) {
     each( map, function ( names, args ) {
         each( names.split( regexp.whitespace ), function ( i, methodName ) {
-            object[ methodName ] = functionSource[ methodName ].apply( undefined, args );
+            object[ methodName ] = methodStore[ methodName ].apply( undefined, args );
         });
     });
     return object;
