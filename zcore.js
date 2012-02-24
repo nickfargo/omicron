@@ -268,31 +268,6 @@ function extend () {
 }
 exports.extend = extend;
 
-// #### excise
-// 
-// Deletes portions of an object and returns the difference.
-function excise ( deep, target ) {
-    var args = slice.call( arguments ),
-        i, l, key, value, obj,
-        delta = {};
-    deep === !!deep && args.shift();
-    target = args[0];
-    for ( i = 1, l = args.length; i < l; i++ ) {
-        obj = args[i];
-        for ( key in obj ) if ( hasOwn.call( obj, key ) ) {
-            value = obj[ key ];
-            if ( deep && isPlainObject( value ) ) {
-                delta[ key ] = excise( true, target[ key ], value );
-            } else if ( value != null ) {
-                delta[ key ] = target[ key ];
-                delete target[ key ];
-            }
-        }
-    }
-    return delta;
-}
-exports.excise = excise;
-
 // #### assign
 // 
 // Facilitates assignment operations of a value to one or more keys of an object.
@@ -358,39 +333,6 @@ function invert ( array ) {
     return map;
 }
 exports.invert = invert;
-
-// **DEPRECATE** (`assign`) :
-// Sets all of an object’s values to a specified value.
-function setAll ( obj, value ) {
-    for ( var i in obj ) if ( hasOwn.call( obj, i ) ) {
-        obj[i] = value;
-    }
-    return obj;
-}
-exports.setAll = setAll;
-
-// **DEPRECATE** (`assign`) :
-// Sets all of an object’s values to `null`.
-function nullify ( obj ) {
-    for ( var i in obj ) if ( hasOwn.call( obj, i ) ) {
-        obj[i] = null;
-    }
-    return obj;
-}
-exports.nullify = nullify;
-
-// **DEPRECATE** (`assign`) :
-// Returns an object whose keys are the elements of `string.split()` and whose values are all
-// `true`.
-function splitToHash ( string, delimiter, value ) {
-    return string ?
-        setAll(
-            invert( string.split( delimiter || regexp.whitespace ) ),
-            value !== undefined ? value : true
-        ) :
-        {};
-}
-exports.splitToHash = splitToHash;
 
 // #### alias
 // 
@@ -483,11 +425,6 @@ function getPrototypeOf ( obj ) {
 }
 exports.getPrototypeOf = isFunction( Object.getPrototypeOf ) ?
     ( getPrototypeOf = Object.getPrototypeOf ) : getPrototypeOf;
-
-// **DEPRECATE** (`assign`) :
-// Produces a hashmap whose keys are the supplied string array, with values all set to `null`.
-function nullHash( keys ) { return nullify( invert( keys ) ); }
-exports.nullHash = nullHash;
 
 // #### valueFunction
 // 
