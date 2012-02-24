@@ -20,9 +20,10 @@ var global = this,
 
     // #### DELETE
     // 
-    // Unique directive object. In the object arguments of `extend`, a property whose value is set
-    // to `DELETE` indicates that the corresponding property on the subject is to be deleted.
-    DELETE = exports.DELETE = {},
+    // Unique directive object. Most commonly used in the object arguments of `extend`, where a
+    // property whose value is set to `DELETE` indicates that the corresponding property on the
+    // subject is to be deleted.
+    DELETE = exports.DELETE = ( function () { function DELETE () {} return new DELETE; } )(),
 
     // #### toString
     // 
