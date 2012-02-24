@@ -210,10 +210,13 @@ exports.forEach = forEach;
 // Optionally the first argument may be a Boolean `deep`, or a whitespace-delimited `flags`
 // String containing any of the following keywords:
 // 
-// * 'deep' : If a property is an object or array, a structured clone is created on the subject.
-// * 'own' : Restricts extended properties to those filtered by `Object.hasOwnProperty`.
-// * 'all' : Includes properties with undefined values.
-// * 'delta' : Returns a structured clone of any overwritten properties.
+// * `deep` : If a property is an object or array, a structured clone is created on the subject.
+// * `own` : Restricts extended properties to those filtered by `Object.hasOwnProperty`.
+// * `all` : Includes properties with undefined values.
+// * `delta` : Returns the **delta**, a structured clone object that reflects the changes made to
+//      the properties of `subject`. If multiple objects are extended onto `subject`, an array of
+//      deltas is returned. (Applying the deltas in reverse order in an `extend('deep')` on
+//      `subject` would revert the contents of `subject` to their original state.)
 function extend () {
     var args = slice.call( arguments ),
         t = type( args[0] ),
@@ -222,17 +225,20 @@ function extend () {
             t === 'string' ? assign( args.shift() ) :
             {},
         subject = args.shift() || {},
-        i, l, key, value, valueIsArray, source, target, delta, clone, result;
+        i = 0, l = args.length,
+        deltas = flags.delta && l > 1 && [],
+        subjectIsArray, delta, key, value, valueIsArray, source, target, clone, result;
     
     typeof subject === 'object' || isFunction( subject ) || ( subject = {} );
-    flags.delta && ( delta = isArray( subject ) ? [] : {} );
-    for ( i = 0, l = args.length; i < l; i++ ) {
+    subjectIsArray = isArray( subject );
+    for ( ; i < l; i++ ) {
+        flags.delta && ( delta = subjectIsArray ? [] : {} );
+        deltas && deltas.push( delta );
         source = args[i];
         if ( source == null ) continue;
         for ( key in source ) if ( !flags.own || hasOwn.call( source, key ) ) {
             value = source[ key ];
             if ( value === subject ) continue;
-
             if ( value === DELETE ) {
                 delta && ( delta[ key ] = subject[ key ] );
                 delete subject[ key ];
@@ -241,7 +247,6 @@ function extend () {
                 ( isPlainObject( value ) || ( valueIsArray = isArray( value ) ) )
             ) {
                 target = subject[ key ];
-                delta && ( delta[ key ] = target );
                 if ( valueIsArray ) {
                     valueIsArray = false;
                     clone = target && isArray( target ) ? target : [];
@@ -250,16 +255,16 @@ function extend () {
                         target : {};
                 }
                 result = extend( keys( flags ).join(' '), clone, value );
-                delta && ( delta[ key ] = result );
+                delta && ( delta[ key ] = hasOwn.call( subject, key ) ? result : DELETE );
                 subject[ key ] = clone;
             }
-            else if ( value !== undefined || flags.all ) {
-                delta && ( delta[ key ] = subject[ key ] );
+            else if ( subject[ key ] !== value && ( value !== undefined || flags.all ) ) {
+                delta && ( delta[ key ] = hasOwn.call( subject, key ) ? subject[ key ] : DELETE );
                 subject[ key ] = value;
             }
         }
     }
-    return flags.delta ? delta : subject;
+    return deltas || delta || subject;
 }
 exports.extend = extend;
 
