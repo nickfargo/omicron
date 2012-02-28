@@ -241,7 +241,7 @@ function extend () {
             if ( value === subject ) continue;
             if ( value === NIL ) {
                 delta && ( delta[ key ] = subject[ key ] );
-                delete subject[ key ];
+                flags.immutable || delete subject[ key ];
             }
             else if ( flags.deep && value &&
                 ( isPlainObject( value ) || ( valueIsArray = isArray( value ) ) )
@@ -255,12 +255,12 @@ function extend () {
                         target : {};
                 }
                 result = extend( keys( flags ).join(' '), clone, value );
-                subject[ key ] = clone;
                 delta && ( delta[ key ] = hasOwn.call( subject, key ) ? result : NIL );
+                flags.immutable || ( subject[ key ] = clone );
             }
             else if ( subject[ key ] !== value && ( value !== undefined || flags.all ) ) {
-                subject[ key ] = value;
                 delta && ( delta[ key ] = hasOwn.call( subject, key ) ? subject[ key ] : NIL );
+                flags.immutable || ( subject[ key ] = value );
             }
         }
     }
