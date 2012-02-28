@@ -78,11 +78,11 @@ function getThis () { return this; }
 Z.getThis = getThis;
 
 // Calls the specified native function if it exists and returns its result; if no such function
-// exists on `obj` as registered in `__native.fn`, returns our unique `noop` (as opposed to `null`
+// exists on `obj` as registered in `__native.fn`, returns our unique `NIL` (as opposed to `null`
 // or `undefined`, which may be a valid result from the native function itself).
 function __native ( item, obj /* , ... */ ) {
     var n = __native.fn[ item ];
-    return n && obj[ item ] === n ? n.apply( obj, slice.call( arguments, 2 ) ) : noop;
+    return n && obj[ item ] === n ? n.apply( obj, slice.call( arguments, 2 ) ) : NIL;
 }
 __native.fn = {
     forEach: Array.prototype.forEach
@@ -185,7 +185,7 @@ Z.each = each;
 function forEach ( obj, fn, context ) {
     var n, l, key, i;
     if ( obj == null ) { return; }
-    if ( ( n = __native( 'forEach', obj, fn, context ) ) !== noop ) { return n; }
+    if ( ( n = __native( 'forEach', obj, fn, context ) ) !== NIL ) return n;
     if ( ( l = obj.length ) === undefined || isFunction( obj ) ) {
         for ( key in obj ) {
             if ( fn.call( context || obj[key], obj[key], key, obj ) === false ) {
