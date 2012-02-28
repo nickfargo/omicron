@@ -268,6 +268,20 @@ function extend () {
 }
 Z.extend = Z.edit = extend;
 
+// #### delta
+// 
+function delta () {
+    return extend.apply( Z, [ 'deep delta' ].concat( slice.call( arguments ) ) );
+}
+Z.delta = delta;
+
+// #### diff
+// 
+function diff () {
+    return extend.apply( Z, [ 'deep immutable delta' ].concat( slice.call( arguments ) ) );
+}
+Z.diff = diff;
+
 // #### assign
 // 
 // Facilitates assignment operations of a value to one or more keys of an object.

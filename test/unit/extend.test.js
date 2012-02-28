@@ -26,7 +26,7 @@ test( "structural invariance", function () {
             h: 'bar'
         },
         object = Z.extend( true, {}, original ),
-        delta = Z.extend( 'deep delta', object, edit );
+        delta = Z.delta( object, edit );
 
     assert.deepEqual( delta, {
         a: 1,
@@ -77,7 +77,7 @@ test( "referential invariance", function () {
             }
         },
         object = Z.extend( true, {}, original ),
-        delta = Z.extend( 'deep delta', object, edit );
+        delta = Z.delta( object, edit );
     
     assert.strictEqual( delta.ref.ref, deep, "Reference held by `delta` after deletion from `object`" );
     assert.deepEqual( Z.extend( 'deep', object, delta ), original, "Restored `object` resembles original state" );
@@ -104,7 +104,7 @@ test( "delta composition", function () {
             { b: "dos", g: [ _, "une" ] }
         ],
         object = Z.extend( true, {}, original ),
-        deltas = Z.extend.apply( Z, [ 'deep delta', object ].concat( edits ) );
+        deltas = Z.delta.apply( Z, [ object ].concat( edits ) );
 
     assert.deepEqual(
         object,
@@ -135,6 +135,28 @@ test( "delta composition", function () {
         original,
         "Delta composition applied in reverse yields content-equivalence to the original object"
     );
+});
+
+test( "immutable flag", function () {
+    var _ = undefined, NIL = Z.NIL,
+
+        original = {
+            a: 1,
+            b: [ 2, 4, 9 ],
+            c: 3,
+            d: { e: 5 }
+        },
+        edit = {
+            a: 'one',
+            b: [ _, 4, 7, 8 ],
+            c: NIL,
+            d: { e: NIL, f: 6 }
+        },
+        object = Z.extend( original ),
+        delta = Z.diff( object, edit );
+
+    assert.deepEqual( object, original, "Immutable flag leaves object unchanged" );
+    assert.deepEqual( delta, { a: 1, b: [ _, _, 9, NIL ], c: 3, d: { e: 5, f: NIL } }, "" );
 });
 
 })( QUnit );
