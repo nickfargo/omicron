@@ -133,7 +133,7 @@ test( "delta composition", function () {
     assert.deepEqual(
         Z.extend.apply( Z, [ true, object ].concat( deltas.reverse() ) ),
         original,
-        "Delta composition applied in reverse yields content-equivalence to the original object"
+        "Applying reverse delta composition to object yields content-equivalence to the original"
     );
 });
 

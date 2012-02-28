@@ -11,9 +11,6 @@ var global = this,
         }
     },
     
-    // #### regexp
-    // 
-    // Store of commonly used regular expression instances.
     regexp = Z.regexp = {
         whitespace: /\s+/
     },
@@ -66,8 +63,7 @@ Z.noConflict = ( function () {
 
 // #### noop
 // 
-// General-purpose empty function. May also be deemed suitable as a unique alternative “nil” type
-// for strict-equal matches whenever it’s desirable to avoid traditional `null` and `undefined`.
+// General-purpose empty function.
 function noop () {}
 Z.noop = noop;
 
@@ -122,7 +118,7 @@ Z.isFunction = isFunction;
 
 // #### isPlainObject
 // 
-// Near-straight port of jQuery `isPlainObject`
+// Near-straight port of jQuery `isPlainObject`.
 function isPlainObject ( obj ) {
     var key;
     if ( !obj || type( obj ) !== 'object' || obj.nodeType || obj === global ||
@@ -144,14 +140,8 @@ Z.isPlainObject = isPlainObject;
 // prototype chain as well.
 function isEmpty ( obj, andPrototype ) {
     var key;
-    if ( isArray( obj ) && obj.length ) {
-        return false;
-    }
-    for ( key in obj ) {
-        if ( andPrototype || hasOwn.call( obj, key ) ) {
-            return false;
-        }
-    }
+    if ( isArray( obj ) && obj.length ) return false;
+    for ( key in obj ) if ( andPrototype || hasOwn.call( obj, key ) ) return false;
     return true;
 }
 Z.isEmpty = isEmpty;
@@ -160,19 +150,15 @@ Z.isEmpty = isEmpty;
 // 
 // Functional iterator with jQuery-style callback signature of `key, value, object`.
 function each ( obj, fn ) {
-    if ( !obj ) { return; }
+    if ( !obj ) return;
     var key, i, l = obj.length;
     if ( l === undefined || isFunction( obj ) ) {
         for ( key in obj ) {
-            if ( fn.call( obj[key], key, obj[key], obj ) === false ) {
-                break;
-            }
+            if ( fn.call( obj[ key ], key, obj[ key ], obj ) === false ) break;
         }
     } else {
         for ( i = 0, l = obj.length; i < l; ) {
-            if ( fn.call( obj[i], i, obj[i++], obj ) === false ) {
-                break;
-            }
+            if ( fn.call( obj[i], i, obj[ i++ ], obj ) === false ) break;
         }
     }
     return obj;
@@ -184,19 +170,15 @@ Z.each = each;
 // Functional iterator with ES5-style callback signature of `value, key, object`.
 function forEach ( obj, fn, context ) {
     var n, l, key, i;
-    if ( obj == null ) { return; }
+    if ( obj == null ) return;
     if ( ( n = __native( 'forEach', obj, fn, context ) ) !== NIL ) return n;
     if ( ( l = obj.length ) === undefined || isFunction( obj ) ) {
         for ( key in obj ) {
-            if ( fn.call( context || obj[key], obj[key], key, obj ) === false ) {
-                break;
-            }
+            if ( fn.call( context || obj[ key ], obj[ key ], key, obj ) === false ) break;
         }
     } else {
         for ( i = 0, l = obj.length; i < l; ) {
-            if ( fn.call( context || obj[i], obj[i], i++, obj ) === false ) {
-                break;
-            }
+            if ( fn.call( context || obj[i], obj[i], i++, obj ) === false ) break;
         }
     }
     return obj;
@@ -319,7 +301,7 @@ function flatten ( array ) {
         item,
         result = [];
     while ( i < l ) {
-        item = array[i++];
+        item = array[ i++ ];
         isArray( item ) ? ( result = result.concat( flatten( item ) ) ) : result.push( item );
     }
     return result;
@@ -341,9 +323,8 @@ Z.keys = keys = isFunction( Object.keys ) ? Object.keys : keys;
 // 
 // Returns a hashmap that is the key-value inversion of the supplied string array.
 function invert ( array ) {
-    for ( var i = 0, l = array.length, map = {}; i < l; ) {
-        map[ array[i] ] = i++;
-    }
+    var i = 0, l = array.length, map = {};
+    while ( i < l ) map[ array[i] ] = i++;
     return map;
 }
 Z.invert = invert;
