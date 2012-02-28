@@ -3,7 +3,7 @@
 module( "extend" );
 
 test( "structural invariance", function () {
-    var _ = undefined, DELETE = Z.DELETE,
+    var _ = undefined, NIL = Z.NIL,
 
         original = {
             a: 1,
@@ -15,10 +15,10 @@ test( "structural invariance", function () {
             g: [ 1, 1, 2, 3, 5, 8 ]
         },
         edit = {
-            a: DELETE,
+            a: NIL,
             b: '2',
             c: {
-                d: DELETE,
+                d: NIL,
                 e: 4,
                 f: ['foo']
             },
@@ -33,10 +33,10 @@ test( "structural invariance", function () {
         b: 2,
         c: {
             d: 3,
-            f: DELETE
+            f: NIL
         },
         g: [ 1, _, _, 3, 5, 8 ],
-        h: DELETE
+        h: NIL
     });
     assert.deepEqual( object, {
         b: '2',
@@ -55,7 +55,7 @@ test( "referential invariance", function () {
         properties && Z.extend( true, this, properties );
     }
     
-    var _ = undefined, DELETE = Z.DELETE,
+    var _ = undefined, NIL = Z.NIL,
         fn = function () { return 3; },
 
         deep = new Class({
@@ -73,7 +73,7 @@ test( "referential invariance", function () {
         },
         edit = {
             ref: {
-                ref: DELETE
+                ref: NIL
             }
         },
         object = Z.extend( true, {}, original ),
@@ -85,7 +85,7 @@ test( "referential invariance", function () {
 });
 
 test( "delta composition", function () {
-    var _ = undefined, DELETE = Z.DELETE,
+    var _ = undefined, NIL = Z.NIL,
 
         original = {
             a: 1,
@@ -100,7 +100,7 @@ test( "delta composition", function () {
             { a: "uno" },
             { a: "un", b: "deux" },
             { c: { d: "III", e: "IV" } },
-            { a: DELETE, f: "Foo" },
+            { a: NIL, f: "Foo" },
             { b: "dos", g: [ _, "une" ] }
         ],
         object = Z.extend( true, {}, original ),
@@ -125,7 +125,7 @@ test( "delta composition", function () {
             { a: 1 },
             { a: "uno", b: "2" },
             { c: { d: 3, e: 4 } },
-            { a: "un", f: DELETE },
+            { a: "un", f: NIL },
             { b: "deux", g: [ _, 1 ] }
         ],
         "Delta sequence"

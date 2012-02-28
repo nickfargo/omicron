@@ -14,31 +14,31 @@ var global = this,
     // #### regexp
     // 
     // Store of commonly used regular expression instances.
-    regexp = exports.regexp = {
+    regexp = Z.regexp = {
         whitespace: /\s+/
     },
 
-    // #### DELETE
+    // #### NIL
     // 
     // Unique directive object. Most commonly used in the object arguments of `extend`, where a
-    // property whose value is set to `DELETE` indicates that the corresponding property on the
+    // property whose value is set to `NIL` indicates that the corresponding property on the
     // subject is to be deleted.
-    DELETE = exports.DELETE = ( function () { function DELETE () {} return new DELETE; } )(),
+    NIL = Z.NIL = ( function () { function NIL () {} return new NIL; } )(),
 
     // #### toString
     // 
-    toString = exports.toString =
+    toString = Z.toString =
         Object.prototype.toString,
     
     // #### hasOwn
     // 
-    hasOwn = exports.hasOwn =
+    hasOwn = Z.hasOwn =
         Object.prototype.hasOwnProperty,
     
     // #### trim
     //
     // jQuery-style end-whitespace trimmer; uses the native `String.prototype.trim` if available.
-    trim = exports.trim =
+    trim = Z.trim =
         String.prototype.trim ?
             function ( text ) {
                 return text == null ? '' : String.prototype.trim.call( text );
@@ -50,13 +50,13 @@ var global = this,
     
     // #### slice
     //
-    slice = exports.slice =
+    slice = Z.slice =
         Array.prototype.slice;
 
 
 // #### noConflict
 //
-exports.noConflict = ( function () {
+Z.noConflict = ( function () {
     var autochthon = global.Z;
     return function () {
         global.Z = autochthon;
@@ -69,13 +69,13 @@ exports.noConflict = ( function () {
 // General-purpose empty function. May also be deemed suitable as a unique alternative “nil” type
 // for strict-equal matches whenever it’s desirable to avoid traditional `null` and `undefined`.
 function noop () {}
-exports.noop = noop;
+Z.noop = noop;
 
 // #### getThis
 // 
 // Like `noop`, except suited for substitution on methods designed to be chainable.
 function getThis () { return this; }
-exports.getThis = getThis;
+Z.getThis = getThis;
 
 // Calls the specified native function if it exists and returns its result; if no such function
 // exists on `obj` as registered in `__native.fn`, returns our unique `noop` (as opposed to `null`
@@ -98,27 +98,27 @@ type.map = {};
 each( 'Array Boolean Date Function Number Object RegExp String'.split(' '), function( i, name ) {
     type.map[ "[object " + name + "]" ] = name.toLowerCase();
 });
-exports.type = type;
+Z.type = type;
 
 // #### isBoolean
 function isBoolean ( obj ) { return type( obj ) === 'boolean'; }
-exports.isBoolean = isBoolean;
+Z.isBoolean = isBoolean;
 
 // #### isString
 function isString ( obj ) { return type( obj ) === 'string'; }
-exports.isString = isString;
+Z.isString = isString;
 
 // #### isNumber
 function isNumber ( n ) { return !isNaN( parseFloat( n ) ) && isFinite( n ); }
-exports.isNumber = isNumber;
+Z.isNumber = isNumber;
 
 // #### isArray
 function isArray ( obj ) { return type( obj ) === 'array'; }
-exports.isArray = isArray;
+Z.isArray = isArray;
 
 // #### isFunction
 function isFunction ( obj ) { return type( obj ) === 'function'; }
-exports.isFunction = isFunction;
+Z.isFunction = isFunction;
 
 // #### isPlainObject
 // 
@@ -135,7 +135,7 @@ function isPlainObject ( obj ) {
     for ( key in obj ) {}
     return key === undefined || hasOwn.call( obj, key );
 }
-exports.isPlainObject = isPlainObject;
+Z.isPlainObject = isPlainObject;
 
 // #### isEmpty
 // 
@@ -154,7 +154,7 @@ function isEmpty ( obj, andPrototype ) {
     }
     return true;
 }
-exports.isEmpty = isEmpty;
+Z.isEmpty = isEmpty;
 
 // #### each
 // 
@@ -177,7 +177,7 @@ function each ( obj, fn ) {
     }
     return obj;
 }
-exports.each = each;
+Z.each = each;
 
 // #### forEach
 // 
@@ -201,7 +201,7 @@ function forEach ( obj, fn, context ) {
     }
     return obj;
 }
-exports.forEach = forEach;
+Z.forEach = forEach;
 
 // #### extend
 // 
@@ -239,7 +239,7 @@ function extend () {
         for ( key in source ) if ( !flags.own || hasOwn.call( source, key ) ) {
             value = source[ key ];
             if ( value === subject ) continue;
-            if ( value === DELETE ) {
+            if ( value === NIL ) {
                 delta && ( delta[ key ] = subject[ key ] );
                 delete subject[ key ];
             }
@@ -255,18 +255,18 @@ function extend () {
                         target : {};
                 }
                 result = extend( keys( flags ).join(' '), clone, value );
-                delta && ( delta[ key ] = hasOwn.call( subject, key ) ? result : DELETE );
                 subject[ key ] = clone;
+                delta && ( delta[ key ] = hasOwn.call( subject, key ) ? result : NIL );
             }
             else if ( subject[ key ] !== value && ( value !== undefined || flags.all ) ) {
-                delta && ( delta[ key ] = hasOwn.call( subject, key ) ? subject[ key ] : DELETE );
                 subject[ key ] = value;
+                delta && ( delta[ key ] = hasOwn.call( subject, key ) ? subject[ key ] : NIL );
             }
         }
     }
     return deltas || delta || subject;
 }
-exports.extend = extend;
+Z.extend = Z.edit = extend;
 
 // #### assign
 // 
@@ -293,7 +293,7 @@ function assign ( target, map, value ) {
 
     return target;
 }
-exports.assign = assign;
+Z.assign = assign;
 
 // #### flatten
 // 
@@ -310,7 +310,7 @@ function flatten ( array ) {
     }
     return result;
 }
-exports.flatten = flatten;
+Z.flatten = flatten;
 
 // #### keys
 // 
@@ -321,7 +321,7 @@ function keys ( obj ) {
     for ( key in obj ) { hasOwn.call( obj, key ) && result.push( key ); }
     return result;
 }
-exports.keys = keys = isFunction( Object.keys ) ? Object.keys : keys;
+Z.keys = keys = isFunction( Object.keys ) ? Object.keys : keys;
 
 // #### invert
 // 
@@ -332,7 +332,7 @@ function invert ( array ) {
     }
     return map;
 }
-exports.invert = invert;
+Z.invert = invert;
 
 // #### alias
 // 
@@ -347,7 +347,7 @@ function alias ( object, map ) {
     }
     return object;
 }
-exports.alias = alias;
+Z.alias = alias;
 
 // #### thunk
 // 
@@ -355,7 +355,7 @@ exports.alias = alias;
 function thunk ( obj ) {
     return function () { return obj; };
 }
-exports.thunk = thunk;
+Z.thunk = thunk;
 
 // #### lookup
 // 
@@ -378,7 +378,7 @@ function lookup ( obj, path, separator ) {
     }
     return cursor;
 }
-exports.lookup = lookup;
+Z.lookup = lookup;
 
 // #### create
 // 
@@ -391,7 +391,7 @@ function create ( prototype ) {
     object.constructor = prototype.constructor;
     return object;
 }
-exports.create = isFunction( Object.create ) ? ( create = Object.create ) : create;
+Z.create = isFunction( Object.create ) ? ( create = Object.create ) : create;
 
 // #### inherit
 // 
@@ -415,7 +415,7 @@ function inherit (
     statics && extend( child, statics );
     return child;
 }
-exports.inherit = inherit;
+Z.inherit = inherit;
 
 // #### getPrototypeOf
 // 
@@ -425,20 +425,20 @@ exports.inherit = inherit;
 function getPrototypeOf ( obj ) {
     return obj.__proto__ || obj.constructor.prototype;
 }
-exports.getPrototypeOf = isFunction( Object.getPrototypeOf ) ?
+Z.getPrototypeOf = isFunction( Object.getPrototypeOf ) ?
     ( getPrototypeOf = Object.getPrototypeOf ) : getPrototypeOf;
 
 // #### valueFunction
 // 
 // Cyclically references a function’s output as its own `valueOf` property.
 function valueFunction ( fn ) { return fn.valueOf = fn; }
-exports.valueFunction = valueFunction;
+Z.valueFunction = valueFunction;
 
 // #### stringFunction
 // 
 // Cyclically references a function’s output as its own `toString` property.
 function stringFunction ( fn ) { return fn.toString = fn; }
-exports.stringFunction = stringFunction;
+Z.stringFunction = stringFunction;
 
 // #### privilege
 // 
@@ -463,11 +463,11 @@ function privilege ( object, methodStore, map ) {
     });
     return object;
 }
-exports.privilege = privilege;
+Z.privilege = privilege;
 
 
 // 
-exports.env.server && ( module.exports = exports );
-exports.env.client && ( global['Z'] = exports );
+Z.env.server && ( module.exports = Z );
+Z.env.client && ( global['Z'] = Z );
 
 })();
