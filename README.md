@@ -58,7 +58,7 @@ Regular expression store.
 
 #### NIL
 
-Has no utility apart from its own existence. Commonly used by `edit` and related functions, where an object with a property whose value is set to `NIL` indicates the absence or deletion of the corresponding property on an associated method.
+Has no utility apart from simply its existence. Commonly used by `edit` and the related differential functions, where an object with a property whose value is set to `NIL` indicates the absence or deletion of the corresponding property on an associated method.
 
 #### noop
 
@@ -158,7 +158,43 @@ which `edit` also retains a compatible API.
 *Alias:* **extend**
 
 ```javascript
+var original, edits, object, deltas;
 
+original = {
+    a: 1,
+    b: '2',
+    c: {
+        d: 3,
+        e: 4
+    },
+    g: [ 0, 1 ]
+};
+edits = [
+    { a: "uno" },
+    { a: "un", b: "deux" },
+    { c: { d: "III", e: "IV" } },
+    { a: NIL, f: "Foo" },
+    { b: "dos", g: [ _, "une" ] }
+];
+
+object = Z.edit( true, {}, original );
+// { b: "dos",
+//   c: {
+//       d: "III",
+//       e: "IV"
+//   },
+//   f: "Foo",
+//   g: [ 0, "une" ] }
+
+deltas = Z.edit.apply( Z, [ 'deep delta', object ].concat( edits ) );
+// [ { a: 1 },
+//   { a: "uno", b: "2" },
+//   { c: { d: 3, e: 4 } },
+//   { a: "un", f: NIL },
+//   { b: "deux", g: [ _, 1 ] } ]
+
+Z.isEqual( original, Z.edit.apply( Z, [ true, object ].concat( deltas.reverse() ) ) );
+// true
 ```
 
 *See also:* **clone**, **delta**, **diff**, **assign**
