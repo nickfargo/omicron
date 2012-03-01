@@ -52,6 +52,8 @@ Environment variables.
 
 #### noConflict
 
+Returns control of the global `Z` property to its original value.
+
 
 
 ### Cached entities
@@ -103,6 +105,7 @@ Returns `this`.
 #### thunk ( obj )
 
 Returns a lazy evaluator function that will return the `obj` argument when called.
+
 
 
 ### Basic typing and inspection
@@ -157,15 +160,34 @@ Z.lookup( x, 'a.b.c' ); // undefined
 ```
 
 
+
 ### Iteration
 
 #### each ( obj, callback )
 
 Functional iterator with jQuery-style callback signature of `key, value, object`.
 
+```javascript
+Z.each( [ 'a', 'b', 'c' ], function ( index, string, array ) {
+    array[ index ] = string.toUpperCase();
+});
+Z.each( { x:3, y:4, z:5 }, function ( axis, value, vector ) {
+    vector[ axis ] = value * value;
+});
+```
+
 #### forEach ( obj, fn, context )
 
-Functional iterator with ES5-style callback signature of `value, key, object`.
+Functional iterator with ES5-style callback signature of `value, key, object`. If available, delegates to the native `Array.prototype.forEach` when appropriate.
+
+```javascript
+Z.forEach( [ 'a', 'b', 'c' ], function ( string, index, array ) {
+    array[ index ] = string.toUpperCase();
+});
+Z.forEach( { x:3, y:4, z:5 }, function ( value, axis, vector ) {
+    vector[ axis ] = value * value;
+});
+```
 
 
 
@@ -320,6 +342,7 @@ Z.alias( { a:1, c:2, g:3 }, {
 ```
 
 
+
 ### Inheritance facilitators
 
 #### inherit ( child, parent, properties, statics )
@@ -404,6 +427,7 @@ c.aPrivilegedMethod( 1, 2 );
 var sc = new Subclass;
 sc.aPrivilegedMethod( 'one', 'two' );
 ```
+
 
 
 ### Array/Object composition
