@@ -444,7 +444,7 @@ Z.create = isFunction( Object.create ) ? ( create = Object.create ) : create;
 
 // #### inherit
 // 
-// Prototypal inheritance facilitator.
+// Facilitates prototypal inheritance between a `child` constructor and a `parent` constructor.
 // 
 // * `child` and `parent` are constructor functions, such that
 //       `new child instanceof parent === true`
@@ -467,29 +467,6 @@ function inherit (
     return child;
 }
 Z.inherit = inherit;
-
-// #### getPrototypeOf
-// 
-// Returns an object’s prototype. In environments without native support, this may only work if
-// the object’s constructor and its prototype are properly associated, e.g., as facilitated by
-// the `create` function.
-function getPrototypeOf ( obj ) {
-    return obj.__proto__ || obj.constructor.prototype;
-}
-Z.getPrototypeOf = isFunction( Object.getPrototypeOf ) ?
-    ( getPrototypeOf = Object.getPrototypeOf ) : getPrototypeOf;
-
-// #### valueFunction
-// 
-// Cyclically references a function’s output as its own `valueOf` property.
-function valueFunction ( fn ) { return fn.valueOf = fn; }
-Z.valueFunction = valueFunction;
-
-// #### stringFunction
-// 
-// Cyclically references a function’s output as its own `toString` property.
-function stringFunction ( fn ) { return fn.toString = fn; }
-Z.stringFunction = stringFunction;
 
 // #### privilege
 // 
@@ -515,6 +492,29 @@ function privilege ( object, methodStore, map ) {
     return object;
 }
 Z.privilege = privilege;
+
+// #### getPrototypeOf
+// 
+// Returns an object’s prototype. In environments without native support, this may only work if
+// the object’s constructor and its prototype are properly associated, e.g., as facilitated by
+// the `create` function.
+function getPrototypeOf ( obj ) {
+    return obj.__proto__ || obj.constructor.prototype;
+}
+Z.getPrototypeOf = isFunction( Object.getPrototypeOf ) ?
+    ( getPrototypeOf = Object.getPrototypeOf ) : getPrototypeOf;
+
+// #### valueFunction
+// 
+// Cyclically references a function’s output as its own `valueOf` property.
+function valueFunction ( fn ) { return fn.valueOf = fn; }
+Z.valueFunction = valueFunction;
+
+// #### stringFunction
+// 
+// Cyclically references a function’s output as its own `toString` property.
+function stringFunction ( fn ) { return fn.toString = fn; }
+Z.stringFunction = stringFunction;
 
 
 // 

@@ -54,7 +54,7 @@ Regular expression store.
 
 
 
-### Special-purpose values and singletons
+### Special-purpose functions and singletons
 
 #### NIL
 
@@ -68,6 +68,9 @@ Returns `undefined`.
 
 Returns `this`.
 
+#### thunk ( obj )
+
+Returns a lazy evaluator function that will return the `obj` argument when called.
 
 
 ### Typing and inspection
@@ -84,12 +87,25 @@ Returns the lowercase type string as derived from `toString`.
 
 #### isPlainObject ( obj )
 
-Near identical port from jQuery. Excludes `null`, arrays, constructed objects, `window`, and DOM nodes.
+Near identical port from jQuery. Excludes `null`, arrays, constructed objects, the global object, and DOM nodes.
 
 #### isEmpty ( obj [, andPrototype ] )
 
 Returns a boolean indicating whether the object or array at `obj` contains any members. For an `Object` type, if `andPrototype` evaluates to `true`, then `obj` must also be empty throughout its prototype chain.
 
+#### isEqual ( subject, object )
+
+Performs a deep equality test between two objects.
+
+```javascript
+var subject = { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } };
+
+Z.isEqual( subject, { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } } );         // true
+Z.isEqual( subject, { a:1, b:{ '1':'beta', '0':'alpha' }, c:{ d:1 } } ); // true
+
+Z.isEqual( [1], { 0:1, 1:undefined } ); // true
+Z.isEqual( { 0:1, 1:undefined }, [1] ); // false
+```
 
 
 ### Iteration
@@ -105,6 +121,17 @@ Functional iterator with ES5-style callback signature of `value, key, object`.
 
 
 ### Object manipulation
+
+#### lookup ( obj, path [, separator ] )
+
+Retrieves the value at the location indicated by the provided `path` string inside a nested object `obj`.
+
+```javascript
+var x = { a: { b:42 } };
+Z.lookup( x, 'a' );     // { b:42 }
+Z.lookup( x, 'a.b' );   // 42
+Z.lookup( x, 'a.b.c' ); // undefined
+```
 
 #### edit( [ flags, ] subject, source [, ...sourceN ] )
 
@@ -129,6 +156,10 @@ Contains techniques and influences from the deep-cloning procedure of **jQuery.e
 which `edit` also retains a compatible API.
 
 *Alias:* **extend**
+
+```javascript
+
+```
 
 *See also:* **clone**, **delta**, **diff**, **assign**
 
@@ -204,6 +235,7 @@ Z.alias( { a:1, c:2, g:3 }, {
 });
 // { a:1, b:1, c:2, d:2, e:2, f:2, g:3, h:3, i:3 }
 ```
+
 
 ### Inheritance facilitators
 
@@ -311,9 +343,9 @@ For an `array` whose values are unique key strings, this returns an object that 
 
 #### stringFunction( fn )
 
-Return the function `fn`, with its `toString` method set to itself. Might break stuff, like `type`, but can be useful for, say, devtools-inspecting the value of a getter.
+Cyclically references a function’s output as its own `toString` property.
 
 #### valueFunction( fn )
 
-Same as above, but for `valueOf` instead of `toString`.
+Cyclically references a function’s output as its own `valueOf` property.
 
