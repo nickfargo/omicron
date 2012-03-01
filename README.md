@@ -136,9 +136,32 @@ which `edit` also retains a compatible API.
 
 Creates a new object or array and deeply copies properties from all `source` arguments.
 
+```javascript
+var o = { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } },
+    x = Z.clone( o );
+
+o !== x;           // true
+o.b !== x.b;       // true
+o.b[0] === x.b[0]; // true
+o.c !== x.c;       // true
+o.c.d === x.c.d;   // true
+```
+
 #### delta ( subject, source [, ...sourceN ] )
 
 Deeply copies each `source` argument into `subject`, and returns a delta object, or an array of deltas in the case of multiple `source`s.
+
+```javascript
+var _ = undefined, NIL = Z.NIL,
+    o = { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } },
+    edit = { b:[ _, 'bravo', 'charlie' ], c:{ d:NIL, e:2.718 } },
+    delta = Z.delta( o, edit );
+
+o; // { a:1, b:[ 'alpha', 'bravo', 'charlie' ], c:{ e:2.718 } }
+delta; // { b:[ undefined, 'beta', NIL ], c:{ d:1, e:NIL } }
+
+Z.edit( 'deep', o, delta ); // { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } }
+```
 
 #### diff ( subject, source [, ...sourceN ] )
 
@@ -165,9 +188,9 @@ Within `object`, copies a value from one key to one or more other keys.
 
 ```javascript
 Z.alias( { a:1, c:2, g:3 }, {
-	'b'     : 'a'
-	'd e f' : 'c'
-	'h i'   : 'g'
+	a: 'b'     
+	c: 'd e f' 
+	g: 'h i'   
 });
 // { a:1, b:1, c:2, d:2, e:2, f:2, g:3, h:3, i:3 }
 ```

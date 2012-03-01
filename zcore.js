@@ -7,7 +7,8 @@ var global = this,
         env: {
             server: typeof module !== 'undefined' && typeof require !== 'undefined' &&
                 !!module.exports,
-            client: typeof window !== 'undefined' && window === global
+            client: typeof window !== 'undefined' && window === global,
+            debug: false
         }
     },
     
@@ -186,7 +187,7 @@ Z.forEach = forEach;
 
 // #### edit
 // 
-// Describes a differential operation across multiple objects.
+// Performs a differential operation across multiple objects.
 // 
 // By default, `edit` returns the first object-typed argument as `subject`, to which each
 // subsequent `source` argument is copied in order. Optionally the first argument may be either a
@@ -201,9 +202,9 @@ Z.forEach = forEach;
 // * `all` : Includes `source` properties with undefined values.
 // 
 // * `delta` : Returns the **delta**, a structured object that reflects the changes made to the
-//      the properties of `subject`. If multiple object arguments are provided, an array of
-//      deltas is returned. (Applying the deltas in reverse order in an `edit('deep')` on
-//      `subject` would revert the contents of `subject` to their original state.)
+//      properties of `subject`. If multiple object arguments are provided, an array of deltas is
+//      returned. (Applying the deltas in reverse order in an `edit('deep')` on `subject` would
+//      revert the contents of `subject` to their original state.)
 // 
 // * `immutable` : Leaves `subject` unchanged. Useful in certain applications where idempotence is
 //      desirable, such as when accompanied by the `delta` and `absolute` flags.
