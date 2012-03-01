@@ -269,8 +269,8 @@ Class.privileged = {
             thePrivateObject.attachment = arg1;
             thePrivateArray.push( arg2 );
         }
+        return theActualMethod;
     }
-    return theActualMethod;
 }
 
 Z.inherit( Subclass, Class );
