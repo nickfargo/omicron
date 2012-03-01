@@ -199,7 +199,7 @@ By default, `edit` returns the first object-typed argument as `subject`, to whic
 
 * `all` : Includes `source` properties with undefined values.
 
-* `delta` : Returns the **delta**, a structured object that contains the changes made to the properties of `subject`. If multiple `source` operands are provided, an array of deltas is returned. Applying the deltas in reverse order in an `edit('deep')` on `subject` would revert the contents of `subject` to their original state (see example below).
+* `delta` : Returns the **delta**, a structured object that contains the changes made to `subject`. If multiple `source` operands are provided, an array of deltas is returned. The delta can be used to store history information; immediately applying a returned delta array in reverse order using `edit('deep', subject, ...)` reverts `subject` to its original state (see example below).
 
 * `immutable` : Leaves `subject` unchanged. Useful in certain applications where idempotence is desirable, such as when accompanied by the `delta` and `absolute` flags to produce a “diff” object.
 
