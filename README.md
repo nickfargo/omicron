@@ -166,6 +166,9 @@ c.history();
 //   { a:4, b:3, d:1 },
 //   { a:1, b:2, c:3, d:4 }
 // ]
+```
+
+####
 
 Naturally, one can imagine much larger data structures than these, and especially with long series of relatively small edits, where historical information is deemed valuable, differential operations like these can help minimize storage overhead and network payloads.
 
