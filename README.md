@@ -11,7 +11,7 @@ Zcore **(“Z”)** is a small JavaScript library of core functions and tools th
 
 ## Installation
 
-**Z** has no dependencies; it can be loaded straight from the source file `zcore.js`, or installed via npm:
+**Z** has no dependencies; it can be loaded straight from the source file `zcore.js`, or installed via **npm**:
 
 ```
 $ npm install zcore
@@ -23,14 +23,16 @@ In node, **Z** will be available in the usual fashion:
 var Z = require('zcore');
 ```
 
-In the browser, **Z** will add a single object `Z` to the global `window` (which you may revert later using `Z.noConflict()`).
+In the browser, **Z** will add a single object `Z` to the global `window` (which can be reverted later using `Z.noConflict()`).
 
 
 
 
 ## Usage example
 
-Consider an object that efficiently stores history information. The differential functions of **Z** can be used to make this a relatively straightforward task — in the code below, look for applications of functions **delta** and **diff** in particular, as well as usage of the special **NIL** object:
+### Differential history
+
+Consider an object that efficiently stores history information. The differential functions of **Z** can be used to make this a fairly straightforward task — in the code below, look for applications of functions **delta** and **diff** in particular, as well as usage of the special **NIL** object:
 
 ```javascript
 function Class () {
@@ -86,7 +88,7 @@ function Class () {
 }
 ```
 
-With this class, and the information already provided in `history`, we can traverse forward and back through the timeline, and manipulate the history along the way. First let’s step ahead:
+With this class, and the information already provided in `history`, we can freely traverse the timeline, both forward and back, and manipulate the history along the way. First let’s step ahead:
 
 ```javascript
 var c = new Class;
@@ -112,7 +114,7 @@ c.history();
 // ]
 ```
 
-The same history information is still recorded, but our perspective has changed since since moving `forward` four times. Viewing from `index=4`, the elements of the timeline now contain the information needed to step back to the original empty object at `index=0` from which we started.
+The raw data looks much different, but *the same history information is still recorded* — it’s simply that our perspective has changed after having moved `forward` four times. Whereas the object initially contained the information needed to step *forward* in the timeline, viewing the timeline from `index=4`, its elements now contain the information needed to step *back* to the original empty object at `index=0`.
 
 ```javascript
 c.back();    // { d:4, e:5 }
