@@ -17,9 +17,9 @@ var global = this,
 
     // #### NIL
     // 
-    // Unique directive object. Most commonly used in the object arguments of `edit`, where a
-    // property whose value is set to `NIL` indicates that the corresponding property on the
-    // subject is to be deleted.
+    // Value singleton. Commonly used by `edit` and related functions, where an object with a
+    // property whose value is set to `NIL` indicates the absence or deletion of the corresponding
+    // property on an associated operand.
     NIL = Z.NIL = ( function () { function NIL () {} return new NIL; } )(),
 
     // #### toString
