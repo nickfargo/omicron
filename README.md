@@ -4,7 +4,7 @@ Zcore **(“Z”)** is a small JavaScript toolkit that assists with:
 
 * Object manipulation and differential analysis
 * Prototypal inheritance
-* Bare essentials for typing and functional iteration
+* General tasks, typing and functional iteration
 
 
 
@@ -22,12 +22,9 @@ $ npm install zcore
 
 ## API
 
-#### Contents
-
-* Meta
-* Cached entities
+* Meta / Cached entities
 * Special-purpose functions and singletons
-* Basic typing and inspection
+* Typing and inspection
 * Iteration
 * Object manipulation
 * Inheritance facilitators
@@ -36,7 +33,7 @@ $ npm install zcore
 
 
 
-### Meta
+### Meta / Cached entities
 
 #### VERSION
 
@@ -53,10 +50,6 @@ Environment variables.
 #### noConflict
 
 Returns control of the global `Z` property to its original value.
-
-
-
-### Cached entities
 
 #### regexp
 
@@ -90,10 +83,6 @@ Regular expression store.
 
 ### Special-purpose functions and singletons
 
-#### NIL
-
-Has no utility apart from simply its existence. Commonly used by `edit` and the related differential functions, where an object with a property whose value is set to `NIL` indicates the absence or deletion of the corresponding property on an associated method.
-
 #### noop
 
 Returns `undefined`.
@@ -106,9 +95,13 @@ Returns `this`.
 
 Returns a lazy evaluator function that will return the `obj` argument when called.
 
+#### NIL
+
+Singleton value object; has no utility apart from simply its existence. Commonly used by `edit` and the related differential functions, where, within a given operand, a property whose value is set to `NIL` indicates the absence or deletion of the corresponding property on an associated operand.
 
 
-### Basic typing and inspection
+
+### Typing and inspection
 
 #### type ( obj )
 
@@ -130,7 +123,7 @@ Returns `true` if `fn` is a function.
 
 Near identical port from jQuery. Excludes `null`, arrays, constructed objects, the global object, and DOM nodes.
 
-#### isEmpty ( obj [, andPrototype ] )
+#### isEmpty ( obj, [ andPrototype ] )
 
 Returns a boolean indicating whether the object or array at `obj` contains any members. For an `Object` type, if `andPrototype` evaluates to `true`, then `obj` must also be empty throughout its prototype chain.
 
@@ -148,7 +141,7 @@ Z.isEqual( [1], { 0:1, 1:undefined } ); // true
 Z.isEqual( { 0:1, 1:undefined }, [1] ); // false
 ```
 
-#### lookup ( obj, path [, separator ] )
+#### lookup ( obj, path, [ separator ] )
 
 Retrieves the value at the location indicated by the provided `path` string inside a nested object `obj`.
 
@@ -193,11 +186,11 @@ Z.forEach( { x:3, y:4, z:5 }, function ( value, axis, vector ) {
 
 ### Object manipulation
 
-#### edit( [ flags, ] subject, source [, ...sourceN ] )
+#### edit( [ flags ], subject, source, [ ...sourceN ] )
 
 Performs a differential operation across multiple objects.
 
-By default, `edit` returns the first object-typed argument as `subject`, to which the contents of each subsequent `source` argument are copied, in order. Optionally the first argument may be either a Boolean `deep`, or a whitespace-delimited `flags` String containing any of the following keywords:
+By default, `edit` returns the first object-typed argument as `subject`, to which the contents of each subsequent `source` operand are copied, in order. Optionally the first argument may be either a Boolean `deep`, or a whitespace-delimited `flags` String containing any of the following keywords:
 
 * `deep` : If a `source` property is an object or array, a structured clone is created on
      `subject`.
@@ -216,6 +209,17 @@ Contains techniques and influences from the deep-cloning procedure of **jQuery.e
 which `edit` also retains a compatible API.
 
 *Alias:* **extend**
+
+```javascript
+Z.edit( { a:1 }, { b:[ 'alpha', 'beta' ] } );
+// { a:1, b:[ 'alpha', 'beta' ] }
+
+Z.edit( true, { a:1, b:[ 'alpha', 'beta' ] }, { b:[ undefined, 'bravo', 'charlie' ] } );
+// { a:1, b:[ 'alpha', 'beta', 'charlie' ] }
+
+Z.edit( 'deep all', { a:1, b:[ 'alpha', 'beta' ] }, { b:[ undefined, 'bravo', 'charlie' ] } );
+// { a:1, b:[ undefined, 'bravo', 'charlie' ] }
+```
 
 ```javascript
 var _ = undefined, NIL = Z.NIL,
@@ -268,7 +272,7 @@ Z.isEqual( original, reversion ); // true
 
 *See also:* **clone**, **delta**, **diff**, **assign**
 
-#### clone ( source [, ...sourceN ] )
+#### clone ( source, [ ...sourceN ] )
 
 Creates a new object or array and deeply copies properties from all `source` arguments.
 
@@ -283,7 +287,7 @@ o.c !== x.c;       // true
 o.c.d === x.c.d;   // true
 ```
 
-#### delta ( subject, source [, ...sourceN ] )
+#### delta ( subject, source, [ ...sourceN ] )
 
 Deeply copies each `source` argument into `subject`, and returns a delta object, or an array of deltas in the case of multiple `source`s.
 
@@ -299,7 +303,7 @@ delta; // { b:[ undefined, 'beta', NIL ], c:{ d:1, e:NIL } }
 Z.edit( 'deep', o, delta ); // { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } }
 ```
 
-#### diff ( subject, source [, ...sourceN ] )
+#### diff ( subject, source, [ ...sourceN ] )
 
 Deeply compares each `source` argument object to `subject`, and returns an absolute delta, or array of absolute deltas in the case of multiple `source`s. (Unlike the `delta` function, `diff` leaves `subject` unaffected.)
 
@@ -313,7 +317,7 @@ o;    // { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } }
 diff; // { a:1, b:[ undefined, 'beta' ], c:{ d:1, e:NIL } }
 ```
 
-#### assign ( [ target, ] map, value )
+#### assign ( [ target ], map, [ value ] )
 
 Performs batch assignments of values to one or more keys of an object.
 
@@ -323,6 +327,9 @@ Z.assign( { a:1 }, { b:1, 'c d e f':2, 'g h i':3 } );
 
 Z.assign( { 'a b':1, c:2 } );
 // { a:1, b:1, c:2 }
+
+Z.assign( 'a b c', 42 );
+// { a: 42, b: 42, c: 42 }
 
 Z.assign( 'a b c' );
 // { a: true, b: true, c: true }
@@ -345,7 +352,7 @@ Z.alias( { a:1, c:2, g:3 }, {
 
 ### Inheritance facilitators
 
-#### inherit ( child, parent, properties, statics )
+#### inherit ( child, parent, [ properties ], [ statics ] )
 
 Facilitates prototypal inheritance between a `child` constructor and a `parent` constructor. In addition, `child` also inherits static members that are direct properties of `parent`.
 
@@ -436,11 +443,11 @@ sc.aPrivilegedMethod( 'one', 'two' );
 
 Extracts elements of nested arrays.
 
-#### keys( obj )
+#### keys ( obj )
 
 Returns an object’s keys in an ordered string array.
 
-#### invert( array )
+#### invert ( array )
 
 For an `array` whose values are unique key strings, this returns an object that is a key-value inversion of `array`.
 
@@ -448,11 +455,11 @@ For an `array` whose values are unique key strings, this returns an object that 
 
 ### Miscellaneous
 
-#### stringFunction( fn )
+#### stringFunction ( fn )
 
 Cyclically references a function’s output as its own `toString` property.
 
-#### valueFunction( fn )
+#### valueFunction ( fn )
 
 Cyclically references a function’s output as its own `valueOf` property.
 
