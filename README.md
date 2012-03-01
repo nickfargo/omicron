@@ -22,7 +22,7 @@ $ npm install zcore
 
 ## Usage example
 
-Consider an object that efficiently stores history information. The differential functions of **Z** can be used to make this a relatively straightforward task:
+Consider an object that efficiently stores history information. The differential functions of **Z** can be used to make this a relatively straightforward task — in the code below, look for applications of functions **delta** and **diff** in particular, as well as the **NIL** object:
 
 ```javascript
 function Class () {
