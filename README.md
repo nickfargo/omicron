@@ -207,10 +207,87 @@ Z.alias( { a:1, c:2, g:3 }, {
 
 ### Inheritance facilitators
 
-#### inherit
+#### inherit ( child, parent, properties, statics )
 
-#### privilege
+Facilitates prototypal inheritance between a `child` constructor and a `parent` constructor. In addition, `child` also inherits static members that are direct properties of `parent`.
 
+* `child` and `parent` are constructor functions.
+
+* `properties` *(optional)* is an object containing properties to be added to the prototype of `child`.
+
+* `statics` *(optional)* is an object containing properties to be added to `child` itself.
+
+```javascript
+function Animal () {}
+Animal.prototype.eat = function () {
+    return 'om nom nom';
+};
+
+Z.inherit( Bird, Animal );
+function Bird () {}
+Bird.oviparous = true;
+Bird.prototype.sing = function () {
+    return 'tweet';
+};
+
+Z.inherit( Chicken, Bird );
+function Chicken () {}
+Chicken.prototype.sing = function () {
+    return 'cluck';
+};
+
+Chicken.oviparous;   // true
+var c = new Chicken;
+c.eat();             // "om nom nom"
+c.sing();            // "cluck"
+```
+
+#### privilege ( object, methodStore, map )
+
+Generates partially applied functions for use as methods on an `object`.
+
+Functions sourced from `methodStore` accept as arguments the set of variables to be closed over, and return the enclosed function that will become the `object`’s method.
+
+The `map` argument maps a space-delimited set of method names to an array of free variables. These variables are passed as arguments to each of the named methods as found within `methodStore`.
+
+This approach promotes reuse of a method’s logic by decoupling the function from the native scope of its free variables. A subsequent call to `privilege`, then, can be used on behalf of a distinct (though likely related) `object` to generate methods that are identical but closed over a distinct set of variables.
+
+A limitation of this technique is the fact that, since partially applied values are copied when passed as arguments, there is no direct way for the external privileged method to change a value held within the constructor. In this case, one workaround is to provide a setter function that is scoped within the constructor; another alternative is simply to contain any desired “privileged” values as properties of a private object.
+
+```javascript
+function Class () {
+    var aPrivateObject = { attachment: 0 },
+        aPrivateArray = [];
+
+    Z.privilege( this, Class.privileged, {
+        aPrivilegedMethod: [ aPrivateObject, aPrivateArray ]
+    });
+}
+Class.privileged = {
+    aPrivilegedMethod: function ( thePrivateObject, thePrivateArray ) {
+        function theActualMethod ( arg1, arg2 ) {
+            thePrivateObject.attachment = arg1;
+            thePrivateArray.push( arg2 );
+        }
+    }
+}
+
+Z.inherit( Subclass, Class );
+function Subclass () {
+    var myPrivateObject = { attachment: 'zero' },
+        myPrivateArray = [];
+
+    Z.privilege( this, Class.privileged, {
+        aPrivilegedMethod: [ myPrivateObject, myPrivateArray ]
+    });
+}
+
+var c = new Class;
+c.aPrivilegedMethod( 1, 2 );
+
+var sc = new Subclass;
+sc.aPrivilegedMethod( 'one', 'two' );
+```
 
 
 ### Array/Object Composition
@@ -221,7 +298,7 @@ Extracts elements of nested arrays.
 
 #### keys( obj )
 
-Returns an object's keys in an ordered string array.
+Returns an object’s keys in an ordered string array.
 
 #### invert( array )
 
