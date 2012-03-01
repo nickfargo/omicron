@@ -9,6 +9,122 @@ Zcore **(“Z”)** is a small JavaScript toolkit that assists with:
 
 
 
+## Usage example
+
+Consider an object that efficiently stores history information. The differential functions of **Z** can be used to make this a relatively straightforward task:
+
+```javascript
+function Class () {
+    var NIL = Z.NIL,
+        history = [
+            {},
+            { a: 1, b: 2 },
+            { b: NIL, d: 4 },
+            { a: NIL, e: 5 },
+            { e: 2.718, f: 6 }
+        ],
+        index = 0;
+
+    Z.assign( this, {
+        history: function () {
+            return Z.clone( history );
+        },
+        data: function () {
+            return Z.clone( history[ index ] );
+        },
+        back: function () {
+            if ( index === 0 ) return;
+            var o = history[ index ];
+            history[ index ] = Z.delta( o, history[ --index ] );
+            return Z.clone( history[ index ] = o );
+        },
+        forward: function () {
+            if ( index === history.length - 1 ) return;
+            var o = history[ index ];
+            history[ index ] = Z.delta( o, history[ ++index ] );
+            return Z.clone( history[ index ] = o );
+        },
+        push: function ( obj ) {
+            var l, n, o = history[ index ];
+            history[ index ] = Z.delta( o, obj );
+            history[ ++index ] = o;
+            l = index + 1;
+            ( n = history.length - l ) && history.splice( l, n );
+            return l;
+        },
+        replace: function ( obj ) {
+            var o = history[ index ],
+                d = Z.diff( o, obj ),
+                i;
+            history[ index ] = obj;
+            index > 0 &&
+                ( history[ i = index - 1 ] = Z.diff( Z.clone( obj, d, history[i] ), obj ) );
+            index < history.length - 1 &&
+                ( history[ i = index + 1 ] = Z.diff( Z.clone( obj, d, history[i] ), obj ) );
+            return d;
+        }
+    });
+}
+```
+
+With this class, given the history information already provided, we can traverse forward and back through the timeline, and manipulate the history along the way. First let’s step ahead:
+
+```javascript
+var c = new Class;
+c.data();    // {}
+c.forward(); // { a:1, b:2 }
+c.forward(); // { a:1, d:4 }          // History records 'b: NIL', so key 'b' was deleted
+c.forward(); // { d:4, e:5 }          // Likewise, 'a: NIL' caused key 'a' to be deleted
+c.forward(); // { d:4, e:2.718, f:6 }
+c.forward(); // undefined             // End of the timeline
+c.data();    // { d:4, e:2.718, f:6 }
+```
+
+Next we’ll head back to where we started. But first, let’s glance back into the timeline to see how its contents have changed now that we’re positioned at the front end:
+
+```javascript
+c.history();
+// [
+//   { a: NIL, b: NIL },
+//   { b: 2, d: NIL },
+//   { a: 1, e: NIL },
+//   { e: 5, f: NIL },
+//   { d: 4, e: 2.718, f: 6 }
+// ]
+```
+
+The same history information is still recorded, but our perspective has changed since since moving `forward` four times. Viewing from `index` `4`, the elements of the timeline now contain the information needed to step `back` to the original empty object at `index` `0` from which we started.
+
+```javascript
+c.back();    // { d:4, e:5 }
+c.back();    // { a:1, d:4 }
+c.back();    // { a:1, b:2 }
+c.back();    // {}
+c.back();    // undefined             // Beginning of the timeline
+```
+
+And now back at the start, the timeline elements should look just like they originally did:
+
+```javascript
+c.history();
+// [
+//   {},
+//   { a: 1, b: 2 },
+//   { b: NIL, d: 4 },
+//   { a: NIL, e: 5 },
+//   { e: 2.718, f: 6 }
+// ]
+```
+
+Next let’s push a new element into the middle of the history:
+
+```javascript
+c.forward(); // { a:1, b:2 }
+c.forward(); // { a:1, d:4 }
+c.push( { b:2, c:3 } ); // 4        // The new length; `push` drops any forward elements
+c.data();    // { a:1, b:2, c:3, d:4 }
+```
+
 ## Installation
 
 **Z** has no dependencies; it can be loaded straight from the source file `zcore.js`, or installed via npm:
@@ -26,7 +142,7 @@ $ npm install zcore
 * Special-purpose functions and singletons
 * Typing and inspection
 * Iteration
-* Object manipulation
+* Object manipulation and differentiation
 * Inheritance facilitators
 * Array/Object composition
 * Miscellaneous
