@@ -1,10 +1,42 @@
 # Zcore
 
+Zcore **(“Z”)** is a small JavaScript toolkit that assists with:
+
+* Object manipulation and differential analysis
+* Prototypal inheritance
+* Bare essentials for typing and functional iteration
+
+
+
+
+## Installation
+
+**Z** has no dependencies; it can be loaded straight from the source file `zcore.js`, or installed via npm:
+
+```
+$ npm install zcore
+```
+
+
+
+
 ## API
 
+#### Contents
+
+* Meta
+* Cached entities
+* Special-purpose functions and singletons
+* Basic typing and inspection
+* Iteration
+* Object manipulation
+* Inheritance facilitators
+* Array/Object composition
+* Miscellaneous
 
 
-### Metadata
+
+### Meta
 
 #### VERSION
 
@@ -18,15 +50,15 @@ Environment variables.
 * `client` : `true` in the case of a `window`ed environment (e.g. browser).
 * `debug` : `false`. Changing this has no built-in effect. May be coded against by dependent libraries for their own purposes.
 
-#### regexp
-
-Regular expression store.
-
 #### noConflict
 
 
 
 ### Cached entities
+
+#### regexp
+
+Regular expression store.
 
 #### hasOwn
 
@@ -73,7 +105,7 @@ Returns `this`.
 Returns a lazy evaluator function that will return the `obj` argument when called.
 
 
-### Typing and inspection
+### Basic typing and inspection
 
 #### type ( obj )
 
@@ -81,9 +113,15 @@ Returns the lowercase type string as derived from `toString`.
 
 #### isNumber ( number )
 
+Returns `true` if `number` is a valid numeric value.
+
 #### isArray ( array )
 
+Returns `true` if `array` is a proper `Array`.
+
 #### isFunction ( fn )
+
+Returns `true` if `fn` is a function.
 
 #### isPlainObject ( obj )
 
@@ -107,6 +145,17 @@ Z.isEqual( [1], { 0:1, 1:undefined } ); // true
 Z.isEqual( { 0:1, 1:undefined }, [1] ); // false
 ```
 
+#### lookup ( obj, path [, separator ] )
+
+Retrieves the value at the location indicated by the provided `path` string inside a nested object `obj`.
+
+```javascript
+var x = { a: { b:42 } };
+Z.lookup( x, 'a' );     // { b:42 }
+Z.lookup( x, 'a.b' );   // 42
+Z.lookup( x, 'a.b.c' ); // undefined
+```
+
 
 ### Iteration
 
@@ -121,17 +170,6 @@ Functional iterator with ES5-style callback signature of `value, key, object`.
 
 
 ### Object manipulation
-
-#### lookup ( obj, path [, separator ] )
-
-Retrieves the value at the location indicated by the provided `path` string inside a nested object `obj`.
-
-```javascript
-var x = { a: { b:42 } };
-Z.lookup( x, 'a' );     // { b:42 }
-Z.lookup( x, 'a.b' );   // 42
-Z.lookup( x, 'a.b.c' ); // undefined
-```
 
 #### edit( [ flags, ] subject, source [, ...sourceN ] )
 
@@ -368,7 +406,7 @@ sc.aPrivilegedMethod( 'one', 'two' );
 ```
 
 
-### Array/Object Composition
+### Array/Object composition
 
 #### flatten
 
