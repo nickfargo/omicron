@@ -35,9 +35,11 @@ In the browser, **Z** will add a single object `Z` to the global `window` (which
 Consider an object that efficiently stores history information. The differential functions of **Z** can be used to make this a fairly straightforward task — in the code below, look for applications of functions **delta** and **diff** in particular, as well as usage of the special **NIL** object:
 
 ```javascript
+var Z = require('zcore'),
+    NIL = Z.NIL;
+
 function Class () {
-    var NIL = Z.NIL,
-        history = [
+    var history = [
             {},
             { a: 1, b: 2 },
             { b: NIL, d: 4 },
