@@ -158,7 +158,8 @@ which `edit` also retains a compatible API.
 *Alias:* **extend**
 
 ```javascript
-var original, edits, object, deltas, reversion;
+var _ = undefined, NIL = Z.NIL,
+    original, edits, object, deltas, reversion;
 
 original = {
     a: 1,
