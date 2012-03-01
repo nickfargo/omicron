@@ -2,9 +2,9 @@
 
 Zcore **(“Z”)** is a small JavaScript library of core functions and tools that assist with:
 
-* Object manipulation and differential analysis
-* Prototypal inheritance
 * General tasks: safe typing, functional iteration, etc.
+* Prototypal inheritance
+* Object manipulation and differential analysis
 
 
 
@@ -101,6 +101,8 @@ c.forward(); // undefined                 // End of the timeline
 c.data();    // { d:4, e:2.718, f:6 }
 ```
 
+Note how the elements of `history` are being used to edit the data at `history[ index ]`. Note also how the special value `NIL` is used to encode that the key to which it’s assigned should be deleted as part of the edit.
+
 Next we’ll head back to where we started — but first, let’s glance back into the timeline to see how its contents have changed now that we’re positioned at the front end:
 
 ```javascript
@@ -114,7 +116,7 @@ c.history();
 // ]
 ```
 
-The raw data looks much different, but *the same history information is still recorded* — it’s simply that our perspective has changed after having moved `forward` four times. Whereas the object initially contained the information needed to step *forward* in the timeline, viewing the timeline from `index=4`, its elements now contain the information needed to step *back* to the original empty object at `index=0`.
+The raw data looks much different, but *the exact same history information is still recorded* — it’s simply that our perspective has changed after having moved `forward` four times. Whereas the object initially contained the information needed to step *forward* in the timeline, viewing the timeline now from `index=4`, its elements instead contain the information needed to step *back* to the original empty object at `index=0`.
 
 ```javascript
 c.back();    // { d:4, e:5 }
