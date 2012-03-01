@@ -148,7 +148,7 @@ By default, `edit` returns the first object-typed argument as `subject`, to whic
 
 * `delta` : Returns the **delta**, a structured object that reflects the changes made to the properties of `subject`. If multiple object arguments are provided, an array of deltas is returned. (Applying the deltas in reverse order in an `edit('deep')` on `subject` would revert the contents of `subject` to their original state.)
 
-* `immutable` : Leaves `subject` unchanged. Useful in certain applications where idempotence is desirable, such as when accompanied by the `delta` and `absolute` flags to produce a “diff“ object.
+* `immutable` : Leaves `subject` unchanged. Useful in certain applications where idempotence is desirable, such as when accompanied by the `delta` and `absolute` flags to produce a “diff” object.
 
 * `absolute` : Processes against all properties in `subject` for each `source`, including those not contained in `source`.
 
@@ -158,7 +158,7 @@ which `edit` also retains a compatible API.
 *Alias:* **extend**
 
 ```javascript
-var original, edits, object, deltas;
+var original, edits, object, deltas, reversion;
 
 original = {
     a: 1,
@@ -193,8 +193,16 @@ deltas = Z.edit.apply( Z, [ 'deep delta', object ].concat( edits ) );
 //   { a: "un", f: NIL },
 //   { b: "deux", g: [ _, 1 ] } ]
 
-Z.isEqual( original, Z.edit.apply( Z, [ true, object ].concat( deltas.reverse() ) ) );
-// true
+reversion = Z.edit.apply( Z, [ true, object ].concat( deltas.reverse() ) );
+// { a: 1,
+//   b: "2",
+//   c: {
+//       d: 3,
+//       e: 4
+//   },
+//   g: [ 0, 1 ] }
+
+Z.isEqual( original, reversion ); // true
 ```
 
 *See also:* **clone**, **delta**, **diff**, **assign**
