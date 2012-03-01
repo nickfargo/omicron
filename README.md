@@ -9,6 +9,17 @@ Zcore **(“Z”)** is a small JavaScript toolkit that assists with:
 
 
 
+## Installation
+
+**Z** has no dependencies; it can be loaded straight from the source file `zcore.js`, or installed via npm:
+
+```
+$ npm install zcore
+```
+
+
+
+
 ## Usage example
 
 Consider an object that efficiently stores history information. The differential functions of **Z** can be used to make this a relatively straightforward task:
@@ -67,71 +78,98 @@ function Class () {
 }
 ```
 
-With this class, given the history information already provided, we can traverse forward and back through the timeline, and manipulate the history along the way. First let’s step ahead:
+With this class, and the history information already provided, we can traverse forward and back through the timeline, and manipulate the history along the way. First let’s step ahead:
 
 ```javascript
 var c = new Class;
 c.data();    // {}
 c.forward(); // { a:1, b:2 }
-c.forward(); // { a:1, d:4 }          // History records 'b: NIL', so key 'b' was deleted
-c.forward(); // { d:4, e:5 }          // Likewise, 'a: NIL' caused key 'a' to be deleted
+c.forward(); // { a:1, d:4 }              // History records 'b: NIL', so key 'b' was deleted
+c.forward(); // { d:4, e:5 }              // Likewise, 'a: NIL' caused key 'a' to be deleted
 c.forward(); // { d:4, e:2.718, f:6 }
-c.forward(); // undefined             // End of the timeline
+c.forward(); // undefined                 // End of the timeline
 c.data();    // { d:4, e:2.718, f:6 }
 ```
 
-Next we’ll head back to where we started. But first, let’s glance back into the timeline to see how its contents have changed now that we’re positioned at the front end:
+Next we’ll head back to where we started — but first, let’s glance back into the timeline to see how its contents have changed now that we’re positioned at the front end:
 
 ```javascript
 c.history();
 // [
-//   { a: NIL, b: NIL },
-//   { b: 2, d: NIL },
-//   { a: 1, e: NIL },
-//   { e: 5, f: NIL },
-//   { d: 4, e: 2.718, f: 6 }
+//   { a:NIL, b: NIL },
+//   { b:2, d:NIL },
+//   { a:1, e:NIL },
+//   { e:5, f:NIL },
+//   { d:4, e:2.718, f: 6 }
 // ]
 ```
 
-The same history information is still recorded, but our perspective has changed since since moving `forward` four times. Viewing from `index` `4`, the elements of the timeline now contain the information needed to step `back` to the original empty object at `index` `0` from which we started.
+The same history information is still recorded, but our perspective has changed since since moving `forward` four times. Viewing from `index=4`, the elements of the timeline now contain the information needed to step back to the original empty object at `index=0` from which we started.
 
 ```javascript
 c.back();    // { d:4, e:5 }
 c.back();    // { a:1, d:4 }
 c.back();    // { a:1, b:2 }
 c.back();    // {}
-c.back();    // undefined             // Beginning of the timeline
+c.back();    // undefined                 // Beginning of the timeline
 ```
 
-And now back at the start, the timeline elements should look just like they originally did:
+And now that we’re back at the start, the timeline elements should look just like they originally did:
 
 ```javascript
 c.history();
 // [
 //   {},
-//   { a: 1, b: 2 },
-//   { b: NIL, d: 4 },
-//   { a: NIL, e: 5 },
-//   { e: 2.718, f: 6 }
+//   { a:1, b:2 },
+//   { b:NIL, d:4 },
+//   { a:NIL, e:5 },
+//   { e:2.718, f:6 }
 // ]
 ```
 
-Next let’s push a new element into the middle of the history:
+Next, let’s `push` a new element into the middle of the history:
 
 ```javascript
 c.forward(); // { a:1, b:2 }
 c.forward(); // { a:1, d:4 }
-c.push( { b:2, c:3 } ); // 4        // The new length; `push` drops any forward elements
+c.push( { b:2, c:3 } ); // 4            // The new length; `push` drops any forward elements
 c.data();    // { a:1, b:2, c:3, d:4 }
+
+c.history();
+// [
+//   { a:NIL, b:NIL },
+//   { b:2, d:NIL },
+//   { b:NIL, c:NIL },
+//   { a:1, b:2, c:3, d:4 }
+// ]
 ```
 
-## Installation
+And finally, let’s `replace` an element, and examine its result and effects on the timeline:
 
-**Z** has no dependencies; it can be loaded straight from the source file `zcore.js`, or installed via npm:
+```javascript
+c.back();    // { a:1, d:4 }
+c.history();
+// [
+//   { a:NIL, b:NIL },
+//   { b:2, d:NIL },
+//   { a:1, d:4 },
+//   { b:2, c:3 }
+// ]
 
-```
-$ npm install zcore
-```
+// `replace` returns the **delta** of the new element applied against the old element
+c.replace( { a:4, b:3, d:1 } ); // { a:1, b:NIL, d:4 }
+
+c.history();
+// [
+//   { a:NIL, b:NIL },
+//   { a:1, b:2, d:NIL },
+//   { a:4, b:3, d:1 },
+//   { a:1, b:2, c:3, d:4 }
+// ]
+
+####
+
+Naturally one can imagine much larger data structures than these, and especially with long series of relatively small edits, where historical information is deemed valuable, differential operations like these can help minimize the storage overhead required.
 
 
 
