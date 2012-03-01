@@ -234,7 +234,9 @@ function edit () {
         flags.delta && ( delta = subjectIsArray ? [] : {} );
         deltas && deltas.push( delta );
         source = args[i];
+
         if ( source == null ) continue;
+
         for ( key in source ) if ( !flags.own || hasOwn.call( source, key ) ) {
             value = source[ key ];
             if ( value === subject ) continue;
@@ -254,7 +256,13 @@ function edit () {
                         target : {};
                 }
                 result = edit( flags, clone, value );
-                delta && ( delta[ key ] = hasOwn.call( subject, key ) ? result : NIL );
+                if ( delta ) {
+                    if ( hasOwn.call( subject, key ) ) {
+                        result && !isEmpty( result ) && ( delta[ key ] = result );
+                    } else {
+                        delta[ key ] = NIL;
+                    }
+                }
                 flags.immutable || ( subject[ key ] = clone );
             }
             else if ( subject[ key ] !== value && ( value !== undefined || flags.all ) ) {
