@@ -16,7 +16,7 @@
 		</script>
 		
 		<!-- tests -->
-		<script src="unit/extend.test.js"></script>
+		<script src="unit/edit.test.js"></script>
 	</head>
 	<body>
 		<h1 id="qunit-header">Zcore.js Test Suite</h1>
