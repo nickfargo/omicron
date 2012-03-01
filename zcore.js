@@ -146,6 +146,14 @@ function isEmpty ( obj, andPrototype ) {
 }
 Z.isEmpty = isEmpty;
 
+// #### isEqual
+// 
+// Performs deep equality test.
+function isEqual ( subject, object ) {
+    return isEmpty( diff( subject, object ) );
+}
+Z.isEqual = isEqual;
+
 // #### each
 // 
 // Functional iterator with jQuery-style callback signature of `key, value, object`.
