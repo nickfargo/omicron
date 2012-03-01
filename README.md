@@ -1,10 +1,10 @@
 # Zcore
 
-Zcore **(“Z”)** is a small JavaScript toolkit that assists with:
+Zcore **(“Z”)** is a small JavaScript library of core functions and tools that assist with:
 
 * Object manipulation and differential analysis
 * Prototypal inheritance
-* General tasks, typing and functional iteration
+* General tasks: safe typing, functional iteration, etc.
 
 
 
@@ -16,6 +16,14 @@ Zcore **(“Z”)** is a small JavaScript toolkit that assists with:
 ```
 $ npm install zcore
 ```
+
+In node, **Z** will be available in the usual fashion:
+
+```javascript
+var Z = require('zcore');
+```
+
+In the browser, **Z** will add a single object `Z` to the global `window` (which you may revert later using `Z.noConflict()`).
 
 
 
