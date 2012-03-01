@@ -270,6 +270,7 @@ Class.privileged = {
             thePrivateArray.push( arg2 );
         }
     }
+    return theActualMethod;
 }
 
 Z.inherit( Subclass, Class );
