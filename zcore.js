@@ -17,7 +17,7 @@ var global = this,
 
     // #### NIL
     // 
-    // Unique directive object. Most commonly used in the object arguments of `extend`, where a
+    // Unique directive object. Most commonly used in the object arguments of `edit`, where a
     // property whose value is set to `NIL` indicates that the corresponding property on the
     // subject is to be deleted.
     NIL = Z.NIL = ( function () { function NIL () {} return new NIL; } )(),
@@ -34,7 +34,6 @@ var global = this,
     
     // #### trim
     //
-    // jQuery-style end-whitespace trimmer; uses the native `String.prototype.trim` if available.
     trim = Z.trim =
         String.prototype.trim ?
             function ( text ) {
@@ -185,27 +184,44 @@ function forEach ( obj, fn, context ) {
 }
 Z.forEach = forEach;
 
-// #### extend
+// #### edit
 // 
-// Based on the jQuery `extend` method. Returns the first object-typed argument as `subject`
-// (unless directed otherwise), to which any subsequent object arguments are copied in order.
-// Optionally the first argument may be a Boolean `deep`, or a whitespace-delimited `flags`
-// String containing any of the following keywords:
+// Describes a differential operation across multiple objects.
 // 
-// * `deep` : If a property is an object or array, a structured clone is created on the subject.
-// * `own` : Restricts extended properties to those filtered by `Object.hasOwnProperty`.
-// * `all` : Includes properties with undefined values.
-// * `delta` : Returns the **delta**, a structured clone object that reflects the changes made to
-//      the properties of `subject`. If multiple objects are extended onto `subject`, an array of
-//      deltas is returned. (Applying the deltas in reverse order in an `extend('deep')` on
+// By default, `edit` returns the first object-typed argument as `subject`, to which each
+// subsequent `source` argument is copied in order. Optionally the first argument may be either a
+// Boolean `deep`, or a whitespace-delimited `flags` String containing any of the following
+// keywords:
+// 
+// * `deep` : If a `source` property is an object or array, a structured clone is created on
+//      `subject`.
+// 
+// * `own` : Excludes `source` properties filtered by `Object.hasOwnProperty`.
+// 
+// * `all` : Includes `source` properties with undefined values.
+// 
+// * `delta` : Returns the **delta**, a structured object that reflects the changes made to the
+//      the properties of `subject`. If multiple object arguments are provided, an array of
+//      deltas is returned. (Applying the deltas in reverse order in an `edit('deep')` on
 //      `subject` would revert the contents of `subject` to their original state.)
-function extend () {
+// 
+// * `immutable` : Leaves `subject` unchanged. Useful in certain applications where idempotence is
+//      desirable, such as when accompanied by the `delta` and `absolute` flags.
+// 
+// * `absolute` : Processes against all properties in `subject` for each `source`, including those
+//      not contained in `source`.
+// 
+// Contains techniques and influences from the deep-cloning procedure of `jQuery.extend`, with
+// which `edit` also retains a compatible API.
+// 
+// *See also:* **clone**, **delta**, **diff**, **assign**
+function edit () {
     var args = slice.call( arguments ),
         t = type( args[0] ),
         flags =
             t === 'boolean' ? { deep: args.shift() } :
             t === 'string' ? assign( args.shift() ) :
-            {},
+            t === 'object' ? args.shift() : {},
         subject = args.shift() || {},
         i = 0, l = args.length,
         deltas = flags.delta && l > 1 && [],
@@ -236,7 +252,7 @@ function extend () {
                     clone = target && ( isFunction( target ) || typeof target === 'object' ) ?
                         target : {};
                 }
-                result = extend( keys( flags ).join(' '), clone, value );
+                result = edit( flags, clone, value );
                 delta && ( delta[ key ] = hasOwn.call( subject, key ) ? result : NIL );
                 flags.immutable || ( subject[ key ] = clone );
             }
@@ -245,22 +261,43 @@ function extend () {
                 flags.immutable || ( subject[ key ] = value );
             }
         }
+        if ( flags.absolute && ( flags.delta || !flags.immutable ) ) {
+            for ( key in subject ) if ( hasOwn.call( subject, key ) ) {
+                if ( !( flags.own ? hasOwn.call( source, key ) : key in source ) ) {
+                    delta && ( delta[ key ] = subject[ key ] );
+                    flags.immutable || delete subject[ key ];
+                }
+            }
+        }
     }
     return deltas || delta || subject;
 }
-Z.extend = Z.edit = extend;
+Z.edit = Z.extend = edit;
+
+// #### clone
+// 
+// Specialization of `edit`.
+function clone () {
+    return edit.apply( Z, [ 'deep', isArray( arguments[0] ) ? [] : {} ]
+        .concat( slice.call( arguments ) ) );
+}
+Z.clone = clone;
 
 // #### delta
 // 
+// Specialization of `edit`.
 function delta () {
-    return extend.apply( Z, [ 'deep delta' ].concat( slice.call( arguments ) ) );
+    return edit.apply( Z, [ 'deep delta' ]
+        .concat( slice.call( arguments ) ) );
 }
 Z.delta = delta;
 
 // #### diff
 // 
+// Specialization of `edit`.
 function diff () {
-    return extend.apply( Z, [ 'deep immutable delta' ].concat( slice.call( arguments ) ) );
+    return edit.apply( Z, [ 'absolute deep immutable delta' ]
+        .concat( slice.call( arguments ) ) );
 }
 Z.diff = diff;
 
@@ -403,11 +440,13 @@ function inherit (
       /*Object*/ properties,  // optional
       /*Object*/ statics      // optional
 ) {
-    isFunction( parent ) ?
-        ( ( extend( child, parent ).prototype = create( parent.prototype ) ).constructor = child ) :
-        ( statics = properties, properties = parent );
-    properties && extend( child.prototype, properties );
-    statics && extend( child, statics );
+    if ( isFunction( parent ) ) {
+        ( edit( child, parent ).prototype = create( parent.prototype ) ).constructor = child;
+    } else {
+        statics = properties, properties = parent;
+    }
+    properties && edit( child.prototype, properties );
+    statics && edit( child, statics );
     return child;
 }
 Z.inherit = inherit;

@@ -1,11 +1,11 @@
 ( function ( assert, undefined ) {
 
-module( "extend" );
+module( "edit" );
+
+var _ = undefined, NIL = Z.NIL;
 
 test( "structural invariance", function () {
-    var _ = undefined, NIL = Z.NIL,
-
-        original = {
+    var original = {
             a: 1,
             b: 2,
             c: {
@@ -25,7 +25,7 @@ test( "structural invariance", function () {
             g: [ 0, _, _, 4, 8, 16 ],
             h: 'bar'
         },
-        object = Z.extend( true, {}, original ),
+        object = Z.clone( original ),
         delta = Z.delta( object, edit );
 
     assert.deepEqual( delta, {
@@ -55,10 +55,9 @@ test( "referential invariance", function () {
         properties && Z.extend( true, this, properties );
     }
     
-    var _ = undefined, NIL = Z.NIL,
-        fn = function () { return 3; },
+    function fn () { return 3; }
 
-        deep = new Class({
+    var deep = new Class({
             d: 4,
             e: 5
         }),
@@ -76,18 +75,16 @@ test( "referential invariance", function () {
                 ref: NIL
             }
         },
-        object = Z.extend( true, {}, original ),
+        object = Z.clone( original ),
         delta = Z.delta( object, edit );
     
     assert.strictEqual( delta.ref.ref, deep, "Reference held by `delta` after deletion from `object`" );
-    assert.deepEqual( Z.extend( 'deep', object, delta ), original, "Restored `object` resembles original state" );
+    assert.deepEqual( Z.extend( true, object, delta ), original, "Restored `object` resembles original state" );
     assert.strictEqual( object.ref.ref, deep, "Reference held by `object` restored" );
 });
 
 test( "delta composition", function () {
-    var _ = undefined, NIL = Z.NIL,
-
-        original = {
+    var original = {
             a: 1,
             b: '2',
             c: {
@@ -103,7 +100,7 @@ test( "delta composition", function () {
             { a: NIL, f: "Foo" },
             { b: "dos", g: [ _, "une" ] }
         ],
-        object = Z.extend( true, {}, original ),
+        object = Z.clone( original ),
         deltas = Z.delta.apply( Z, [ object ].concat( edits ) );
 
     assert.deepEqual(
@@ -138,9 +135,7 @@ test( "delta composition", function () {
 });
 
 test( "immutable flag", function () {
-    var _ = undefined, NIL = Z.NIL,
-
-        original = {
+    var original = {
             a: 1,
             b: [ 2, 4, 9 ],
             c: 3,
@@ -152,11 +147,121 @@ test( "immutable flag", function () {
             c: NIL,
             d: { e: NIL, f: 6 }
         },
-        object = Z.extend( original ),
+        object = Z.clone( original ),
         delta = Z.diff( object, edit );
 
     assert.deepEqual( object, original, "Immutable flag leaves object unchanged" );
     assert.deepEqual( delta, { a: 1, b: [ _, _, 9, NIL ], c: 3, d: { e: 5, f: NIL } }, "" );
+});
+
+test( "Use case: differentiated history", function () {
+    var history = [
+            {},
+            { a: 1, b: 2 },
+            { b: NIL, d: 4 },
+            { a: NIL, e: 5 },
+            { e: 2.718, f: 6 }
+        ],
+        index = 0;
+
+    function data () {
+        return Z.clone( history[ index ] );
+    }
+
+    function back () {
+        if ( index === 0 ) return;
+        var o = history[ index ];
+        history[ index ] = Z.delta( o, history[ --index ] );
+        return Z.clone( history[ index ] = o );
+    }
+
+    function forward () {
+        if ( index === history.length - 1 ) return;
+        var o = history[ index ];
+        history[ index ] = Z.delta( o, history[ ++index ] );
+        return Z.clone( history[ index ] = o );
+    }
+
+    function push ( obj ) {
+        var l, n, o = history[ index ];
+        history[ index ] = Z.delta( o, obj );
+        history[ ++index ] = o;
+        l = index + 1;
+        ( n = history.length - l ) && history.splice( l, n );
+        return l;
+    }
+
+    function replace ( obj ) {
+        var o = history[ index ],
+            d = Z.diff( o, obj ),
+            i;
+        history[ index ] = obj;
+        index > 0 &&
+            ( history[ i = index - 1 ] = Z.diff( Z.clone( obj, d, history[i] ), obj ) );
+        index < history.length - 1 &&
+            ( history[ i = index + 1 ] = Z.diff( Z.clone( obj, d, history[i] ), obj ) );
+        return d;
+    }
+
+    assert.deepEqual( data(), {} );
+    assert.deepEqual( forward(), { a: 1, b: 2 } );
+    assert.deepEqual( forward(), { a: 1, d: 4 } );
+    assert.deepEqual( forward(), { d: 4, e: 5 } );
+    assert.deepEqual( forward(), { d: 4, e: 2.718, f: 6 } );
+    assert.deepEqual( forward(), undefined );
+
+    assert.deepEqual( history, [
+        { a: NIL, b: NIL },
+        { b: 2, d: NIL },
+        { a: 1, e: NIL },
+        { e: 5, f: NIL },
+        { d: 4, e: 2.718, f: 6 }
+    ]);
+
+    assert.deepEqual( back(), { d: 4, e: 5 } );
+    assert.deepEqual( back(), { a: 1, d: 4 } );
+    assert.deepEqual( back(), { a: 1, b: 2 } );
+    assert.deepEqual( back(), {} );
+    assert.deepEqual( back(), undefined );
+
+    assert.deepEqual( history, [
+        {},
+        { a: 1, b: 2 },
+        { b: NIL, d: 4 },
+        { a: NIL, e: 5 },
+        { e: 2.718, f: 6 }
+    ]);
+
+    forward();
+    forward();
+    assert.deepEqual( push({ b: 2, c: 3 }), 4 );
+    assert.deepEqual( forward(), undefined );
+    assert.deepEqual( data(), { a: 1, b: 2, c: 3, d: 4 } );
+
+    assert.deepEqual( history, [
+        { a: NIL, b: NIL },
+        { b: 2, d: NIL },
+        { b: NIL, c: NIL },
+        { a: 1, b: 2, c: 3, d: 4 },
+    ]);
+
+    back();
+
+    assert.deepEqual( history, [
+        { a: NIL, b: NIL },
+        { b: 2, d: NIL },
+        { a: 1, d: 4 },
+        { b: 2, c: 3 }
+    ]);
+
+    assert.deepEqual( replace({ a: 4, b: 3, d: 1 }), { a: 1, b: NIL, d: 4 } );
+
+    assert.deepEqual( history, [
+        { a: NIL, b: NIL },
+        { a: 1, b: 2, d: NIL },
+        { a: 4, b: 3, d: 1 },
+        { a: 1, b: 2, c: 3, d: 4 }
+    ]);
 });
 
 })( QUnit );
