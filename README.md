@@ -199,7 +199,7 @@ By default, `edit` returns the first object-typed argument as `subject`, to whic
 
 * `all` : Includes `source` properties with undefined values.
 
-* `delta` : Returns the **delta**, a structured object that reflects the changes made to the properties of `subject`. If multiple object arguments are provided, an array of deltas is returned. (Applying the deltas in reverse order in an `edit('deep')` on `subject` would revert the contents of `subject` to their original state.)
+* `delta` : Returns the **delta**, a structured object that contains the changes made to the properties of `subject`. If multiple `source` operands are provided, an array of deltas is returned. Applying the deltas in reverse order in an `edit('deep')` on `subject` would revert the contents of `subject` to their original state (see example below).
 
 * `immutable` : Leaves `subject` unchanged. Useful in certain applications where idempotence is desirable, such as when accompanied by the `delta` and `absolute` flags to produce a “diff” object.
 
@@ -274,7 +274,7 @@ Z.isEqual( original, reversion ); // true
 
 #### clone ( source, [ ...sourceN ] )
 
-Creates a new object or array and deeply copies properties from all `source` arguments.
+Creates a new object or array and deeply copies properties from all `source` operands.
 
 ```javascript
 var o = { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } },
@@ -289,7 +289,7 @@ o.c.d === x.c.d;   // true
 
 #### delta ( subject, source, [ ...sourceN ] )
 
-Deeply copies each `source` argument into `subject`, and returns a delta object, or an array of deltas in the case of multiple `source`s.
+Deeply copies each `source` operand into `subject`, and returns a delta object, or an array of deltas in the case of multiple `source`s. *See also:* **edit**
 
 ```javascript
 var _ = undefined, NIL = Z.NIL,
@@ -305,7 +305,7 @@ Z.edit( 'deep', o, delta ); // { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } }
 
 #### diff ( subject, source, [ ...sourceN ] )
 
-Deeply compares each `source` argument object to `subject`, and returns an absolute delta, or array of absolute deltas in the case of multiple `source`s. (Unlike the `delta` function, `diff` leaves `subject` unaffected.)
+Deeply compares each `source` operand to `subject`, and returns an absolute delta, or in the case of multiple `source` operands, an array of absolute deltas. Unlike the `delta` function, `diff` leaves `subject` unaffected. *See also:* **edit**
 
 ```javascript
 var _ = undefined, NIL = Z.NIL,
