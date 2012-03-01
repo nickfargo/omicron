@@ -125,7 +125,7 @@ By default, `edit` returns the first object-typed argument as `subject`, to whic
 
 * `absolute` : Processes against all properties in `subject` for each `source`, including those not contained in `source`.
 
-Contains techniques and influences from the deep-cloning procedure of `jQuery.extend`, with
+Contains techniques and influences from the deep-cloning procedure of **jQuery.extend**, with
 which `edit` also retains a compatible API.
 
 *Alias:* **extend**
@@ -157,7 +157,7 @@ var _ = undefined, NIL = Z.NIL,
     edit = { b:[ _, 'bravo', 'charlie' ], c:{ d:NIL, e:2.718 } },
     delta = Z.delta( o, edit );
 
-o; // { a:1, b:[ 'alpha', 'bravo', 'charlie' ], c:{ e:2.718 } }
+o;     // { a:1, b:[ 'alpha', 'bravo', 'charlie' ], c:{ e:2.718 } }
 delta; // { b:[ undefined, 'beta', NIL ], c:{ d:1, e:NIL } }
 
 Z.edit( 'deep', o, delta ); // { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } }
@@ -166,6 +166,16 @@ Z.edit( 'deep', o, delta ); // { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } }
 #### diff ( subject, source [, ...sourceN ] )
 
 Deeply compares each `source` argument object to `subject`, and returns an absolute delta, or array of absolute deltas in the case of multiple `source`s. (Unlike the `delta` function, `diff` leaves `subject` unaffected.)
+
+```javascript
+var _ = undefined, NIL = Z.NIL,
+    o = { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } },
+    x = { b:[ 'alpha', 'bravo' ], c:{ e:2.718 } },
+    diff = Z.diff( o, x );
+
+o;    // { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } }
+diff; // { a:1, b:[ undefined, 'beta' ], c:{ d:1, e:NIL } }
+```
 
 #### assign ( [ target, ] map, value )
 
@@ -188,9 +198,9 @@ Within `object`, copies a value from one key to one or more other keys.
 
 ```javascript
 Z.alias( { a:1, c:2, g:3 }, {
-	a: 'b'     
-	c: 'd e f' 
-	g: 'h i'   
+    a: 'b'     
+    c: 'd e f' 
+    g: 'h i'   
 });
 // { a:1, b:1, c:2, d:2, e:2, f:2, g:3, h:3, i:3 }
 ```
