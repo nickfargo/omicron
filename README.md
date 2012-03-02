@@ -26,14 +26,14 @@ var Z = require('zcore');
 In the browser, **Z** will add a single object `Z` to the global `window` (which can be reverted later using `Z.noConflict()`).
 
 ```html
-    <script>window.Z = "occupied";</script>
-    <script src="zcore.js"></script>
-    <script>
-        ( function () {
-            var Z = this.Z.noConflict();
-            // ...
-        }).call( window );
-    </script>
+<script>window.Z = "occupied";</script>
+<script src="zcore.js"></script>
+<script>
+    ( function () {
+        var Z = this.Z.noConflict();
+        // ...
+    }).call( window );
+</script>
 ```
 
 
