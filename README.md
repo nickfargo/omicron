@@ -30,9 +30,9 @@ In the browser, **Z** will add a single object `Z` to the global `window` (which
 <script src="zcore.js"></script>
 <script>
     ( function () {
-        var Z = this.Z.noConflict();
+        var Z = window.Z.noConflict();
         // ...
-    }).call( window );
+    })();
 </script>
 ```
 
