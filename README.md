@@ -103,7 +103,7 @@ c.forward(); // undefined                 // End of the timeline
 c.data();    // { d:4, e:2.718, f:6 }
 ```
 
-Note how the elements of `history` are being used to edit the data at `history[ index ]`. Note also how the special value `NIL` is used to encode that the key to which it’s assigned should be deleted as part of the edit.
+Note how the elements of `history` are being used to edit the data at `history[ index ]`. Note also how the special value `NIL` is used to encode that the key to which it’s assigned on the source operand should be deleted as part of the edit to the subject operand.
 
 Next we’ll head back to where we started — but first, let’s glance back into the timeline to see how its contents have changed now that we’re positioned at the front end:
 

@@ -3,7 +3,7 @@
 var global = this,
 
     Z = {
-        VERSION: '0.1.4',
+        VERSION: '0.1.5',
         env: {
             server: typeof module !== 'undefined' && typeof require !== 'undefined' &&
                 !!module.exports,
