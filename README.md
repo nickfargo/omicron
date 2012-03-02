@@ -4,7 +4,7 @@ Zcore **(“Z”)** is a small JavaScript library of core functions and tools th
 
 * General tasks: safe typing, functional iteration, etc.
 * Prototypal inheritance
-* Object manipulation and differential analysis
+* Object manipulation and differential operations
 
 
 
@@ -24,6 +24,17 @@ var Z = require('zcore');
 ```
 
 In the browser, **Z** will add a single object `Z` to the global `window` (which can be reverted later using `Z.noConflict()`).
+
+```html
+    <script>window.Z = "occupied";</script>
+    <script src="zcore.js"></script>
+    <script>
+        ( function () {
+            var Z = this.Z.noConflict();
+            // ...
+        }).call( window );
+    </script>
+```
 
 
 
