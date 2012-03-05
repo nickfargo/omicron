@@ -43,12 +43,12 @@ In the browser, **Z** will add a single object `Z` to the global `window` (which
 
 ### Differential history
 
-Consider an object that efficiently stores history information. The differential functions of **Z** can be used to make this a fairly straightforward task — in the code below, look for applications of functions **delta** and **diff** in particular, as well as usage of the special **NIL** object:
+Consider a timeline object that efficiently stores history information. The differential functions of **Z** can be used to make this a fairly straightforward task — in the code below, look for applications of functions **delta** and **diff** in particular, as well as usage of the special **NIL** object within the `history` array:
 
 ```javascript
 var Z = require('zcore');
 
-function Class () {
+function Timeline () {
     var NIL = Z.NIL,
         history = [
             {},
@@ -101,17 +101,17 @@ function Class () {
 }
 ```
 
-With this class, and the information already provided in `history`, we can freely traverse the timeline, both forward and back, and manipulate the history along the way. First let’s step ahead:
+Using this class, and the information we’re preloading into `history`, we can freely traverse a timeline in either direction, and manipulate the history along the way. First let’s step forward:
 
 ```javascript
-var c = new Class;
-c.data();    // {}
-c.forward(); // { a:1, b:2 }
-c.forward(); // { a:1, d:4 }              // History records 'b: NIL', so key 'b' was deleted
-c.forward(); // { d:4, e:5 }              // Likewise, 'a: NIL' caused key 'a' to be deleted
-c.forward(); // { d:4, e:2.718, f:6 }
-c.forward(); // undefined                 // End of the timeline
-c.data();    // { d:4, e:2.718, f:6 }
+var t = new Timeline;
+t.data();    // {}
+t.forward(); // { a:1, b:2 }
+t.forward(); // { a:1, d:4 }              // History records 'b: NIL', so key 'b' was deleted
+t.forward(); // { d:4, e:5 }              // Likewise, 'a: NIL' caused key 'a' to be deleted
+t.forward(); // { d:4, e:2.718, f:6 }
+t.forward(); // undefined                 // End of the timeline
+t.data();    // { d:4, e:2.718, f:6 }
 ```
 
 Note how the elements of `history` are being used to edit the data at `history[ index ]`. Note also how the special value `NIL` is used to encode that the key to which it’s assigned on the source operand should be deleted as part of the edit to the subject operand.
@@ -119,7 +119,7 @@ Note how the elements of `history` are being used to edit the data at `history[ 
 Next we’ll head back to where we started — but first, let’s glance back into the timeline to see how its contents have changed now that we’re positioned at the front end:
 
 ```javascript
-c.history();
+t.history();
 // [
 //   { a:NIL, b: NIL },
 //   { b:2, d:NIL },
@@ -129,20 +129,22 @@ c.history();
 // ]
 ```
 
-The raw data looks much different, but *the exact same history information is still recorded* — it’s simply that our perspective has changed after having moved `forward` four times. Whereas the object initially contained the information needed to step *forward* in the timeline, viewing the timeline now from `index=4`, its elements instead contain the information needed to step *back* to the original empty object at `index=0`.
+The data is different, but it still records *the exact same information*. This is because the history elements are relative, and our perspective has changed after having moved `forward` four times — whereas the object initially contained the information needed to step forward in the timeline, viewing the timeline now from `index=4`, its elements instead contain the information needed to step back to the original empty object at `index=0`.
+
+Traversing backward now:
 
 ```javascript
-c.back();    // { d:4, e:5 }
-c.back();    // { a:1, d:4 }
-c.back();    // { a:1, b:2 }
-c.back();    // {}
-c.back();    // undefined                 // Beginning of the timeline
+t.back();    // { d:4, e:5 }
+t.back();    // { a:1, d:4 }
+t.back();    // { a:1, b:2 }
+t.back();    // {}
+t.back();    // undefined                 // Beginning of the timeline
 ```
 
-And now that we’re back at the start, the timeline elements should look just like they originally did:
+And since we’ve gone back to where we started, the timeline elements will have transformed themselves to look just like they originally did:
 
 ```javascript
-c.history();
+t.history();
 // [
 //   {},
 //   { a:1, b:2 },
@@ -152,15 +154,15 @@ c.history();
 // ]
 ```
 
-Next, let’s `push` a new element into the middle of the history:
+Next, let’s try `push`ing a new element into the middle of the history:
 
 ```javascript
-c.forward(); // { a:1, b:2 }
-c.forward(); // { a:1, d:4 }
-c.push( { b:2, c:3 } ); // 4            // The new length; `push` drops any forward elements
-c.data();    // { a:1, b:2, c:3, d:4 }
+t.forward(); // { a:1, b:2 }
+t.forward(); // { a:1, d:4 }
+t.push( { b:2, c:3 } ); // 4            // The new length; `push` drops any forward elements
+t.data();    // { a:1, b:2, c:3, d:4 }
 
-c.history();
+t.history();
 // [
 //   { a:NIL, b:NIL },
 //   { b:2, d:NIL },
@@ -172,8 +174,8 @@ c.history();
 And finally, let’s `replace` an element, and examine its result and effects on the timeline:
 
 ```javascript
-c.back();    // { a:1, d:4 }
-c.history();
+t.back();    // { a:1, d:4 }
+t.history();
 // [
 //   { a:NIL, b:NIL },
 //   { b:2, d:NIL },
@@ -182,9 +184,9 @@ c.history();
 // ]
 
 // `replace` returns the **delta** of the new element applied against the old element
-c.replace( { a:4, b:3, d:1 } ); // { a:1, b:NIL, d:4 }
+t.replace( { a:4, b:3, d:1 } ); // { a:1, b:NIL, d:4 }
 
-c.history();
+t.history();
 // [
 //   { a:NIL, b:NIL },
 //   { a:1, b:2, d:NIL },
@@ -192,10 +194,6 @@ c.history();
 //   { a:1, b:2, c:3, d:4 }
 // ]
 ```
-
-####
-
-Naturally, one can imagine much larger data structures than these, and especially with long series of relatively small edits, where historical information is deemed valuable, differential operations like these can help minimize storage overhead and network payloads.
 
 
 
