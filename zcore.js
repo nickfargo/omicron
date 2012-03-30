@@ -322,22 +322,30 @@ Z.diff = diff;
 // 
 // Facilitates assignment operations of a value to one or more keys of an object.
 function assign ( target, map, value ) {
-    var key, list, i, l;
+    var valuesMirrorKeys, key, list, i, l;
 
     if ( typeof target === 'string' ) {
-        value = arguments.length === 1 ? true : map, map = target, target = {};
+        arguments.length === 1 && ( valuesMirrorKeys = true );
+        value = map, map = target, target = {};
     } else if ( map === undefined ) {
         map = target, target = {};
     }
     if ( typeof map === 'string' ) {
-        key = map, map = {}, map[ key ] = value;
+        key = map, ( map = {} )[ key ] = value;
     }
 
     for ( key in map ) if ( hasOwn.call( map, key ) ) {
-        value = map[ key ];
         list = key.split( regexp.whitespace );
-        for ( i = 0, l = list.length; i < l; i++ ) {
-            target[ list[i] ] = value;
+        if ( valuesMirrorKeys ) {
+            for ( i = 0, l = list.length; i < l; i++ ) {
+                value = list[i];
+                target[ value ] = value;
+            }
+        } else {
+            value = map[ key ];
+            for ( i = 0, l = list.length; i < l; i++ ) {
+                target[ list[i] ] = value;
+            }
         }
     }
 
