@@ -121,11 +121,11 @@ Next we’ll head back to where we started — but first, let’s glance back in
 ```javascript
 t.history();
 // [
-//   { a:NIL, b: NIL },
+//   { a:NIL, b:NIL },
 //   { b:2, d:NIL },
 //   { a:1, e:NIL },
 //   { e:5, f:NIL },
-//   { d:4, e:2.718, f: 6 }
+//   { d:4, e:2.718, f:6 }
 // ]
 ```
 
@@ -271,7 +271,7 @@ Returns `this`.
 
 #### thunk ( obj )
 
-Returns a lazy evaluator function that will return the `obj` argument when called.
+Returns a lazy evaluator function that closes over and returns the provided `obj` argument.
 
 #### NIL
 
