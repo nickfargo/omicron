@@ -227,10 +227,11 @@ Z.forEach = forEach;
 function edit () {
     var args = slice.call( arguments ),
         t = type( args[0] ),
+        flagList,
         flags =
-            t === 'boolean' ? { deep: args.shift() } :
-            t === 'string' ? assign( args.shift() ) :
-            t === 'object' ? args.shift() : {},
+            t === 'boolean' ? ( args.shift(), { deep: flagList = 'deep' } ) :
+            t === 'string' ? assign( flagList = args.shift() ) :
+            {},
         subject = args.shift() || {},
         i = 0, l = args.length,
         deltas = flags.delta && l > 1 && [],
@@ -263,7 +264,7 @@ function edit () {
                     clone = target && ( isFunction( target ) || typeof target === 'object' ) ?
                         target : {};
                 }
-                result = edit( flags, clone, value );
+                result = edit( flagList, clone, value );
                 if ( delta ) {
                     if ( hasOwn.call( subject, key ) ) {
                         result && !isEmpty( result ) && ( delta[ key ] = result );
