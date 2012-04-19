@@ -225,24 +225,35 @@ Z.forEach = forEach;
 // 
 // *See also:* **clone**, **delta**, **diff**, **assign**
 function edit () {
-    var args = slice.call( arguments ),
-        t = type( args[0] ),
-        flagList,
-        flags =
-            t === 'boolean' ? ( args.shift(), { deep: flagList = 'deep' } ) :
-            t === 'string' ? assign( flagList = args.shift() ) :
-            {},
-        subject = args.shift() || {},
-        i = 0, l = args.length,
-        deltas = flags.delta && l > 1 && [],
-        subjectIsArray, delta, key, value, valueIsArray, source, target, clone, result;
-    
+    var i, l, t, flags, flagsString, subject, subjectIsArray, deltas, delta,
+        key, value, valueIsArray, source, target, clone, result;
+
+    i = 0, l = arguments.length;
+    t = type( arguments[0] );
+
+    if ( t === 'boolean' ) {
+        flagsString = 'deep';
+        flags = { deep: flagsString };
+        i += 1;
+    } else if ( t === 'string' ) {
+        flagsString = arguments[i];
+        flags = assign( flagsString );
+        i += 1;
+    } else {
+        flags = NIL;
+    }
+
+    subject = arguments[i] || {};
+    i += 1;
     typeof subject === 'object' || isFunction( subject ) || ( subject = {} );
     subjectIsArray = isArray( subject );
+
+    deltas = flags.delta && l > i && [];
+
     for ( ; i < l; i++ ) {
         flags.delta && ( delta = subjectIsArray ? [] : {} );
         deltas && deltas.push( delta );
-        source = args[i];
+        source = arguments[i];
 
         if ( source == null ) continue;
 
@@ -264,7 +275,7 @@ function edit () {
                     clone = target && ( isFunction( target ) || typeof target === 'object' ) ?
                         target : {};
                 }
-                result = edit( flagList, clone, value );
+                result = edit( flagsString, clone, value );
                 if ( delta ) {
                     if ( hasOwn.call( subject, key ) ) {
                         result && !isEmpty( result ) && ( delta[ key ] = result );
@@ -275,7 +286,9 @@ function edit () {
                 flags.immutable || ( subject[ key ] = clone );
             }
             else if ( subject[ key ] !== value && ( value !== undefined || flags.all ) ) {
-                delta && ( delta[ key ] = hasOwn.call( subject, key ) ? subject[ key ] : NIL );
+                if ( delta ) {
+                    delta[ key ] = hasOwn.call( subject, key ) ? subject[ key ] : NIL;
+                }
                 flags.immutable || ( subject[ key ] = value );
             }
         }
