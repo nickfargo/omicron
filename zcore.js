@@ -207,7 +207,7 @@ Z.forEach = forEach;
 // 
 // * `own` : Excludes `source` properties filtered by `Object.hasOwnProperty`.
 // 
-// * `all` : Includes `source` properties with undefined values.
+// * `all` : Includes `source` properties with values of `NIL` or `undefined`.
 // 
 // * `delta` : Returns the **delta**, a structured object that reflects the changes made to the
 //      properties of `subject`. If multiple object arguments are provided, an array of deltas is
@@ -260,7 +260,7 @@ function edit () {
         for ( key in source ) if ( !flags.own || hasOwn.call( source, key ) ) {
             value = source[ key ];
             if ( value === subject ) continue;
-            if ( value === NIL ) {
+            if ( value === NIL && !flags.all ) {
                 delta && ( delta[ key ] = subject[ key ] );
                 flags.immutable || delete subject[ key ];
             }
