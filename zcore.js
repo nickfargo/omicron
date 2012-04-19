@@ -18,9 +18,9 @@ var global = this,
 
     // #### NIL
     // 
-    // Value singleton. Commonly used by `edit` and related functions, where an object with a
-    // property whose value is set to `NIL` indicates the absence or deletion of the corresponding
-    // property on an associated operand.
+    // Unique object reference. Used by `edit` and related differential operation functions, where
+    // an object with a property whose value is set to `NIL` indicates the absence or deletion of
+    // the corresponding property on an associated operand.
     NIL = Z.NIL = ( function () { function NIL () {} return new NIL; } )(),
 
     // #### toString
