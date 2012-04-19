@@ -309,7 +309,7 @@ Z.edit = Z.extend = edit;
 // 
 // Specialization of `edit`.
 function clone () {
-    return edit.apply( Z, [ 'deep', isArray( arguments[0] ) ? [] : {} ]
+    return edit.apply( Z, [ 'deep all', isArray( arguments[0] ) ? [] : {} ]
         .concat( slice.call( arguments ) ) );
 }
 Z.clone = clone;
