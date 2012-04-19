@@ -2,9 +2,9 @@
 
 Zcore **(“Z”)** is a small JavaScript library of core functions and tools that assist with:
 
-* General tasks: safe typing, functional iteration, etc.
-* Prototypal inheritance
 * Object manipulation and differential operations
+* Prototypal inheritance
+* Selected general tasks: safe typing, functional iteration, etc.
 
 
 
@@ -23,23 +23,16 @@ In node, **Z** will be available in the usual fashion:
 var Z = require('zcore');
 ```
 
-In the browser, **Z** will add a single object `Z` to the global `window` (which can be reverted later using `Z.noConflict()`).
+In the browser, **Z** will add a single object `Z` to the global `window` (which can be reclaimed later using `Z.noConflict()`).
 
 ```html
-<script>window.Z = "occupied";</script>
 <script src="zcore.js"></script>
-<script>
-    ( function () {
-        var Z = window.Z.noConflict();
-        // ...
-    })();
-</script>
 ```
 
 
 
 
-## Usage example
+## Usage example <a name="usage-example" href="#usage-example">&#x1f517;</a>
 
 ### Differential history
 
@@ -198,20 +191,20 @@ t.history();
 
 
 
-## API
+## API <a name="api" href="#api">&#x1f517;</a>
 
-* Meta / Cached entities
-* Special-purpose functions and singletons
-* Typing and inspection
-* Iteration
-* Object manipulation and differentiation
-* Inheritance facilitators
-* Array/Object composition
-* Miscellaneous
+* [Meta / Cached entities](#api--meta-cached-entities)
+* [Special-purpose functions and objects](#api--special-purpose-functions-and-objects)
+* [Typing and inspection](#api--typing-and-inspection)
+* [Iteration](#api--iteration)
+* [Object manipulation and differentiation](#api--object-manipulation-and-differentiation)
+* [Inheritance facilitators](#api--inheritance-facilitators)
+* [Array/Object composition](#api--array-object-composition)
+* [Miscellaneous](#api--miscellaneous)
 
 
 
-### Meta / Cached entities
+### Meta / Cached entities <a name="api--meta-cached-entities" href="#api--meta-cached-entities">&#x1f517;</a>
 
 #### VERSION
 
@@ -259,7 +252,7 @@ Regular expression store.
 
 
 
-### Special-purpose functions and singletons
+### Special-purpose functions and objects <a name="api--special-purpose-functions-and-objects" href="#api--special-purpose-functions-and-objects">&#x1f517;</a>
 
 #### noop
 
@@ -275,11 +268,11 @@ Returns a lazy evaluator function that closes over and returns the provided `obj
 
 #### NIL
 
-Singleton value object; has no utility apart from simply its existence. Commonly used by `edit` and the related differential functions, where, within a given operand, a property whose value is set to `NIL` indicates the absence or deletion of the corresponding property on an associated operand.
+`NIL` is a special object used only for its unique reference. Whereas the `null` reference connotes “no object”, and `undefined` connotes “no value”, `NIL` specifically implies “no existence” of a corresponding property on some other object. The prime example is its use within `edit` and the related differential operation functions, where, within a given operand, a property whose value is set to `NIL` indicates the absence or deletion of the corresponding property on an associated operand.
 
 
 
-### Typing and inspection
+### Typing and inspection <a name="api--typing-and-inspection" href="#api--typing-and-inspection">&#x1f517;</a>
 
 #### type ( obj )
 
@@ -332,7 +325,7 @@ Z.lookup( x, 'a.b.c' ); // undefined
 
 
 
-### Iteration
+### Iteration <a name="api--iteration" href="#api--iteration">&#x1f517;</a>
 
 #### each ( obj, callback )
 
@@ -362,7 +355,7 @@ Z.forEach( { x:3, y:4, z:5 }, function ( value, axis, vector ) {
 
 
 
-### Object manipulation
+### Object manipulation and differentiation <a name="api--object-manipulation-and-differentiation" href="#api--object-manipulation-and-differentiation">&#x1f517;</a>
 
 #### edit( [ flags ], subject, source, [ ...sourceN ] )
 
@@ -528,7 +521,7 @@ Z.alias( { a:1, c:2, g:3 }, {
 
 
 
-### Inheritance facilitators
+### Inheritance facilitators <a name="api--inheritance-facilitators" href="#api--inheritance-facilitators">&#x1f517;</a>
 
 #### inherit ( child, parent, [ properties ], [ statics ] )
 
@@ -615,7 +608,7 @@ sc.aPrivilegedMethod( 'one', 'two' );
 
 
 
-### Array/Object composition
+### Array/Object composition <a name="api--array-object-composition" href="#api--array-object-composition">&#x1f517;</a>
 
 #### flatten
 
@@ -631,7 +624,7 @@ For an `array` whose values are unique key strings, this returns an object that 
 
 
 
-### Miscellaneous
+### Miscellaneous <a name="api--miscellaneous" href="#api--miscellaneous">&#x1f517;</a>
 
 #### stringFunction ( fn )
 
