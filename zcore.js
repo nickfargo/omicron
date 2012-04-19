@@ -339,10 +339,13 @@ function assign ( target, map, value ) {
     var valuesMirrorKeys, key, list, i, l;
 
     if ( typeof target === 'string' ) {
-        arguments.length === 1 && ( valuesMirrorKeys = true );
+        valuesMirrorKeys = arguments.length === 1;
         value = map, map = target, target = {};
-    } else if ( map === undefined ) {
-        map = target, target = {};
+    } else {
+        valuesMirrorKeys = typeof map === 'string' && arguments.length === 2;
+        if ( map === undefined ) {
+            map = target, target = {};
+        }
     }
     if ( typeof map === 'string' ) {
         key = map, ( map = {} )[ key ] = value;
