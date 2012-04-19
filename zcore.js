@@ -321,7 +321,7 @@ Z.diff = diff;
 
 // #### assign
 // 
-// Facilitates assignment operations of a value to one or more keys of an object.
+// Facilitates one or more assignments of a value to one or more keys of an object.
 function assign ( target, map, value ) {
     var valuesMirrorKeys, key, list, i, l;
 
