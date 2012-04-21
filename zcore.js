@@ -248,7 +248,7 @@ function edit () {
     typeof subject === 'object' || isFunction( subject ) || ( subject = {} );
     subjectIsArray = isArray( subject );
 
-    deltas = flags.delta && l > i && [];
+    flags.delta && l - 1 > i && ( deltas = [] );
 
     for ( ; i < l; i++ ) {
         flags.delta && ( delta = subjectIsArray ? [] : {} );
