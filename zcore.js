@@ -214,14 +214,18 @@ Z.forEach = forEach;
 //      returned. (Applying the deltas in reverse order in an `edit('deep')` on `subject` would
 //      revert the contents of `subject` to their original state.)
 // 
-// * `immutable` : Leaves `subject` unchanged. Useful in certain applications where idempotence is
-//      desirable, such as when accompanied by the `delta` and `absolute` flags.
+// * `immutable` : Leaves `subject` unchanged. Useful, for example, in combination with flags
+//      `delta` and `absolute` for non-destructively computing a differential between `source`
+//      and `subject`.
 // 
-// * `absolute` : Processes against all properties in `subject` for each `source`, including those
-//      not contained in `source`.
+// * `absolute` : By default an edit operation is *relative*, in that the properties of `subject`
+//      affected by the operation are limited to those also present within each `source`. By
+//      including the `absolute` flag, properties in `subject` that are *not* also present within
+//      each `source` will be deleted from `subject`, and will also affect any returned delta
+//      accordingly.
 // 
 // Contains techniques and influences from the deep-cloning procedure of `jQuery.extend`, with
-// which `edit` also retains a compatible API.
+// which `edit` also retains a compatible interface.
 // 
 // *See also:* **clone**, **delta**, **diff**, **assign**
 function edit () {
@@ -327,7 +331,7 @@ Z.delta = delta;
 // 
 // Specialization of `edit`.
 function diff () {
-    return edit.apply( Z, [ 'absolute deep immutable delta' ]
+    return edit.apply( Z, [ 'deep delta immutable absolute' ]
         .concat( slice.call( arguments ) ) );
 }
 Z.diff = diff;
