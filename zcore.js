@@ -150,7 +150,7 @@ Z.isEmpty = isEmpty;
 // 
 // Performs deep equality test.
 function isEqual ( subject, object ) {
-    return isEmpty( diff( subject, object ) );
+    return subject === object || isEmpty( diff( subject, object || {} ) );
 }
 Z.isEqual = isEqual;
 
