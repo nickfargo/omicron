@@ -11,7 +11,7 @@ Zcore **(“Z”)** is a small JavaScript library of core functions and tools th
 
 ## Installation
 
-**Z** has no dependencies; it can be loaded straight from the source file `zcore.js`, or installed via **npm**:
+**Z** has no dependencies; it can be loaded straight from the source file `zcore.js`, or installed via [**npm**](http://npmjs.org/):
 
 ```
 $ npm install zcore
@@ -36,7 +36,7 @@ In the browser, **Z** will add a single object `Z` to the global `window` (which
 
 ### Differential history
 
-Consider a timeline object that efficiently stores history information. The differential functions of **Z** can be used to make this a fairly straightforward task — in the code below, look for applications of functions **delta** and **diff** in particular, as well as usage of the special **NIL** object within the `history` array:
+Consider a timeline object that efficiently stores history information. The differential functions of **Z** can be used to make this a fairly straightforward task — in the code below, look for applications of functions [**delta**](#delta) and [**diff**](#diff) in particular, as well as usage of the special [**NIL**](#nil) object within the `history` array:
 
 ```javascript
 var Z = require('zcore');
@@ -94,7 +94,7 @@ function Timeline () {
 }
 ```
 
-Using this class, and the information we’re preloading into `history`, we can freely traverse a timeline in either direction, and manipulate the history along the way. First let’s step forward:
+Given the information preloaded into `history`, we can freely traverse a `Timeline`, forward and backward, and manipulate its history along the way. First let’s step forward:
 
 ```javascript
 var t = new Timeline;
@@ -122,7 +122,7 @@ t.history();
 // ]
 ```
 
-The data is different, but it still records *the exact same information*. This is because the history elements are relative, and our perspective has changed after having moved `forward` four times — whereas the object initially contained the information needed to step forward in the timeline, viewing the timeline now from `index=4`, its elements instead contain the information needed to step back to the original empty object at `index=0`.
+The data is different, but it still records the exact same information. This is because the history elements are relative, and our perspective has changed after having moved `forward` four times — whereas the object initially contained the information needed to step forward in the timeline, viewing the timeline now from `index = 4`, its elements instead contain the information needed to step back to the original empty object at `index = 0`.
 
 Traversing backward now:
 
@@ -172,22 +172,23 @@ t.history();
 // [
 //   { a:NIL, b:NIL },
 //   { b:2, d:NIL },
-//   { a:1, d:4 },
+//   { a:1, d:4 }, // <---------- index
 //   { b:2, c:3 }
 // ]
 
-// `replace` returns the **delta** of the new element applied against the old element
-t.replace( { a:4, b:3, d:1 } ); // { a:1, b:NIL, d:4 }
+t.replace( { a:4, b:3, d:1 } );
+// { a:1, b:NIL, d:4 }
 
 t.history();
 // [
 //   { a:NIL, b:NIL },
 //   { a:1, b:2, d:NIL },
-//   { a:4, b:3, d:1 },
+//   { a:4, b:3, d:1 }, // <----- index
 //   { a:1, b:2, c:3, d:4 }
 // ]
 ```
 
+Calling `replace` instates the new element at `index`, adjusts the elements ahead and behind of the current `index` to reflect the new differentials, and returns the **delta** of the new element applied against the old element.
 
 
 
@@ -527,15 +528,16 @@ Deeply copies each `source` operand into `subject`, and returns a delta object, 
 *See also:* [**edit**](#edit)
 
 ```javascript
-var _ = undefined, NIL = Z.NIL,
-    o     = { a:1, b:[ 'alpha', 'beta'             ], c:{ d:1            } },
-    edit  = {      b:[ _,       'bravo', 'charlie' ], c:{ d:NIL, e:2.718 } },
+var NIL   = Z.NIL,
+    o     = { a:1, b:[ 'alpha',   'beta'             ], c:{ d:1            } },
+    edit  = {      b:[ undefined, 'bravo', 'charlie' ], c:{ d:NIL, e:2.718 } },
     delta = Z.delta( o, edit );
 
-o;     // { a:1, b:[ 'alpha', 'bravo', 'charlie' ], c:{ e:2.718 } }
-delta; // { b:[ undefined, 'beta', NIL ], c:{ d:1, e:NIL } }
+o;       // { a:1, b:[ 'alpha',   'bravo', 'charlie' ], c:{      e:2.718   } }
+delta;   // {      b:[ undefined, 'beta',  NIL       ], c:{ d:1, e:NIL     } }
 
-Z.edit( 'deep', o, delta ); // { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } }
+Z.edit( 'deep', o, delta );
+         // { a:1, b:[ 'alpha',   'beta'             ], c:{ d:1 } }
 ```
 
 #### diff
@@ -555,9 +557,9 @@ var o = { a:1, b:[ 'alpha', 'beta'  ], c:{ d:1          } },
 Z.diff( o, x ); // { a:1, b:[ undefined, 'beta' ], c:{ d:1, e:NIL } }
 ```
 
-For plain objects A and B, the following expression is `true`:
+For plain objects A and B, `diff` asserts the invariant:
 ```javascript
-Z.isEqual( A, Z.edit( B, Z.diff( A, B ) ) )
+Z.isEqual( A, Z.edit( B, Z.diff( A, B ) ) ) === true
 ```
 
 #### assign
