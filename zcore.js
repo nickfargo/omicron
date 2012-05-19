@@ -405,9 +405,13 @@ Z.keys = keys = isFunction( Object.keys ) ? Object.keys : keys;
 // #### invert
 // 
 // Returns a hashmap that is the key-value inversion of the supplied string array.
-function invert ( array ) {
-    var i = 0, l = array.length, map = {};
-    while ( i < l ) map[ array[i] ] = i++;
+function invert ( obj ) {
+    var i, l, map = {};
+    if ( isArray( obj ) ) {
+        for ( i = 0, l = obj.length; i < l; i++ ) map[ ''+obj[i] ] = i;
+    } else {
+        for ( i in obj ) if ( hasOwn.call( obj, i ) ) map[ ''+obj[i] ] = i;
+    }
     return map;
 }
 Z.invert = invert;
