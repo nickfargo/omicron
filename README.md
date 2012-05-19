@@ -32,7 +32,7 @@ In the browser, **Z** will add a single object `Z` to the global `window` (which
 
 
 
-## Usage example <a name="usage-example" href="#usage-example">&#x1f517;</a>
+## Usage example
 
 ### Differential history
 
@@ -191,20 +191,20 @@ t.history();
 
 
 
-## API <a name="api" href="#api">&#x1f517;</a>
+## API
 
-* [Meta / Cached entities](#api--meta-cached-entities)
-* [Special-purpose functions and objects](#api--special-purpose-functions-and-objects)
-* [Typing and inspection](#api--typing-and-inspection)
-* [Iteration](#api--iteration)
-* [Object manipulation and differentiation](#api--object-manipulation-and-differentiation)
-* [Inheritance facilitators](#api--inheritance-facilitators)
-* [Array/Object composition](#api--array-object-composition)
-* [Miscellaneous](#api--miscellaneous)
+* [Meta / Cached entities](#meta--cached-entities)
+* [Special-purpose functions and objects](#special-purpose-functions-and-objects)
+* [Typing and inspection](#typing-and-inspection)
+* [Iteration](#iteration)
+* [Object manipulation and differentiation](#object-manipulation-and-differentiation)
+* [Inheritance facilitators](#inheritance-facilitators)
+* [Array/Object composition](#array--object-composition)
+* [Miscellaneous](#miscellaneous)
 
 
 
-### Meta / Cached entities <a name="api--meta-cached-entities" href="#api--meta-cached-entities">&#x1f517;</a>
+### Meta / Cached entities
 
 #### VERSION
 
@@ -252,7 +252,7 @@ Regular expression store.
 
 
 
-### Special-purpose functions and objects <a name="api--special-purpose-functions-and-objects" href="#api--special-purpose-functions-and-objects">&#x1f517;</a>
+### Special-purpose functions and objects
 
 #### noop
 
@@ -280,7 +280,7 @@ Z.NIL
 
 
 
-### Typing and inspection <a name="api--typing-and-inspection" href="#api--typing-and-inspection">&#x1f517;</a>
+### Typing and inspection
 
 #### type
 
@@ -501,7 +501,9 @@ Z.isEqual( original, reversion ); // true
 Z.clone( source, [ ...sourceN ] )
 ```
 
-Creates a new object or array and deeply copies properties from all `source` operands. *See also:* [**edit**](#edit)
+Creates a new object or array and deeply copies properties from all `source` operands.
+
+*See also:* [**edit**](#edit)
 
 ```javascript
 var o = { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } },
@@ -599,7 +601,7 @@ Z.alias( { a:1, c:2, g:3 }, {
 
 
 
-### Inheritance facilitators <a name="api--inheritance-facilitators" href="#api--inheritance-facilitators">&#x1f517;</a>
+### Inheritance facilitators
 
 #### inherit
 
@@ -705,7 +707,7 @@ sc.aPrivilegedMethod( 'one', 'two' );
 
 
 
-### Array/Object composition <a name="api--array-object-composition" href="#api--array-object-composition">&#x1f517;</a>
+### Array/Object composition
 
 #### flatten
 
@@ -733,7 +735,7 @@ For an `array` whose values are unique key strings, this returns an object that 
 
 
 
-### Miscellaneous <a name="api--miscellaneous" href="#api--miscellaneous">&#x1f517;</a>
+### Miscellaneous
 
 #### stringFunction
 
