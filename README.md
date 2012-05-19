@@ -256,49 +256,85 @@ Regular expression store.
 
 #### noop
 
-Returns `undefined`.
+A function that returns `undefined`.
 
 #### getThis
 
-Returns `this`.
+A function that returns `this`.
 
-#### thunk ( obj )
+#### thunk
+
+```javascript
+Z.thunk( obj )
+```
 
 Returns a lazy evaluator function that closes over and returns the provided `obj` argument.
 
 #### NIL
 
-`NIL` is a special object used only for its unique reference. Whereas the `null` reference connotes “no object”, and `undefined` connotes “no value”, `NIL` specifically implies “no existence” of a corresponding property on some other object. The prime example is its use within `edit` and the related differential operation functions, where, within a given operand, a property whose value is set to `NIL` indicates the absence or deletion of the corresponding property on an associated operand.
+```javascript
+Z.NIL
+```
+
+`NIL` is a special object used only for its unique reference. Whereas the `null` reference connotes “no object”, and `undefined` connotes “no value”, `NIL` specifically implies “no existence” of a corresponding property on some other object. The prime example is its use within [**edit**](#edit) and the related differential operation functions, where, within a given operand, a property whose value is set to `NIL` indicates the absence or deletion of the corresponding property on an associated operand.
 
 
 
 ### Typing and inspection <a name="api--typing-and-inspection" href="#api--typing-and-inspection">&#x1f517;</a>
 
-#### type ( obj )
+#### type
+
+```javascript
+Z.type( obj )
+```
 
 Returns the lowercase type string as derived from `toString`.
 
-#### isNumber ( number )
+#### isNumber
+
+```javascript
+Z.isNumber( number )
+```
 
 Returns `true` if `number` is a valid numeric value.
 
-#### isArray ( array )
+#### isArray
+
+```javascript
+Z.isArray( array )
+```
 
 Returns `true` if `array` is a proper `Array`.
 
-#### isFunction ( fn )
+#### isFunction
+
+```javascript
+Z.isFunction( fn )
+```
 
 Returns `true` if `fn` is a function.
 
-#### isPlainObject ( obj )
+#### isPlainObject
+
+```javascript
+Z.isPlainObject( obj )
+```
 
 Near identical port from jQuery. Excludes `null`, arrays, constructed objects, the global object, and DOM nodes.
 
-#### isEmpty ( obj, [ andPrototype ] )
+#### isEmpty
+
+```javascript
+Z.isEmpty( obj, [ andPrototype ] )
+```
 
 Returns a boolean indicating whether the object or array at `obj` contains any members. For an `Object` type, if `andPrototype` evaluates to `true`, then `obj` must also be empty throughout its prototype chain.
 
-#### isEqual ( subject, object )
+#### isEqual
+
+```javascript
+Z.isEqual( subject, object )
+```
 
 Performs a deep equality test between two objects.
 
@@ -312,7 +348,11 @@ Z.isEqual( [1], { 0:1, 1:undefined } ); // true
 Z.isEqual( { 0:1, 1:undefined }, [1] ); // false
 ```
 
-#### lookup ( obj, path, [ separator ] )
+#### lookup
+
+```javascript
+Z.lookup( obj, path, [ separator ] )
+```
 
 Retrieves the value at the location indicated by the provided `path` string inside a nested object `obj`.
 
@@ -325,9 +365,13 @@ Z.lookup( x, 'a.b.c' ); // undefined
 
 
 
-### Iteration <a name="api--iteration" href="#api--iteration">&#x1f517;</a>
+### Iteration
 
-#### each ( obj, callback )
+#### each
+
+```javascript
+Z.each( obj, callback )
+```
 
 Functional iterator with jQuery-style callback signature of `key, value, object`.
 
@@ -340,7 +384,11 @@ Z.each( { x:3, y:4, z:5 }, function ( axis, value, vector ) {
 });
 ```
 
-#### forEach ( obj, fn, context )
+#### forEach
+
+```javascript
+Z.forEach( obj, fn, context )
+```
 
 Functional iterator with ES5-style callback signature of `value, key, object`. If available, delegates to the native `Array.prototype.forEach` when appropriate.
 
@@ -355,9 +403,13 @@ Z.forEach( { x:3, y:4, z:5 }, function ( value, axis, vector ) {
 
 
 
-### Object manipulation and differentiation <a name="api--object-manipulation-and-differentiation" href="#api--object-manipulation-and-differentiation">&#x1f517;</a>
+### Object manipulation and differentiation
 
-#### edit( [ flags ], subject, source, [ ...sourceN ] )
+#### edit
+
+```javascript
+Z.edit( [ flags ], subject, source, [ ...sourceN ] )
+```
 
 Performs a differential operation across multiple objects.
 
@@ -441,11 +493,15 @@ reversion = Z.edit.apply( Z, [ true, object ].concat( deltas.reverse() ) );
 Z.isEqual( original, reversion ); // true
 ```
 
-*See also:* **clone**, **delta**, **diff**, **assign**
+*See also:* [**clone**](#clone), [**delta**](#delta), [**diff**](#diff), [**assign**](#assign)
 
-#### clone ( source, [ ...sourceN ] )
+#### clone
 
-Creates a new object or array and deeply copies properties from all `source` operands.
+```javascript
+Z.clone( source, [ ...sourceN ] )
+```
+
+Creates a new object or array and deeply copies properties from all `source` operands. *See also:* [**edit**](#edit)
 
 ```javascript
 var o = { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } },
@@ -458,14 +514,20 @@ o.c !== x.c;       // true
 o.c.d === x.c.d;   // true
 ```
 
-#### delta ( subject, source, [ ...sourceN ] )
+#### delta
 
-Deeply copies each `source` operand into `subject`, and returns a delta object, or an array of deltas in the case of multiple `source`s. *See also:* **edit**
+```javascript
+Z.delta( subject, source, [ ...sourceN ] )
+```
+
+Deeply copies each `source` operand into `subject`, and returns a delta object, or an array of deltas in the case of multiple `source`s.
+
+*See also:* [**edit**](#edit)
 
 ```javascript
 var _ = undefined, NIL = Z.NIL,
-    o = { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } },
-    edit = { b:[ _, 'bravo', 'charlie' ], c:{ d:NIL, e:2.718 } },
+    o     = { a:1, b:[ 'alpha', 'beta'             ], c:{ d:1            } },
+    edit  = {      b:[ _,       'bravo', 'charlie' ], c:{ d:NIL, e:2.718 } },
     delta = Z.delta( o, edit );
 
 o;     // { a:1, b:[ 'alpha', 'bravo', 'charlie' ], c:{ e:2.718 } }
@@ -474,21 +536,33 @@ delta; // { b:[ undefined, 'beta', NIL ], c:{ d:1, e:NIL } }
 Z.edit( 'deep', o, delta ); // { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } }
 ```
 
-#### diff ( subject, source, [ ...sourceN ] )
-
-Deeply compares each `source` operand to `subject`, and returns an absolute delta, or in the case of multiple `source` operands, an array of absolute deltas. Unlike the `delta` function, `diff` leaves `subject` unaffected. *See also:* **edit**
+#### diff
 
 ```javascript
-var _ = undefined, NIL = Z.NIL,
-    o = { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } },
-    x = { b:[ 'alpha', 'bravo' ], c:{ e:2.718 } },
-    diff = Z.diff( o, x );
-
-o;    // { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } }
-diff; // { a:1, b:[ undefined, 'beta' ], c:{ d:1, e:NIL } }
+Z.diff( subject, source, [ ...sourceN ] )
 ```
 
-#### assign ( [ target ], map, [ value ] )
+Deeply compares each `source` operand to `subject`, and returns an absolute delta, or in the case of multiple `source` operands, an array of absolute deltas. Unlike the `delta` function, `diff` leaves `subject` unaffected.
+
+*See also:* [**edit**](#edit)
+
+```javascript
+var o = { a:1, b:[ 'alpha', 'beta'  ], c:{ d:1          } },
+    x = {      b:[ 'alpha', 'bravo' ], c:{      e:2.718 } };
+
+Z.diff( o, x ); // { a:1, b:[ undefined, 'beta' ], c:{ d:1, e:NIL } }
+```
+
+For plain objects A and B, the following expression is `true`:
+```javascript
+Z.isEqual( A, Z.edit( B, Z.diff( A, B ) ) )
+```
+
+#### assign
+
+```javascript
+Z.assign( [ target ], map, [ value ] )
+```
 
 Performs batch assignments of values to one or more keys of an object.
 
@@ -503,10 +577,14 @@ Z.assign( 'a b c', 42 );
 // { a: 42, b: 42, c: 42 }
 
 Z.assign( 'a b c' );
-// { a: true, b: true, c: true }
+// { a: 'a', b: 'b', c: 'c' }
 ```
 
-#### alias ( object, map )
+#### alias
+
+```javascript
+Z.alias( object, map )
+```
 
 Within `object`, copies a value from one key to one or more other keys.
 
@@ -523,7 +601,11 @@ Z.alias( { a:1, c:2, g:3 }, {
 
 ### Inheritance facilitators <a name="api--inheritance-facilitators" href="#api--inheritance-facilitators">&#x1f517;</a>
 
-#### inherit ( child, parent, [ properties ], [ statics ] )
+#### inherit
+
+```javascript
+Z.inherit( child, parent, [ properties ], [ statics ] )
+```
 
 Facilitates prototypal inheritance between a `child` constructor and a `parent` constructor. In addition, `child` also inherits static members that are direct properties of `parent`.
 
@@ -558,7 +640,11 @@ c.eat();             // "om nom nom"
 c.sing();            // "cluck"
 ```
 
-#### privilege ( object, methodStore, map )
+#### privilege
+
+```javascript
+Z.privilege( object, methodStore, map )
+```
 
 Generates partially applied functions for use as methods on an `object`.
 
@@ -573,10 +659,12 @@ A limitation of this technique is the fact that, since partially applied values 
 ```javascript
 function Class () {
     var aPrivateObject = { attachment: 0 },
-        aPrivateArray = [];
+        aPrivateArray = [],
+        aPrivateFunction = function () {};
 
     Z.privilege( this, Class.privileged, {
-        aPrivilegedMethod: [ aPrivateObject, aPrivateArray ]
+        'aPrivilegedMethod aSimilarMethod' : [ aPrivateObject, aPrivateArray ],
+        'aDifferentMethod' : [ aPrivateFunction ]
     });
 }
 Class.privileged = {
@@ -586,6 +674,14 @@ Class.privileged = {
             thePrivateArray.push( arg2 );
         }
         return theActualMethod;
+    },
+    aSimilarMethod: function ( thePrivateObject, thePrivateArray ) {
+        return function () { /*...*/ };
+    },
+    aDifferentMethod: function ( thePrivateFunction ) {
+        return function ( arg ) {
+            return thePrivateFunction( arg );
+        };
     }
 }
 
@@ -595,7 +691,8 @@ function Subclass () {
         myPrivateArray = [];
 
     Z.privilege( this, Class.privileged, {
-        aPrivilegedMethod: [ myPrivateObject, myPrivateArray ]
+        'aPrivilegedMethod aSimilarMethod' : [ myPrivateObject, myPrivateArray ],
+        'aDifferentMethod' : [ aPrivateFunction ]
     });
 }
 
@@ -612,13 +709,25 @@ sc.aPrivilegedMethod( 'one', 'two' );
 
 #### flatten
 
+```javascript
+Z.flatten( obj )
+```
+
 Extracts elements of nested arrays.
 
-#### keys ( obj )
+#### keys
+
+```javascript
+Z.keys( obj )
+```
 
 Returns an object’s keys in an ordered string array.
 
-#### invert ( array )
+#### invert
+
+```javascript
+Z.invert( array )
+```
 
 For an `array` whose values are unique key strings, this returns an object that is a key-value inversion of `array`.
 
@@ -626,11 +735,19 @@ For an `array` whose values are unique key strings, this returns an object that 
 
 ### Miscellaneous <a name="api--miscellaneous" href="#api--miscellaneous">&#x1f517;</a>
 
-#### stringFunction ( fn )
+#### stringFunction
+
+```javascript
+Z.stringFunction( fn )
+```
 
 Cyclically references a function’s output as its own `toString` property.
 
-#### valueFunction ( fn )
+#### valueFunction
+
+```javascript
+Z.valueFunction( fn )
+```
 
 Cyclically references a function’s output as its own `valueOf` property.
 
