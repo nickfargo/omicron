@@ -209,7 +209,7 @@ Calling `replace` instates the new element at `index`, adjusts the elements ahe
 
 #### VERSION
 
-0.1.4
+0.1.5
 
 #### env
 
