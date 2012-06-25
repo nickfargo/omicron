@@ -1,8 +1,8 @@
 {
 	"name"          : "zcore",
 	"version"       : "0.1.5",
-	"description"   : "",
-	"homepage"      : "",
+	"description"   : "A library for object manipulation and differential operations, prototypal inheritance, and more.",
+	"homepage"      : "http://github.com/zvector/zcore",
 	"keywords"      : [ "utility", "util", "core", "functions" ],
 	"author"        : "Nick Fargo <nick@zvector.com>",
 	"contributors"  : [],
