@@ -1,1 +1,1 @@
-module.exports = require('./zcore');
+module.exports = require('./omicron');
