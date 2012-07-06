@@ -2,3 +2,4 @@
 *-min.js
 .project
 *.log
+.DS_Store

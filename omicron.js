@@ -10,6 +10,8 @@
 // * Prototypal inheritance
 // * Selected general tasks: safe typing, functional iteration, etc.
 //
+// [omicronjs.org](http://omicronjs.org/)
+// 
 // <a class="icon-large icon-octocat"
 //    href="http://github.com/nickfargo/omicron/"></a>
 
@@ -36,10 +38,10 @@ var global = this,
     //
     // #### NIL
     //
-    // Unique object reference. Used by `edit` and related differential
-    // operation functions, where an object with a property whose value is set
-    // to `NIL` indicates the absence or deletion of the corresponding
-    // property on an associated operand.
+    // Unique object reference. Used by [`edit`](#edit) and the related
+    // differential operation functions, where an object with a property whose
+    // value is set to `NIL` indicates the absence or deletion of the
+    // corresponding property on an associated operand.
     NIL = O.NIL = ( function () { function NIL () {} return new NIL; }() ),
 
     // <a class="icon-link" name="to-string" href="#to-string"></a>
@@ -105,8 +107,8 @@ O.noop = noop;
 //
 // #### getThis
 //
-// Like `noop`, except suited for substitution on methods designed to be
-// chainable.
+// Like [`noop`](#noop), except suited for substitution on methods that would
+// normally return their context object.
 function getThis () { return this; }
 O.getThis = getThis;
 
@@ -128,7 +130,7 @@ __native.fn = {
 //
 // #### type
 //
-// A safe alternative to `typeof` that checks against
+// An established browser-safe alternative to `typeof` that checks against
 // `Object.prototype.toString()`.
 function type ( obj ) {
     return obj == null ?
@@ -212,7 +214,7 @@ O.isEmpty = isEmpty;
 //
 // #### isEqual
 //
-// Performs deep equality test.
+// Performs a deep equality test.
 function isEqual ( subject, object ) {
     return subject === object || isEmpty( diff( subject, object || {} ) );
 }
@@ -305,7 +307,8 @@ O.forEach = forEach;
 // Contains techniques and influences from the deep-cloning procedure of
 // `jQuery.extend`, with which `edit` also retains a compatible interface.
 //
-// *See also:* **clone**, **delta**, **diff**, **assign**
+// *See also:* [`clone`](#clone), [`delta`](#delta), [`diff`](#diff),
+// [`assign`](#assign)
 function edit () {
     var i, l, t, flags, flagsString, subject, subjectIsArray, deltas, delta,
         key, value, valueIsArray, source, target, clone, result;
@@ -405,7 +408,7 @@ O.edit = O.extend = edit;
 //
 // #### clone
 //
-// Specialization of `edit`.
+// Specialization of [`edit`](#edit).
 function clone () {
     return edit.apply( O, [ 'deep all', isArray( arguments[0] ) ? [] : {} ]
         .concat( slice.call( arguments ) ) );
@@ -416,7 +419,9 @@ O.clone = clone;
 //
 // #### delta
 //
-// Specialization of `edit`.
+// Specialization of [`edit`](#edit) that applies changes defined in `source`
+// to `subject`, and returns a structured map of the changes applied. Additions and updates are
+// represented in the delta object 
 function delta () {
     return edit.apply( O, [ 'deep delta' ]
         .concat( slice.call( arguments ) ) );
@@ -427,7 +432,10 @@ O.delta = delta;
 //
 // #### diff
 //
-// Specialization of `edit`.
+// Specialization of [`edit`](#edit) that returns the delta between the
+// provided `subject` and `source`. Operates similarly to [`delta`] except no
+// changes are made to `subject`, and `source` is evaluated absolutely rather
+// than applied relatively.
 function diff () {
     return edit.apply( O, [ 'deep delta immutable absolute' ]
         .concat( slice.call( arguments ) ) );
