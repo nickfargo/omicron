@@ -12,6 +12,8 @@ assist with:</p>
 <li>Selected general tasks: safe typing, functional iteration, etc.</li>
 </ul>
 
+<p><a href="http://omicronjs.org/">omicronjs.org</a></p>
+
 <p><a class="icon-large icon-octocat"
    href="http://github.com/nickfargo/omicron/"></a></p>             </td>             <td class="code">               <div class="highlight"><pre><span class="p">;(</span> <span class="kd">function</span> <span class="p">(</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
 
@@ -34,10 +36,10 @@ assist with:</p>
 
 <h4>NIL</h4>
 
-<p>Unique object reference. Used by <code>edit</code> and related differential
-operation functions, where an object with a property whose value is set
-to <code>NIL</code> indicates the absence or deletion of the corresponding
-property on an associated operand.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">NIL</span> <span class="o">=</span> <span class="nx">O</span><span class="p">.</span><span class="nx">NIL</span> <span class="o">=</span> <span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="kd">function</span> <span class="nx">NIL</span> <span class="p">()</span> <span class="p">{}</span> <span class="k">return</span> <span class="k">new</span> <span class="nx">NIL</span><span class="p">;</span> <span class="p">}()</span> <span class="p">),</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p><a class="icon-link" name="to-string" href="#to-string"></a></p>
+<p>Unique object reference. Used by <a href="#edit"><code>edit</code></a> and the related
+differential operation functions, where an object with a property whose
+value is set to <code>NIL</code> indicates the absence or deletion of the
+corresponding property on an associated operand.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">NIL</span> <span class="o">=</span> <span class="nx">O</span><span class="p">.</span><span class="nx">NIL</span> <span class="o">=</span> <span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="kd">function</span> <span class="nx">NIL</span> <span class="p">()</span> <span class="p">{}</span> <span class="k">return</span> <span class="k">new</span> <span class="nx">NIL</span><span class="p">;</span> <span class="p">}()</span> <span class="p">),</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p><a class="icon-link" name="to-string" href="#to-string"></a></p>
 
 <h4>toString</h4>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">toString</span> <span class="o">=</span> <span class="nx">O</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span>
         <span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">toString</span><span class="p">,</span>
@@ -79,8 +81,8 @@ property on an associated operand.</p>             </td>             <td class="
 
 <h4>getThis</h4>
 
-<p>Like <code>noop</code>, except suited for substitution on methods designed to be
-chainable.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">getThis</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="k">this</span><span class="p">;</span> <span class="p">}</span>
+<p>Like <a href="#noop"><code>noop</code></a>, except suited for substitution on methods that would
+normally return their context object.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">getThis</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="k">this</span><span class="p">;</span> <span class="p">}</span>
 <span class="nx">O</span><span class="p">.</span><span class="nx">getThis</span> <span class="o">=</span> <span class="nx">getThis</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Calls the specified native function if it exists and returns its result; if
 no such function exists on <code>obj</code> as registered in <code>__native.fn</code>, returns
 our unique <code>NIL</code> (as opposed to <code>null</code> or <code>undefined</code>, which may be a valid
@@ -96,7 +98,7 @@ result from the native function itself).</p>             </td>             <td c
 
 <h4>type</h4>
 
-<p>A safe alternative to <code>typeof</code> that checks against
+<p>An established browser-safe alternative to <code>typeof</code> that checks against
 <code>Object.prototype.toString()</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">type</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">obj</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">?</span>
         <span class="nb">String</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="o">:</span>
@@ -156,7 +158,7 @@ any members. For an <code>Object</code> type, if <code>andPrototype</code> is in
 
 <h4>isEqual</h4>
 
-<p>Performs deep equality test.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">isEqual</span> <span class="p">(</span> <span class="nx">subject</span><span class="p">,</span> <span class="nx">object</span> <span class="p">)</span> <span class="p">{</span>
+<p>Performs a deep equality test.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">isEqual</span> <span class="p">(</span> <span class="nx">subject</span><span class="p">,</span> <span class="nx">object</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">subject</span> <span class="o">===</span> <span class="nx">object</span> <span class="o">||</span> <span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">diff</span><span class="p">(</span> <span class="nx">subject</span><span class="p">,</span> <span class="nx">object</span> <span class="o">||</span> <span class="p">{}</span> <span class="p">)</span> <span class="p">);</span>
 <span class="p">}</span>
 <span class="nx">O</span><span class="p">.</span><span class="nx">isEqual</span> <span class="o">=</span> <span class="nx">isEqual</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p><a class="icon-link" name="each" href="#each"></a></p>
@@ -237,7 +239,8 @@ first argument may be either a Boolean <code>deep</code>, or a whitespace-delimi
 <p>Contains techniques and influences from the deep-cloning procedure of
 <code>jQuery.extend</code>, with which <code>edit</code> also retains a compatible interface.</p>
 
-<p><em>See also:</em> <strong>clone</strong>, <strong>delta</strong>, <strong>diff</strong>, <strong>assign</strong></p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">edit</span> <span class="p">()</span> <span class="p">{</span>
+<p><em>See also:</em> <a href="#clone"><code>clone</code></a>, <a href="#delta"><code>delta</code></a>, <a href="#diff"><code>diff</code></a>,
+<a href="#assign"><code>assign</code></a></p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">edit</span> <span class="p">()</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">l</span><span class="p">,</span> <span class="nx">t</span><span class="p">,</span> <span class="nx">flags</span><span class="p">,</span> <span class="nx">flagsString</span><span class="p">,</span> <span class="nx">subject</span><span class="p">,</span> <span class="nx">subjectIsArray</span><span class="p">,</span> <span class="nx">deltas</span><span class="p">,</span> <span class="nx">delta</span><span class="p">,</span>
         <span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">valueIsArray</span><span class="p">,</span> <span class="nx">source</span><span class="p">,</span> <span class="nx">target</span><span class="p">,</span> <span class="nx">clone</span><span class="p">,</span> <span class="nx">result</span><span class="p">;</span>
 
@@ -334,7 +337,7 @@ first argument may be either a Boolean <code>deep</code>, or a whitespace-delimi
 
 <h4>clone</h4>
 
-<p>Specialization of <code>edit</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">clone</span> <span class="p">()</span> <span class="p">{</span>
+<p>Specialization of <a href="#edit"><code>edit</code></a>.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">clone</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">edit</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span> <span class="nx">O</span><span class="p">,</span> <span class="p">[</span> <span class="s1">&#39;deep all&#39;</span><span class="p">,</span> <span class="nx">isArray</span><span class="p">(</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span> <span class="o">?</span> <span class="p">[]</span> <span class="o">:</span> <span class="p">{}</span> <span class="p">]</span>
         <span class="p">.</span><span class="nx">concat</span><span class="p">(</span> <span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">arguments</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
 <span class="p">}</span>
@@ -342,7 +345,9 @@ first argument may be either a Boolean <code>deep</code>, or a whitespace-delimi
 
 <h4>delta</h4>
 
-<p>Specialization of <code>edit</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">delta</span> <span class="p">()</span> <span class="p">{</span>
+<p>Specialization of <a href="#edit"><code>edit</code></a> that applies changes defined in <code>source</code>
+to <code>subject</code>, and returns a structured map of the changes applied. Additions and updates are
+represented in the delta object </p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">delta</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">edit</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span> <span class="nx">O</span><span class="p">,</span> <span class="p">[</span> <span class="s1">&#39;deep delta&#39;</span> <span class="p">]</span>
         <span class="p">.</span><span class="nx">concat</span><span class="p">(</span> <span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">arguments</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
 <span class="p">}</span>
@@ -350,7 +355,10 @@ first argument may be either a Boolean <code>deep</code>, or a whitespace-delimi
 
 <h4>diff</h4>
 
-<p>Specialization of <code>edit</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">diff</span> <span class="p">()</span> <span class="p">{</span>
+<p>Specialization of <a href="#edit"><code>edit</code></a> that returns the delta between the
+provided <code>subject</code> and <code>source</code>. Operates similarly to [<code>delta</code>] except no
+changes are made to <code>subject</code>, and <code>source</code> is evaluated absolutely rather
+than applied relatively.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">diff</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">edit</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span> <span class="nx">O</span><span class="p">,</span> <span class="p">[</span> <span class="s1">&#39;deep delta immutable absolute&#39;</span> <span class="p">]</span>
         <span class="p">.</span><span class="nx">concat</span><span class="p">(</span> <span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">arguments</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
 <span class="p">}</span>
