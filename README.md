@@ -371,19 +371,18 @@ subject.c.d === object.c.d;    // >>> true
 O.delta( subject, source, [ ...sourceN ] )
 ```
 
-The `deep delta` specialization of [`edit`](#edit): deeply copies each `source` operand into `subject`, and returns a **delta** object, or an array of deltas in the case of multiple `source`s.
+The `deep delta` specialization of [`edit`](#edit): deeply copies each `source` operand into `subject`, and returns the **delta** of the operation. In the case of multiple `source` operands, an array of deltas is returned.
 
-The returned delta object records the displaced values of properties of `subject` updated or deleted as a result of the operation, as well as the prior nonexistence of properties added to `subject` as a result of the operation.
+The returned delta object records the displaced values of properties of `subject` updated or deleted as a result of the operation, and — using the [`NIL`](#nil) entity — the prior *nonexistence* of properties that were added to `subject` as a result of the operation. Performing a successive `delta` or deep-`edit` operation on `subject`, this time providing the delta object returned by the first operation as the `source` for the second operation, will cause `subject` to be restored to its original condition.
 
-Put another way, the `delta` function edits `subject` by `source`, and returns the object capable of restoring `subject` to its prior condition.
-
-This can be expressed as an invariant: for any plain-objects `subject` and `object`, `delta` asserts that the following function will always evaluate to `true`:
+This relationship can be expressed as an invariant: for any plain-objects `subject` and `object`, `delta` asserts that the following function will always evaluate to `true`:
 
 ```javascript
 function invariant ( subject, object ) {
     var clone = O.clone( subject ),
         delta = O.delta( subject, object ),
         edit  = O.delta( subject, delta );
+    
     return O.isEqual( subject, clone ) && O.isEqual( object, edit );
 }
 ```
