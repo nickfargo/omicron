@@ -382,7 +382,7 @@ function invariant ( subject, object ) {
     var clone = O.clone( subject ),
         delta = O.delta( subject, object ),
         edit  = O.delta( subject, delta );
-    
+
     return O.isEqual( subject, clone ) && O.isEqual( object, edit );
 }
 ```
@@ -402,7 +402,7 @@ O.edit( 'deep', subject, delta );
          // >>> { a:1, b:[ 'alpha',   'beta'             ], c:{ d:1 } }
 ```
 
-*See also:* [**edit**](#edit)
+*See also:* [**edit**](#edit), [**diff**](#diff)
 
 
 #### diff
@@ -433,7 +433,7 @@ O.diff( subject, object );
          // >>> { a:1, b:[ undefined, 'beta'  ], c:{ d:1, e:NIL } }
 ```
 
-*See also:* [**edit**](#edit)
+*See also:* [**edit**](#edit), [**delta**](#delta)
 
 
 #### assign
@@ -703,7 +703,7 @@ var subject = { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } };
 
 O.isEqual( subject, { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } } );
 // >>> true
-O.isEqual( subject, { a:1, b:{ '1':'beta', '0':'alpha' }, c:{ d:1 } } )
+O.isEqual( subject, { a:1, b:{ '1':'beta', '0':'alpha' }, c:{ d:1 } } );
 // >>> true
 
 O.isEqual( [1], { 0:1, 1:undefined } );
