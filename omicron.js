@@ -216,7 +216,10 @@ O.isEmpty = isEmpty;
 //
 // Performs a deep equality test.
 function isEqual ( subject, object ) {
-    return subject === object || isEmpty( diff( subject, object || {} ) );
+    return subject === object ||
+        isEmpty( edit(
+            'deep all absolute immutable delta', subject, object || {}
+        ));
 }
 O.isEqual = isEqual;
 
