@@ -1,10 +1,10 @@
-# Omicron
+# Omicron.js
 
-Omicron **(“O”)** is a small JavaScript library of core functions and tools that assist with:
+Omicron **(“O”)** is a small JavaScript library that assists with:
 
-* Object manipulation and differential operations
-* Prototypal inheritance
-* Selected general tasks: safe typing, functional iteration, etc.
+* Performing differential operations on objects
+* Facilitating prototypal inheritance
+* Selected common tasks: browser-safe typing, functional iteration, etc.
 
 
 
@@ -64,39 +64,65 @@ function Timeline () {
         history: function () {
             return O.clone( history );
         },
+
         data: function () {
             return O.clone( history[ index ] );
         },
+
         back: function () {
+            var subject;
+            
             if ( index === 0 ) return;
-            var subject = history[ index ];
+            subject = history[ index ];
             history[ index ] = O.delta( subject, history[ --index ] );
+            
             return O.clone( history[ index ] = subject );
         },
+
         forward: function () {
+            var subject;
+
             if ( index === history.length - 1 ) return;
-            var subject = history[ index ];
+            subject = history[ index ];
             history[ index ] = O.delta( subject, history[ ++index ] );
+            
             return O.clone( history[ index ] = subject );
         },
+
         push: function ( object ) {
-            var l, n, subject = history[ index ];
+            var subject, l, n;
+
+            subject = history[ index ];
             history[ index ] = O.delta( subject, object );
             history[ ++index ] = subject;
             l = index + 1;
-            ( n = history.length - l ) && history.splice( l, n );
+            n = history.length - l;
+            if ( n ) {
+                history.splice( l, n );
+            }
+
             return l;
         },
+
         replace: function ( object ) {
-            var subject = history[ index ],
-                d = O.diff( subject, object ),
-                i;
+            var i, subject, diff, clone;
+
+            subject = history[ index ],
+            diff = O.diff( subject, object );
             history[ index ] = object;
-            index > 0 &&
-                ( history[ i = index - 1 ] = O.diff( O.clone( object, d, history[i] ), object ) );
-            index < history.length - 1 &&
-                ( history[ i = index + 1 ] = O.diff( O.clone( object, d, history[i] ), object ) );
-            return d;
+
+            if ( index > 0 ) {
+                i = index - 1;
+                clone = O.clone( object, diff, history[i] );
+                history[i] = O.diff( clone, object );
+            }
+            if ( index < history.length - 1 ) {
+                i = index + 1;
+                clone = O.clone( object, diff, history[i] );
+                history[i] = O.diff( clone, object );
+            }
+
+            return diff;
         }
     });
 }
@@ -106,13 +132,13 @@ Given the information preloaded into `history`, we can freely traverse a `Timeli
 
 ```javascript
 var t = new Timeline;
-t.data();    // {}
-t.forward(); // { a:1, b:2 }
-t.forward(); // { a:1, d:4 }              // History records 'b: NIL', so key 'b' was deleted
-t.forward(); // { d:4, e:5 }              // Likewise, 'a: NIL' caused key 'a' to be deleted
-t.forward(); // { d:4, e:2.718, f:6 }
-t.forward(); // undefined                 // End of the timeline
-t.data();    // { d:4, e:2.718, f:6 }
+t.data();     // >>> {}
+t.forward();  // >>> { a:1, b:2 }
+t.forward();  // >>> { a:1, d:4 }          // History records 'b: NIL', so key 'b' was deleted
+t.forward();  // >>> { d:4, e:5 }          // Likewise, 'a: NIL' caused key 'a' to be deleted
+t.forward();  // >>> { d:4, e:2.718, f:6 }
+t.forward();  // >>> undefined             // End of the timeline
+t.data();     // >>> { d:4, e:2.718, f:6 }
 ```
 
 Note how the elements of `history` are being used to edit the data at `history[ index ]`. Note also how the special value `NIL` is used to encode that the key to which it’s assigned on the source operand should be deleted as part of the edit to the subject operand.
@@ -120,14 +146,13 @@ Note how the elements of `history` are being used to edit the data at `history[ 
 Next we’ll head back to where we started — but first, let’s glance back into the timeline to see how its contents have changed now that we’re positioned at the front end:
 
 ```javascript
-t.history();
-// [
-//   { a:NIL, b:NIL },
-//   { b:2, d:NIL },
-//   { a:1, e:NIL },
-//   { e:5, f:NIL },
-//   { d:4, e:2.718, f:6 }
-// ]
+t.history();  // >>> [
+              //       { a:NIL, b:NIL },
+              //       { b:2, d:NIL },
+              //       { a:1, e:NIL },
+              //       { e:5, f:NIL },
+              //       { d:4, e:2.718, f:6 }
+              //     ]
 ```
 
 The data is different, but it still records the exact same information. This is because the history elements are relative, and our perspective has changed after having moved `forward` four times — whereas the object initially contained the information needed to step forward in the timeline, viewing the timeline now from `index = 4`, its elements instead contain the information needed to step back to the original empty object at `index = 0`.
@@ -135,313 +160,99 @@ The data is different, but it still records the exact same information. This is 
 Traversing backward now:
 
 ```javascript
-t.back();    // { d:4, e:5 }
-t.back();    // { a:1, d:4 }
-t.back();    // { a:1, b:2 }
-t.back();    // {}
-t.back();    // undefined                 // Beginning of the timeline
+t.back();     // >>> { d:4, e:5 }
+t.back();     // >>> { a:1, d:4 }
+t.back();     // >>> { a:1, b:2 }
+t.back();     // >>> {}
+t.back();     // >>> undefined            // Beginning of the timeline
 ```
 
 And since we’ve gone back to where we started, the timeline elements will have transformed themselves to look just like they originally did:
 
 ```javascript
-t.history();
-// [
-//   {},
-//   { a:1, b:2 },
-//   { b:NIL, d:4 },
-//   { a:NIL, e:5 },
-//   { e:2.718, f:6 }
-// ]
+t.history();  // >>> [
+              //       {},
+              //       { a:1, b:2 },
+              //       { b:NIL, d:4 },
+              //       { a:NIL, e:5 },
+              //       { e:2.718, f:6 }
+              //     ]
 ```
 
 Next, let’s try `push`ing a new element into the middle of the history:
 
 ```javascript
-t.forward(); // { a:1, b:2 }
-t.forward(); // { a:1, d:4 }
-t.push( { b:2, c:3 } ); // 4            // The new length; `push` drops any forward elements
-t.data();    // { a:1, b:2, c:3, d:4 }
+t.forward();  // >>> { a:1, b:2 }
+t.forward();  // >>> { a:1, d:4 }
+t.push( { b:2, c:3 } ); // >>> 4  (the new length; `push` drops any forward elements)
+t.data();     // >>> { a:1, b:2, c:3, d:4 }
 
-t.history();
-// [
-//   { a:NIL, b:NIL },
-//   { b:2, d:NIL },
-//   { b:NIL, c:NIL },
-//   { a:1, b:2, c:3, d:4 }
-// ]
+t.history();  // >>> [
+              //       { a:NIL, b:NIL },
+              //       { b:2, d:NIL },
+              //       { b:NIL, c:NIL },
+              //       { a:1, b:2, c:3, d:4 }
+              //     ]
 ```
 
 And finally, let’s `replace` an element, and examine its result and effects on the timeline:
 
 ```javascript
-t.back();    // { a:1, d:4 }
-t.history();
-// [
-//   { a:NIL, b:NIL },
-//   { b:2, d:NIL },
-//   { a:1, d:4 }, // <---------- index
-//   { b:2, c:3 }
-// ]
+t.back();     // >>> { a:1, d:4 }
+
+t.history();  // >>> [
+              //       { a:NIL, b:NIL },
+              //       { b:2, d:NIL },
+              //       { a:1, d:4 }, // <---------- index
+              //       { b:2, c:3 }
+              //     ]
 
 t.replace( { a:4, b:3, d:1 } );
-// { a:1, b:NIL, d:4 }
+// >>> { a:1, b:NIL, d:4 }
 
-t.history();
-// [
-//   { a:NIL, b:NIL },
-//   { a:1, b:2, d:NIL },
-//   { a:4, b:3, d:1 }, // <----- index
-//   { a:1, b:2, c:3, d:4 }
-// ]
+t.history();  // >>> [
+              //       { a:NIL, b:NIL },
+              //       { a:1, b:2, d:NIL },
+              //       { a:4, b:3, d:1 }, // <----- index
+              //       { a:1, b:2, c:3, d:4 }
+              //     ]
 ```
 
-Calling `replace` instates the new element at `index`, adjusts the elements ahead and behind of the current `index` to reflect the new differentials, and returns the **delta** of the new element applied against the old element.
+Calling `replace` instates the new element at `index`, adjusts the elements ahead and behind of the current `index` to reflect the new differentials, and returns the **delta** of the new element applied against the old element.
 
 
 
 ## API
 
-* [Meta / Cached entities](#meta--cached-entities)
-* [Special-purpose functions and objects](#special-purpose-functions-and-objects)
-* [Typing and inspection](#typing-and-inspection)
-* [Iteration](#iteration)
-* [Object manipulation and differentiation](#object-manipulation-and-differentiation)
-* [Inheritance facilitators](#inheritance-facilitators)
-* [Array/Object composition](#array--object-composition)
-* [Miscellaneous](#miscellaneous)
-
-* * *
-
-
-### Meta / Cached entities
-
-#### VERSION
-
-0.1.6
-
-#### env
-
-Environment variables.
-
-* `server` : `true` if the environment conforms to the CommonJS module system (e.g., node.js).
-* `client` : `true` in the case of a `window`ed environment (e.g. browser).
-* `debug` : `false`. Changing this has no built-in effect. May be coded against by dependent libraries for their own purposes.
-
-#### noConflict
-
-Returns control of the global `O` property to its original value.
-
-#### regexp
-
-Regular expression store.
-
-#### hasOwn
-
-`Object.prototype.hasOwnProperty`
-
-#### toString
-
-`Object.prototype.toString`
-
-#### slice
-
-`Array.prototype.slice`
-
-#### trim
-
-`String.prototype.trim`, or shim.
-
-#### create
-
-`Object.create`, or partial shim.
-
-#### getPrototypeOf
-
-`Object.getPrototypeOf`, or partial shim.
-
-
-* * *
-
-*Return to: [**Meta / Cached entities**](#meta--cached-entities)  <  [API](#api)  <  [top](#top)*
-
-* * *
-
-
-
-### Special-purpose functions and objects
-
-#### noop
-
-A function that returns `undefined`.
-
-#### getThis
-
-A function that returns `this`.
-
-#### thunk
-
-```javascript
-O.thunk( object )
-```
-
-Returns a lazy evaluator function that closes over and returns the provided `object` argument.
-
-#### NIL
-
-```javascript
-O.NIL
-```
-
-`NIL` is a special object used only for its unique reference. Whereas the `null` reference connotes “no object”, and `undefined` connotes “no value”, `NIL` specifically implies “no existence” of a corresponding property on some other object. The prime example is its use within [**edit**](#edit) and the related differential operation functions, where, within a given operand, a property whose value is set to `NIL` indicates the absence or deletion of the corresponding property on an associated operand.
-
-
-* * *
-
-*Return to: [**Special-purpose functions and objects**](#special-purpose-functions-and-objects)  <  [API](#api)  <  [top](#top)*
-
-* * *
-
-
-
-### Typing and inspection
-
-#### type
-
-```javascript
-O.type( object )
-```
-
-Returns the lowercase type string as derived from `toString`.
-
-#### isNumber
-
-```javascript
-O.isNumber( number )
-```
-
-Returns `true` if `number` is a valid numeric value.
-
-#### isArray
-
-```javascript
-O.isArray( array )
-```
-
-Returns `true` if `array` is a proper `Array`.
-
-#### isFunction
-
-```javascript
-O.isFunction( fn )
-```
-
-Returns `true` if `fn` is a function.
-
-#### isPlainObject
-
-```javascript
-O.isPlainObject( object )
-```
-
-Near identical port from jQuery. Excludes `null`, arrays, constructed objects, the global object, and DOM nodes.
-
-#### isEmpty
-
-```javascript
-O.isEmpty( object, [ andPrototype ] )
-```
-
-Returns a boolean indicating whether the object or array at `object` contains any members. For an `Object` type, if `andPrototype` evaluates to `true`, then `object` must also be empty throughout its prototype chain.
-
-#### isEqual
-
-```javascript
-O.isEqual( subject, object )
-```
-
-Performs a deep equality test between two objects.
-
-```javascript
-var subject = { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } };
-
-O.isEqual( subject, { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } } );         // true
-O.isEqual( subject, { a:1, b:{ '1':'beta', '0':'alpha' }, c:{ d:1 } } ); // true
-
-O.isEqual( [1], { 0:1, 1:undefined } ); // true
-O.isEqual( { 0:1, 1:undefined }, [1] ); // false
-```
-
-#### lookup
-
-```javascript
-O.lookup( object, path, [ separator ] )
-```
-
-Retrieves the value at the location indicated by the provided `path` string inside a nested object `object`.
-
-```javascript
-var object = { a: { b:42 } };
-O.lookup( object, 'a' );     // { b:42 }
-O.lookup( object, 'a.b' );   // 42
-O.lookup( object, 'a.b.c' ); // undefined
-```
-
-
-* * *
-
-*Return to: [**Typing and inspection**](#typing-and-inspection)  <  [API](#api)  <  [top](#top)*
-
-* * *
-
-
-
-### Iteration
-
-#### each
-
-```javascript
-O.each( object, callback )
-```
-
-Functional iterator with jQuery-style callback signature of `key, value, object`.
-
-```javascript
-O.each( [ 'a', 'b', 'c' ], function ( index, string, array ) {
-    array[ index ] = string.toUpperCase();
-});
-O.each( { x:3, y:4, z:5 }, function ( axis, value, vector ) {
-    vector[ axis ] = value * value;
-});
-```
-
-#### forEach
-
-```javascript
-O.forEach( object, fn, context )
-```
-
-Functional iterator with ES5-style callback signature of `value, key, object`. If available, delegates to the native `Array.prototype.forEach` when appropriate.
-
-```javascript
-O.forEach( [ 'a', 'b', 'c' ], function ( string, index, array ) {
-    array[ index ] = string.toUpperCase();
-});
-O.forEach( { x:3, y:4, z:5 }, function ( value, axis, vector ) {
-    vector[ axis ] = value * value;
-});
-```
-
-
-* * *
-
-*Return to: [**Iteration**](#iteration)  <  [API](#api)  <  [top](#top)*
+* **[Object manipulation and differentiation](#object-manipulation-and-differentiation)**
+    * [`edit`](#edit), [`clone`](#clone), [`delta`](#delta), [`diff`](#diff), [`assign`](#assign), [`alias`](#alias)
+* **[Inheritance](#inheritance)**
+    * [`inherit`](#inherit), [`privilege`](#privilege), [`create`](#create), [`getPrototypeOf`](#getprototypeof)
+* **[Typing and inspection](#typing-and-inspection)**
+    * [`type`](#type), [`isNumber`](#isnumber), [`isArray`](#isarray), [`isFunction`](#isfunction), [`isPlainObject`](#isplainobject), [`isEmpty`](#isempty), [`isEqual`](#isequal), [`lookup`](#lookup)
+* **[Iteration](#iteration)**
+    * [`each`](#each), [`forEach`](#foreach)
+* **[Array/object composition](#array--object-composition)**
+    * [`flatten`](#flatten), [`keys`](#keys), [`invert`](#invert)
+* **[Meta / Miscellaneous](#meta--miscellaneous)**
+    * [`env`](#env), [`noConflict`](#noconflict), [`regexp`](#regexp), [`NIL`](#nil), [`noop`](#noop), [`getThis`](#getthis), [`thunk`](#thunk), [`hasOwn`](#hasown), [`toString`](#tostring), [`slice`](#slice), [`trim`](#trim), [`stringFunction`](#stringfunction), [`valueFunction`](#valuefunction)
 
 * * *
 
 
 
 ### Object manipulation and differentiation
+
+* * *
+
+* [`edit`](#edit)
+* [`clone`](#clone)
+* [`delta`](#delta)
+* [`diff`](#diff)
+* [`assign`](#assign)
+* [`alias`](#alias)
+
+* * *
 
 #### edit
 
@@ -451,23 +262,21 @@ O.edit( [ flags ], subject, source, [ ...sourceN ] )
 
 Performs a differential operation across multiple objects.
 
-By default, `edit` returns the first object-typed argument as `subject`, to which the contents of each subsequent `source` operand are copied, in order. Optionally the first argument may be either a Boolean `deep`, or a whitespace-delimited `flags` String containing any of the following keywords:
+By default, `edit` returns the first object-typed argument as `subject`, to which the contents of each subsequent `source` operand are copied, in order. Optionally the first argument may be either a Boolean `deep`, or a whitespace-delimited `flags` string containing any of the following keywords:
 
-* `deep` : If a `source` property is an object or array, a structured clone is created on
-     `subject`.
+* `deep` : If a `source` property is an object or array, a structured clone is created on `subject`.
 
 * `own` : Excludes `source` properties filtered by `Object.hasOwnProperty`.
 
-* `all` : Includes `source` properties with undefined values.
+* `all` : Includes `source` properties with `undefined` or `NIL` values.
 
-* `delta` : Returns the **delta**, a structured object that contains the changes made to `subject`. If multiple `source` operands are provided, an array of deltas is returned. The delta can be used to store history information; immediately applying a returned delta array in reverse order using `edit('deep', subject, ...)` reverts `subject` to its original state (see example below).
+* `delta` : Returns a **delta** object that records the changes made to `subject`. If multiple `source` operands are provided, an array of deltas is returned. The delta can be used to store history information; immediately applying a returned delta array in reverse order using `edit('deep', subject, ...)` reverts `subject` to its original state (see example below).
 
-* `immutable` : Leaves `subject` unchanged. Useful in certain applications where idempotence is desirable, such as when accompanied by the `delta` and `absolute` flags to produce a “diff” object.
+* `immutable` : Leaves `subject` unchanged. Useful when idempotence is desirable, such as when accompanied by the `delta` and `absolute` flags to produce a “diff” object.
 
 * `absolute` : Processes against all properties in `subject` for each `source`, including those not contained in `source`.
 
-Contains techniques and influences from the deep-cloning procedure of **jQuery.extend**, with
-which `edit` also retains a compatible API.
+Contains techniques and influences from the deep-cloning procedure of **jQuery.extend**, with which `edit` also retains a compatible interface.
 
 *Alias:* **extend**
 
@@ -483,7 +292,7 @@ O.edit( 'deep all', { a:1, b:[ 'alpha', 'beta' ] }, { b:[ undefined, 'bravo', 'c
 ```
 
 ```javascript
-var _ = undefined, NIL = O.NIL,
+var NIL = O.NIL,
     original, edits, object, deltas, reversion;
 
 original = {
@@ -500,7 +309,7 @@ edits = [
     { a: "un", b: "deux" },
     { c: { d: "III", e: "IV" } },
     { a: NIL, f: "Foo" },
-    { b: "dos", g: [ _, "une" ] }
+    { b: "dos", g: [ undefined, "une" ] }
 ];
 
 object = O.edit( true, {}, original );
@@ -517,7 +326,7 @@ deltas = O.edit.apply( O, [ 'deep delta', object ].concat( edits ) );
 //   { a: "uno", b: "2" },
 //   { c: { d: 3, e: 4 } },
 //   { a: "un", f: NIL },
-//   { b: "deux", g: [ _, 1 ] } ]
+//   { b: "deux", g: [ undefined, 1 ] } ]
 
 reversion = O.edit.apply( O, [ true, object ].concat( deltas.reverse() ) );
 // { a: 1,
@@ -528,10 +337,11 @@ reversion = O.edit.apply( O, [ true, object ].concat( deltas.reverse() ) );
 //   },
 //   g: [ 0, 1 ] }
 
-O.isEqual( original, reversion ); // true
+O.isEqual( original, reversion ); // >>> true
 ```
 
 *See also:* [**clone**](#clone), [**delta**](#delta), [**diff**](#diff), [**assign**](#assign)
+
 
 #### clone
 
@@ -539,20 +349,21 @@ O.isEqual( original, reversion ); // true
 O.clone( source, [ ...sourceN ] )
 ```
 
-Creates a new object or array and deeply copies properties from all `source` operands.
-
-*See also:* [**edit**](#edit)
+The `deep all` specialization of [`edit`](#edit): creates a new object or array and deeply copies properties from all `source` operands.
 
 ```javascript
 var subject = { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } },
     object = O.clone( subject );
 
-subject !== object;           // true
-subject.b !== object.b;       // true
-subject.b[0] === object.b[0]; // true
-subject.c !== object.c;       // true
-subject.c.d === object.c.d;   // true
+subject === object;            // >>> false
+subject.b === object.b;        // >>> false
+subject.b[0] === object.b[0];  // >>> true
+subject.c === object.c;        // >>> false
+subject.c.d === object.c.d;    // >>> true
 ```
+
+*See also:* [**edit**](#edit)
+
 
 #### delta
 
@@ -560,22 +371,40 @@ subject.c.d === object.c.d;   // true
 O.delta( subject, source, [ ...sourceN ] )
 ```
 
-Deeply copies each `source` operand into `subject`, and returns a delta object, or an array of deltas in the case of multiple `source`s.
+The `deep delta` specialization of [`edit`](#edit): deeply copies each `source` operand into `subject`, and returns a **delta** object, or an array of deltas in the case of multiple `source`s.
+
+The returned delta object records the displaced values of properties of `subject` updated or deleted as a result of the operation, as well as the prior nonexistence of properties added to `subject` as a result of the operation.
+
+Put another way, the `delta` function edits `subject` by `source`, and returns the object capable of restoring `subject` to its prior condition.
+
+This can be expressed as an invariant: for any plain-objects `subject` and `object`, `delta` asserts that the following function will always evaluate to `true`:
+
+```javascript
+function invariant ( subject, object ) {
+    var clone = O.clone( subject ),
+        delta = O.delta( subject, object ),
+        edit  = O.delta( subject, delta );
+    return O.isEqual( subject, clone ) && O.isEqual( object, edit );
+}
+```
+
+##### Example
+
+```javascript
+var NIL       = O.NIL,
+    subject   = { a:1, b:[ 'alpha',   'beta'             ], c:{ d:1        } },
+    object    = {      b:[ undefined, 'bravo', 'charlie' ], c:{ d:NIL, e:2 } },
+    delta     = O.delta( subject, object );
+
+subject; // >>> { a:1, b:[ 'alpha',   'bravo', 'charlie' ], c:{      e:2   } }
+delta;   // >>> {      b:[ undefined, 'beta',  NIL       ], c:{ d:1, e:NIL } }
+
+O.edit( 'deep', subject, delta );
+         // >>> { a:1, b:[ 'alpha',   'beta'             ], c:{ d:1 } }
+```
 
 *See also:* [**edit**](#edit)
 
-```javascript
-var NIL    = O.NIL,
-    object = { a:1, b:[ 'alpha',   'beta'             ], c:{ d:1            } },
-    edit   = {      b:[ undefined, 'bravo', 'charlie' ], c:{ d:NIL, e:2.718 } },
-    delta  = O.delta( object, edit );
-
-object;   // { a:1, b:[ 'alpha',   'bravo', 'charlie' ], c:{      e:2.718   } }
-delta;    // {      b:[ undefined, 'beta',  NIL       ], c:{ d:1, e:NIL     } }
-
-O.edit( 'deep', object, delta );
-          // { a:1, b:[ 'alpha',   'beta'             ], c:{ d:1 } }
-```
 
 #### diff
 
@@ -583,21 +412,30 @@ O.edit( 'deep', object, delta );
 O.diff( subject, source, [ ...sourceN ] )
 ```
 
-Deeply compares each `source` operand to `subject`, and returns an absolute delta, or in the case of multiple `source` operands, an array of absolute deltas. Unlike the `delta` function, `diff` leaves `subject` unaffected.
+The `deep absolute immutable delta` specialization of [`edit`](#edit): deeply compares each `source` operand to `subject`, and returns an absolute delta, or in the case of multiple `source` operands, an array of absolute deltas. Unlike the `delta` function, `diff` leaves `subject` unaffected.
+
+For any plain objects `subject` and `object`, `diff` asserts that the following function will always evaluate to `true`:
+
+```javascript
+function invariant ( subject, object ) {
+    var diff = O.diff( subject, object ),
+        edit = O.edit( 'deep', object, diff );
+    return O.isEqual( subject, edit );
+}
+```
+
+##### Example
+
+```javascript
+var subject   = { a:1, b:[ 'alpha',   'beta'  ], c:{ d:1        } },
+    object    = {      b:[ 'alpha',   'bravo' ], c:{      e:2   } };
+
+O.diff( subject, object );
+         // >>> { a:1, b:[ undefined, 'beta'  ], c:{ d:1, e:NIL } }
+```
 
 *See also:* [**edit**](#edit)
 
-```javascript
-var subject = { a:1, b:[ 'alpha', 'beta'  ], c:{ d:1          } },
-    object  = {      b:[ 'alpha', 'bravo' ], c:{      e:2.718 } };
-
-O.diff( subject, object ); // { a:1, b:[ undefined, 'beta' ], c:{ d:1, e:NIL } }
-```
-
-For plain objects `subject` and `object`, `diff` asserts the invariant:
-```javascript
-O.isEqual( subject, O.edit( object, O.diff( subject, object ) ) ) === true
-```
 
 #### assign
 
@@ -621,6 +459,7 @@ O.assign( 'a b c' );
 // { a: 'a', b: 'b', c: 'c' }
 ```
 
+
 #### alias
 
 ```javascript
@@ -631,11 +470,21 @@ Within `object`, copies a value from one key to one or more other keys.
 
 ```javascript
 O.alias( { a:1, c:2, g:3 }, {
-    a: 'b'     
-    c: 'd e f' 
-    g: 'h i'   
+    a: 'b'
+    c: 'd e f'
+    g: 'h i'
 });
 // { a:1, b:1, c:2, d:2, e:2, f:2, g:3, h:3, i:3 }
+
+var object = {
+    addEvent: function ( type, listener ) { /* ... */ },
+    removeEvent: function ( type, listener ) { /* ... */ }
+};
+O.alias( object, {
+    addEvent: 'on bind',
+    removeEvent: 'off unbind'
+});
+object.on( /* ... */ );
 ```
 
 
@@ -647,7 +496,16 @@ O.alias( { a:1, c:2, g:3 }, {
 
 
 
-### Inheritance facilitators
+### Inheritance
+
+* * *
+
+* [`inherit`](#inherit)
+* [`privilege`](#privilege)
+* [`create`](#create)
+* [`getPrototypeOf`](#getprototypeof)
+
+* * *
 
 #### inherit
 
@@ -655,13 +513,13 @@ O.alias( { a:1, c:2, g:3 }, {
 O.inherit( child, parent, [ properties ], [ statics ] )
 ```
 
-Facilitates prototypal inheritance between a `child` constructor and a `parent` constructor. In addition, `child` also inherits static members that are direct properties of `parent`.
+Properly arranges the prototypal inheritance relation between a `child` constructor and a `parent` constructor, additionally copies any “static” properties of `parent` to `child`, and returns the `child`.
 
 * `child` and `parent` are constructor functions.
 
-* `properties` *(optional)* is an object containing properties to be added to the prototype of `child`.
+* `properties` : *(optional)* an object containing properties to be added to the prototype of `child`.
 
-* `statics` *(optional)* is an object containing properties to be added to `child` itself.
+* `statics` : *(optional)* is an object containing properties to be added to `child` itself.
 
 ```javascript
 function Animal () {}
@@ -751,16 +609,195 @@ var sc = new Subclass;
 sc.aPrivilegedMethod( 'one', 'two' );
 ```
 
+#### create
+
+`Object.create`, or partial shim.
+
+#### getPrototypeOf
+
+`Object.getPrototypeOf`, or partial shim.
+
 
 * * *
 
-*Return to: [**Inheritance facilitators**](#inheritance-facilitators)  <  [API](#api)  <  [top](#top)*
+*Return to: [**Inheritance**](#inheritance)  <  [API](#api)  <  [top](#top)*
+
+* * *
+
+
+
+### Typing and inspection
+
+* * *
+
+* [`type`](#type)
+* [`isNumber`](#isnumber)
+* [`isArray`](#isarray)
+* [`isFunction`](#isfunction)
+* [`isPlainObject`](#isplainobject)
+* [`isEmpty`](#isempty)
+* [`isEqual`](#isequal)
+* [`lookup`](#lookup)
+
+* * *
+
+#### type
+
+```javascript
+O.type( object )
+```
+
+Returns the lowercase type string as derived from `toString`.
+
+#### isNumber
+
+```javascript
+O.isNumber( number )
+```
+
+Returns `true` if `number` is a valid numeric value.
+
+#### isArray
+
+```javascript
+O.isArray( array )
+```
+
+Returns `true` if `array` is a proper `Array`.
+
+#### isFunction
+
+```javascript
+O.isFunction( fn )
+```
+
+Returns `true` if `fn` is a function.
+
+#### isPlainObject
+
+```javascript
+O.isPlainObject( object )
+```
+
+Returns `false` for non-objects, `null`, arrays, constructed objects, the global object, and DOM nodes (a near-identical port from **jQuery**).
+
+In particular for this library, since “plain” objects are essentially just simple key-value stores, the `isPlainObject` test is especially useful for the allowance of deep-cloning routines, like those employed in the **[`edit`](#edit)**/`extend` family of functions.
+
+#### isEmpty
+
+```javascript
+O.isEmpty( object, [ andPrototype ] )
+```
+
+Returns a boolean indicating whether the object or array at `object` contains any members. For an `Object` type, if `andPrototype` evaluates to `true`, then `object` must also be empty throughout its prototype chain.
+
+#### isEqual
+
+```javascript
+O.isEqual( subject, object )
+```
+
+Performs a deep equality test between two objects.
+
+```javascript
+var subject = { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } };
+
+O.isEqual( subject, { a:1, b:[ 'alpha', 'beta' ], c:{ d:1 } } );
+// >>> true
+O.isEqual( subject, { a:1, b:{ '1':'beta', '0':'alpha' }, c:{ d:1 } } )
+// >>> true
+
+O.isEqual( [1], { 0:1, 1:undefined } );
+// >>> true
+O.isEqual( { 0:1, 1:undefined }, [1] );
+// >>> false
+```
+
+#### lookup
+
+```javascript
+O.lookup( object, path, [ separator ] )
+```
+
+Retrieves the value at the location indicated by the provided `path` string inside a nested object `object`.
+
+```javascript
+var object = { a: { b:42 } };
+O.lookup( object, 'a' );     // >>> { b:42 }
+O.lookup( object, 'a.b' );   // >>> 42
+O.lookup( object, 'a.b.c' ); // >>> undefined
+```
+
+
+* * *
+
+*Return to: [**Typing and inspection**](#typing-and-inspection)  <  [API](#api)  <  [top](#top)*
+
+* * *
+
+
+
+### Iteration
+
+* * *
+
+* [`each`](#each)
+* [`forEach`](#foreach)
+
+* * *
+
+#### each
+
+```javascript
+O.each( object, callback )
+```
+
+Functional iterator with jQuery-style callback signature of `key, value, object`.
+
+```javascript
+O.each( [ 'a', 'b', 'c' ], function ( index, string, array ) {
+    array[ index ] = string.toUpperCase();
+});
+O.each( { x:3, y:4, z:5 }, function ( axis, value, vector ) {
+    vector[ axis ] = value * value;
+});
+```
+
+#### forEach
+
+```javascript
+O.forEach( object, fn, context )
+```
+
+Functional iterator with ES5-style callback signature of `value, key, object`. If available, delegates to the native `Array.prototype.forEach` when appropriate.
+
+```javascript
+O.forEach( [ 'a', 'b', 'c' ], function ( string, index, array ) {
+    array[ index ] = string.toUpperCase();
+});
+O.forEach( { x:3, y:4, z:5 }, function ( value, axis, vector ) {
+    vector[ axis ] = value * value;
+});
+```
+
+
+* * *
+
+*Return to: [**Iteration**](#iteration)  <  [API](#api)  <  [top](#top)*
 
 * * *
 
 
 
 ### Array/Object composition
+
+* * *
+
+* [`flatten`](#flatten)
+* [`keys`](#keys)
+* [`invert`](#invert)
+
+* * *
 
 #### flatten
 
@@ -795,7 +832,83 @@ For an `array` whose values are unique key strings, this returns an object that 
 
 
 
-### Miscellaneous
+### Meta / Miscellaneous
+
+* * *
+
+* [`env`](#env)
+* [`noConflict`](#noconflict)
+* [`regexp`](#regexp)
+* [`NIL`](#nil)
+* [`noop`](#noop)
+* [`getThis`](#getthis)
+* [`thunk`](#thunk)
+* [`hasOwn`](#hasown)
+* [`toString`](#tostring)
+* [`slice`](#slice)
+* [`trim`](#trim)
+* [`stringFunction`](#stringfunction)
+* [`valueFunction`](#valuefunction)
+
+* * *
+
+#### env
+
+Environment variables.
+
+* `server` : `true` if the environment conforms to the CommonJS module system (e.g., node.js).
+* `client` : `true` in the case of a `window`ed environment (e.g. browser).
+* `debug` : `false`. Changing this has no built-in effect. May be coded against by dependent libraries for their own purposes.
+
+#### noConflict
+
+Returns control of the global `O` property to its original value.
+
+#### regexp
+
+An object in which to store regular expressions for reuse.
+
+#### NIL
+
+```javascript
+O.NIL
+```
+
+`NIL` is a special object used only for its unique reference. Whereas the `null` entity connotes “no object”, and the `undefined` value connotes “no value”, when encountered as a property value of some object, the `NIL` reference specifically implies “no existence” of a corresponding property on some other related object.
+
+The prime example is its use within [**edit**](#edit) and the related differential operation functions, where, within a given operand, a property whose value is set to `NIL` indicates the absence or deletion of the corresponding property on an associated operand.
+
+#### noop
+
+A reusable function that returns `undefined`.
+
+#### getThis
+
+A reusable function that returns `this`.
+
+#### thunk
+
+```javascript
+O.thunk( object )
+```
+
+Returns a lazy evaluator function that closes over and returns the provided `object` argument.
+
+#### hasOwn
+
+`Object.prototype.hasOwnProperty`
+
+#### toString
+
+`Object.prototype.toString`
+
+#### slice
+
+`Array.prototype.slice`
+
+#### trim
+
+`String.prototype.trim`, or shim.
 
 #### stringFunction
 
@@ -816,7 +929,7 @@ Cyclically references a function’s output as its own `valueOf` property.
 
 * * *
 
-*Return to: [**Miscellaneous**](#miscellaneous)  <  [API](#api)  <  [top](#top)*
+*Return to: [**Meta / Miscellaneous**](#meta--miscellaneous)  <  [API](#api)  <  [top](#top)*
 
 * * *
 
