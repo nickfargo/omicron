@@ -270,9 +270,9 @@ By default, `edit` returns the first object-typed argument as `subject`, to whic
 
 * `all` : Includes `source` properties with `undefined` or `NIL` values.
 
-* `delta` : Returns a **delta** object that records the changes made to `subject`. If multiple `source` operands are provided, an array of deltas is returned. The delta can be used to store history information; immediately applying a returned delta array in reverse order using `edit('deep', subject, ...)` reverts `subject` to its original state (see example below).
+* `delta` : Returns an **anti-delta** object reflecting the changes made to `subject`, or if multiple `source` operands are provided, an array of anti-deltas. The anti-delta is comprised of those properties of `subject` displaced by the `edit` operation, along with keys that did not exist on `subject` prior to the `edit` operation. This can be used to record a relativistic history for an object: immediately applying a returned anti-delta array in reverse order using `edit('deep', subject, ...)` reverts `subject` to its original condition (see example below).
 
-* `immutable` : Leaves `subject` unchanged. Useful when idempotence is desirable, such as when accompanied by the `delta` and `absolute` flags to produce a “diff” object.
+* `immutable` : Leaves `subject` unchanged. Useful, for example, when accompanied by the `delta` and `absolute` flags to produce a “diff” object.
 
 * `absolute` : Processes against all properties in `subject` for each `source`, including those not contained in `source`.
 
@@ -371,11 +371,11 @@ subject.c.d === object.c.d;    // >>> true
 O.delta( subject, source, [ ...sourceN ] )
 ```
 
-The `deep delta` specialization of [`edit`](#edit): deeply copies each `source` operand into `subject`, and returns the **delta** of the operation. In the case of multiple `source` operands, an array of deltas is returned.
+The `deep delta` specialization of [`edit`](#edit): deeply copies each `source` operand into `subject`, and returns the **anti-delta** of the operation. In the case of multiple `source` operands, an array of anti-deltas is returned.
 
-The returned delta object records the displaced values of properties of `subject` updated or deleted as a result of the operation, and — using the [`NIL`](#nil) entity — the prior *nonexistence* of properties that were added to `subject` as a result of the operation. Performing a successive `delta` or deep-`edit` operation on `subject`, this time providing the delta object returned by the first operation as the `source` for the second operation, will cause `subject` to be restored to its original condition.
+The returned anti-delta object records the displaced values of properties of `subject` updated or deleted as a result of the operation, and — using the [`NIL`](#nil) entity — the prior *nonexistence* of properties that were added to `subject` as a result of the operation. Performing a successive `delta` or deep-`edit` operation on `subject`, this time providing the anti-delta returned by the first operation as the `source` for the second operation, causes `subject` to be restored to its original condition.
 
-This relationship can be expressed as an invariant: for any plain-objects `subject` and `object`, `delta` asserts that the following function will always evaluate to `true`:
+For any plain-objects `subject` and `object`, `delta` asserts that the following function will always evaluate to `true`:
 
 ```javascript
 function invariant ( subject, object ) {
@@ -411,7 +411,7 @@ O.edit( 'deep', subject, delta );
 O.diff( subject, source, [ ...sourceN ] )
 ```
 
-The `deep absolute immutable delta` specialization of [`edit`](#edit): deeply compares each `source` operand to `subject`, and returns an absolute delta, or in the case of multiple `source` operands, an array of absolute deltas. Unlike the `delta` function, `diff` leaves `subject` unaffected.
+The `deep absolute immutable delta` specialization of [`edit`](#edit): performs a deep comparison of each `source` operand against `subject`, and returns an absolute anti-delta, or in the case of multiple `source` operands, an array of absolute anti-deltas. Unlike the `delta` function, `diff` leaves `subject` unaffected.
 
 For any plain objects `subject` and `object`, `diff` asserts that the following function will always evaluate to `true`:
 
@@ -419,6 +419,7 @@ For any plain objects `subject` and `object`, `diff` asserts that the following 
 function invariant ( subject, object ) {
     var diff = O.diff( subject, object ),
         edit = O.edit( 'deep', object, diff );
+
     return O.isEqual( subject, edit );
 }
 ```
@@ -875,7 +876,7 @@ O.NIL
 
 `NIL` is a special object used only for its unique reference. Whereas the `null` entity connotes “no object”, and the `undefined` value connotes “no value”, when encountered as a property value of some object, the `NIL` reference specifically implies “no existence” of a corresponding property on some other related object.
 
-The prime example is its use within [**edit**](#edit) and the related differential operation functions, where, within a given operand, a property whose value is set to `NIL` indicates the absence or deletion of the corresponding property on an associated operand.
+The prime example is its use within [**edit**](#edit) and the related differential operation functions, where, within a given operand, a property whose value is set to `NIL` indicates the absence of or intent to delete the corresponding property on an associated operand.
 
 #### noop
 

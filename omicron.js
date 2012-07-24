@@ -423,8 +423,12 @@ O.clone = clone;
 // #### delta
 //
 // Specialization of [`edit`](#edit) that applies changes defined in `source`
-// to `subject`, and returns a structured map of the changes applied. Additions and updates are
-// represented in the delta object 
+// to `subject`, and returns the **anti-delta**: a structured map containing
+// the properties of `subject` displaced by the operation. Previously
+// nonexistent properties are recorded as [`NIL`](#nil) in the anti-delta.
+// The prior condition of `subject` can be restored in a single transaction
+// by immediately providing this anti-delta object as the `source` argument in
+// a subsequent `edit` operation upon `subject`.
 function delta () {
     return edit.apply( O, [ 'deep delta' ]
         .concat( slice.call( arguments ) ) );
