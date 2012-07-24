@@ -379,9 +379,8 @@ function edit () {
                 }
                 flags.immutable || ( subject[ key ] = clone );
             }
-            else if (
-                subject[ key ] !== value &&
-                ( value !== undefined || flags.all )
+            else if ( ( value !== undefined || flags.all ) &&
+                ( !hasOwn.call( subject, key ) || subject[ key ] !== value )
             ) {
                 if ( delta ) {
                     delta[ key ] = hasOwn.call( subject, key ) ?
