@@ -802,10 +802,34 @@ O.forEach( { x:3, y:4, z:5 }, function ( value, axis, vector ) {
 #### flatten
 
 ```javascript
-O.flatten( object )
+O.flatten( array )
 ```
 
-Extracts elements of nested arrays.
+* [`array`] : `Array`
+
+Returns an array that contains the extracted elements of any nested arrays within `array`.
+
+#### indexOf
+
+```javascript
+O.indexOf( array, sought, startIndex )
+```
+
+* [`array`] : `Array`
+* [`sought`] : var
+* [`startIndex = 0`] : number
+
+Searches for the `sought` element within `array`, beginning at `startIndex`, and returns its index. Returns `-1` if the element is not found.
+
+#### unique
+
+```javascript
+O.unique( array )
+```
+
+* [`array`] : `Array`
+
+Returns an array that is the set of unduplicated elements of `array`.
 
 #### keys
 
