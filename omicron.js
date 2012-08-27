@@ -34,9 +34,7 @@ var global = this,
         whitespace: /\s+/
     },
 
-    // <a class="icon-link" name="nil" href="#nil"></a>
-    //
-    // #### NIL
+    // #### [NIL](#nil)
     //
     // Unique object reference. Used by [`edit`](#edit) and the related
     // differential operation functions, where an object with a property whose
@@ -44,23 +42,17 @@ var global = this,
     // corresponding property on an associated operand.
     NIL = O.NIL = ( function () { function NIL () {} return new NIL; }() ),
 
-    // <a class="icon-link" name="to-string" href="#to-string"></a>
-    //
-    // #### toString
+    // #### [toString](#to-string)
     //
     toString = O.toString =
         Object.prototype.toString,
     
-    // <a class="icon-link" name="has-own" href="#has-own"></a>
-    //
-    // #### hasOwn
+    // #### [hasOwn](#has-own)
     //
     hasOwn = O.hasOwn =
         Object.prototype.hasOwnProperty,
     
-    // <a class="icon-link" name="trim" href="#trim"></a>
-    //
-    // #### trim
+    // #### [trim](#trim)
     //
     trim = O.trim =
         String.prototype.trim ?
@@ -75,17 +67,13 @@ var global = this,
                         .replace( /\s+$/, '' );
             },
     
-    // <a class="icon-link" name="slice" href="#slice"></a>
-    //
-    // #### slice
+    // #### [slice](#slice)
     //
     slice = O.slice =
         Array.prototype.slice;
 
 
-// <a class="icon-link" name="no-conflict" href="#no-conflict"></a>
-//
-// #### noConflict
+// #### [noConflict](#no-conflict)
 //
 O.noConflict = ( function () {
     var autochthon = global.O;
@@ -95,17 +83,13 @@ O.noConflict = ( function () {
     };
 }() );
 
-// <a class="icon-link" name="noop" href="#noop"></a>
-//
-// #### noop
+// #### [noop](#noop)
 //
 // General-purpose empty function.
 function noop () {}
 O.noop = noop;
 
-// <a class="icon-link" name="get-this" href="#get-this"></a>
-//
-// #### getThis
+// #### [getThis](#get-this)
 //
 // Like [`noop`](#noop), except suited for substitution on methods that would
 // normally return their context object.
@@ -113,9 +97,9 @@ function getThis () { return this; }
 O.getThis = getThis;
 
 // Calls the specified native function if it exists and returns its result; if
-// no such function exists on `obj` as registered in `__native.fn`, returns
-// our unique `NIL` (as opposed to `null` or `undefined`, which may be a valid
-// result from the native function itself).
+// no such function exists on `obj` as registered in `__native.fn`, the unique
+// [`NIL`](#nil) is returned (as opposed to `null` or `undefined`, either of
+// which may be a valid result from the native function itself).
 function __native ( item, obj /* , ... */ ) {
     var n = __native.fn[ item ];
     return n && obj[ item ] === n ?
@@ -127,9 +111,7 @@ __native.fn = {
     indexOf: Array.prototype.indexOf
 };
 
-// <a class="icon-link" name="type" href="#type"></a>
-//
-// #### type
+// #### [type](#type)
 //
 // An established browser-safe alternative to `typeof` that checks against
 // `Object.prototype.toString()`.
@@ -145,39 +127,27 @@ each( 'Array Boolean Date Function Number Object RegExp String'.split(' '),
     });
 O.type = type;
 
-// <a class="icon-link" name="is-boolean" href="#is-boolean"></a>
-//
-// #### isBoolean
+// #### [isBoolean](#is-boolean)
 function isBoolean ( obj ) { return type( obj ) === 'boolean'; }
 O.isBoolean = isBoolean;
 
-// <a class="icon-link" name="is-string" href="#is-string"></a>
-//
-// #### isString
+// #### [isString](#is-string)
 function isString ( obj ) { return type( obj ) === 'string'; }
 O.isString = isString;
 
-// <a class="icon-link" name="is-number" href="#is-number"></a>
-//
-// #### isNumber
+// #### [isNumber](#is-number)
 function isNumber ( n ) { return !isNaN( parseFloat( n ) ) && isFinite( n ); }
 O.isNumber = isNumber;
 
-// <a class="icon-link" name="is-array" href="#is-array"></a>
-//
-// #### isArray
+// #### [isArray](#is-array)
 function isArray ( obj ) { return type( obj ) === 'array'; }
 O.isArray = isArray;
 
-// <a class="icon-link" name="is-function" href="#is-function"></a>
-//
-// #### isFunction
+// #### [isFunction](#is-function)
 function isFunction ( obj ) { return type( obj ) === 'function'; }
 O.isFunction = isFunction;
 
-// <a class="icon-link" name="is-plain-object" href="#is-plain-object"></a>
-//
-// #### isPlainObject
+// #### [isPlainObject](#is-plain-object)
 //
 // Near-straight port of jQuery `isPlainObject`.
 function isPlainObject ( obj ) {
@@ -194,9 +164,7 @@ function isPlainObject ( obj ) {
 }
 O.isPlainObject = isPlainObject;
 
-// <a class="icon-link" name="is-empty" href="#is-empty"></a>
-//
-// #### isEmpty
+// #### [isEmpty](#is-empty)
 //
 // Returns a boolean indicating whether the object or array at `obj` contains
 // any members. For an `Object` type, if `andPrototype` is included and truthy,
@@ -211,9 +179,7 @@ function isEmpty ( obj, andPrototype ) {
 }
 O.isEmpty = isEmpty;
 
-// <a class="icon-link" name="is-equal" href="#is-equal"></a>
-//
-// #### isEqual
+// #### [isEqual](#is-equal)
 //
 // Performs a deep equality test.
 function isEqual ( subject, object ) {
@@ -224,9 +190,7 @@ function isEqual ( subject, object ) {
 }
 O.isEqual = isEqual;
 
-// <a class="icon-link" name="each" href="#each"></a>
-//
-// #### each
+// #### [each](#each)
 //
 // Functional iterator with jQuery-style callback signature of
 // `key, value, object`.
@@ -246,9 +210,7 @@ function each ( obj, fn ) {
 }
 O.each = each;
 
-// <a class="icon-link" name="for-each" href="#for-each"></a>
-//
-// #### forEach
+// #### [forEach](#for-each)
 //
 // Functional iterator with ES5-style callback signature of
 // `value, key, object`.
@@ -273,9 +235,7 @@ function forEach ( obj, fn, context ) {
 }
 O.forEach = forEach;
 
-// <a class="icon-link" name="edit" href="#edit"></a>
-//
-// #### edit
+// #### [edit](#edit)
 //
 // Performs a differential operation across multiple objects.
 //
@@ -311,7 +271,7 @@ O.forEach = forEach;
 // Contains techniques and influences from the deep-cloning procedure of
 // `jQuery.extend`, with which `edit` also retains a compatible interface.
 //
-// *See also:* [`clone`](#clone), [`delta`](#delta), [`diff`](#diff),
+// > See also: [`clone`](#clone), [`delta`](#delta), [`diff`](#diff),
 // [`assign`](#assign)
 function edit () {
     var i, l, t, flags, flagsString, subject, subjectIsArray, deltas, delta,
@@ -407,9 +367,7 @@ function edit () {
 }
 O.edit = O.extend = edit;
 
-// <a class="icon-link" name="clone" href="#clone"></a>
-//
-// #### clone
+// #### [clone](#clone)
 //
 // Specialization of [`edit`](#edit).
 function clone () {
@@ -418,9 +376,7 @@ function clone () {
 }
 O.clone = clone;
 
-// <a class="icon-link" name="delta" href="#delta"></a>
-//
-// #### delta
+// #### [delta](#delta)
 //
 // Specialization of [`edit`](#edit) that applies changes defined in `source`
 // to `subject`, and returns the **anti-delta**: a structured map containing
@@ -435,9 +391,7 @@ function delta () {
 }
 O.delta = delta;
 
-// <a class="icon-link" name="diff" href="#diff"></a>
-//
-// #### diff
+// #### [diff](#diff)
 //
 // Specialization of [`edit`](#edit) that returns the delta between the
 // provided `subject` and `source`. Operates similarly to [`delta`] except no
@@ -449,9 +403,7 @@ function diff () {
 }
 O.diff = diff;
 
-// <a class="icon-link" name="assign" href="#assign"></a>
-//
-// #### assign
+// #### [assign](#assign)
 //
 // Facilitates one or more assignments of a value to one or more keys of an
 // object.
@@ -490,9 +442,7 @@ function assign ( target, map, value ) {
 }
 O.assign = assign;
 
-// <a class="icon-link" name="flatten" href="#flatten"></a>
-//
-// #### flatten
+// #### [flatten](#flatten)
 //
 // Extracts elements of nested arrays into a single flat array.
 function flatten ( array ) {
@@ -513,9 +463,8 @@ function flatten ( array ) {
 }
 O.flatten = flatten;
 
-// <a class="icon-link" name="keys" href="#keys"></a>
+// #### [indexOf](#index-of)
 //
-// #### keys
 // Emulates (IE<9) or calls native `Array.prototype.indexOf`.
 function indexOf ( array, target, startIndex ) {
     var n, i, l;
@@ -543,6 +492,7 @@ function unique ( array ) {
 }
 O.unique = O.uniq = unique;
 
+// #### [keys](#keys)
 //
 // Returns an array containing the keys of a hashmap.
 function keys ( obj ) {
@@ -555,9 +505,7 @@ function keys ( obj ) {
 }
 O.keys = isFunction( Object.keys ) ? Object.keys : keys;
 
-// <a class="icon-link" name="invert" href="#invert"></a>
-//
-// #### invert
+// #### [invert](#invert)
 //
 // Returns a hashmap that is the key-value inversion of the supplied string
 // array.
@@ -572,9 +520,7 @@ function invert ( obj ) {
 }
 O.invert = invert;
 
-// <a class="icon-link" name="alias" href="#alias"></a>
-//
-// #### alias
+// #### [alias](#alias)
 //
 // Copies the values of members of an object to one or more different keys on
 // that same object.
@@ -590,9 +536,7 @@ function alias ( object, map ) {
 }
 O.alias = alias;
 
-// <a class="icon-link" name="thunk" href="#thunk"></a>
-//
-// #### thunk
+// #### [thunk](#thunk)
 //
 // Creates and returns a lazy evaluator, a function that returns the enclosed
 // argument.
@@ -601,9 +545,7 @@ function thunk ( obj ) {
 }
 O.thunk = thunk;
 
-// <a class="icon-link" name="lookup" href="#lookup"></a>
-//
-// #### lookup
+// #### [lookup](#lookup)
 //
 // Retrieves the value at the location indicated by the provided `path` string
 // inside a nested object `obj`. For example:
@@ -625,9 +567,7 @@ function lookup ( obj, path, separator ) {
 }
 O.lookup = lookup;
 
-// <a class="icon-link" name="create" href="#create"></a>
-//
-// #### create
+// #### [create](#create)
 //
 // Reference to or partial shim for `Object.create`.
 function create ( prototype ) {
@@ -640,9 +580,7 @@ function create ( prototype ) {
 }
 O.create = isFunction( Object.create ) ? Object.create : create;
 
-// <a class="icon-link" name="inherit" href="#inherit"></a>
-//
-// #### inherit
+// #### [inherit](#inherit)
 //
 // Facilitates prototypal inheritance between a `child` constructor and a
 // `parent` constructor.
@@ -673,9 +611,7 @@ function inherit (
 }
 O.inherit = inherit;
 
-// <a class="icon-link" name="privilege" href="#privilege"></a>
-//
-// #### privilege
+// #### [privilege](#privilege)
 //
 // Generates partially applied functions for use as methods on an `object`.
 //
@@ -703,9 +639,7 @@ function privilege ( object, methodStore, map ) {
 }
 O.privilege = privilege;
 
-// <a class="icon-link" name="get-prototype-of" href="#get-prototype-of"></a>
-//
-// #### getPrototypeOf
+// #### [getPrototypeOf](#get-prototype-of)
 //
 // Returns an object’s prototype. In environments without native support, this
 // may only work if the object’s constructor and its prototype are properly
@@ -716,17 +650,13 @@ function getPrototypeOf ( obj ) {
 O.getPrototypeOf = isFunction( Object.getPrototypeOf ) ?
     Object.getPrototypeOf : getPrototypeOf;
 
-// <a class="icon-link" name="value-function" href="#value-function"></a>
-//
-// #### valueFunction
+// #### [valueFunction](#value-function)
 //
 // Cyclically references a function’s output as its own `valueOf` property.
 function valueFunction ( fn ) { return fn.valueOf = fn; }
 O.valueFunction = valueFunction;
 
-// <a class="icon-link" name="string-function" href="#string-function"></a>
-//
-// #### stringFunction
+// #### [stringFunction](#string-function)
 //
 // Cyclically references a function’s output as its own `toString` property.
 function stringFunction ( fn ) { return fn.toString = fn; }
