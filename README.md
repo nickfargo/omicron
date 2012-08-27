@@ -794,6 +794,8 @@ O.forEach( { x:3, y:4, z:5 }, function ( value, axis, vector ) {
 * * *
 
 * [`flatten`](#flatten)
+* [`indexOf`](#indexof)
+* [`unique`](#unique)
 * [`keys`](#keys)
 * [`invert`](#invert)
 
@@ -822,6 +824,8 @@ O.indexOf( array, sought, startIndex )
 Searches for the `sought` element within `array`, beginning at `startIndex`, and returns its index. Returns `-1` if the element is not found.
 
 #### unique
+
+*Alias:* **uniq**
 
 ```javascript
 O.unique( array )
