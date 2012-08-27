@@ -123,7 +123,8 @@ function __native ( item, obj /* , ... */ ) {
         NIL;
 }
 __native.fn = {
-    forEach: Array.prototype.forEach
+    forEach: Array.prototype.forEach,
+    indexOf: Array.prototype.indexOf
 };
 
 // <a class="icon-link" name="type" href="#type"></a>
@@ -515,6 +516,33 @@ O.flatten = flatten;
 // <a class="icon-link" name="keys" href="#keys"></a>
 //
 // #### keys
+// Emulates (IE<9) or calls native `Array.prototype.indexOf`.
+function indexOf ( array, target, startIndex ) {
+    var n, i, l;
+    if ( array == null ) return -1;
+    if ( ( n = __native( 'indexOf', array, target ) ) !== NIL ) return n;
+    for ( i = startIndex || 0, l = array.length; i < l; i++ ) {
+        if ( i in array && array[i] === target ) return i;
+    }
+    return -1;
+}
+O.indexOf = indexOf;
+
+// #### [unique](#unique)
+//
+// Returns a copy of `array` with any duplicate elements removed.
+function unique ( array ) {
+    var result, i, l, item;
+    if ( !array ) return [];
+    result = [];
+    for ( i = 0, l = array.length; i < l; i++ ) {
+        item = array[i];
+        ~indexOf( result, item ) || result.push( item );
+    }
+    return result;
+}
+O.unique = O.uniq = unique;
+
 //
 // Returns an array containing the keys of a hashmap.
 function keys ( obj ) {
