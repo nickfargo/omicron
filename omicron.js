@@ -30,10 +30,6 @@ var global = this,
         }
     },
     
-    regexp = O.regexp = {
-        whitespace: /\s+/
-    },
-
     // #### [NIL](#nil)
     //
     // Unique object reference. Used by [`edit`](#edit) and the related
@@ -46,6 +42,12 @@ var global = this,
     //
     toString = O.toString =
         Object.prototype.toString,
+var rxWhitespace = /\s+/;
+
+var regexp = O.regexp = {
+    whitespace: rxWhitespace
+};
+
     
     // #### [hasOwn](#has-own)
     //
@@ -568,7 +570,7 @@ O.invert = invert;
 function alias ( object, map ) {
     var key, value, names, i, l;
     for ( key in map ) if ( key in object ) {
-        names = map[ key ].split( regexp.whitespace );
+        names = map[ key ].split( rxWhitespace );
         for ( i = 0, l = names.length; i < l; i++ ) {
             object[ names[i] ] = object[ key ];
         }
@@ -716,7 +718,7 @@ O.inherit = inherit;
 // distinct set of variables.
 function privilege ( object, methodStore, map ) {
     each( map, function ( names, args ) {
-        each( names.split( regexp.whitespace ), function ( i, methodName ) {
+        each( names.split( rxWhitespace ), function ( i, methodName ) {
             object[ methodName ] = methodStore[ methodName ]
                 .apply( undefined, args );
         });
