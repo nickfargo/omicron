@@ -17,62 +17,62 @@
 
 ;( function ( undefined ) {
 
-var global = this,
+var global = this;
 
-    O = {
-        VERSION: '0.1.8',
-        env: {
-            server: typeof module !== 'undefined' &&
-                    typeof require !== 'undefined' &&
-                    !!module.exports,
-            client: typeof window !== 'undefined' && window === global,
-            debug:  false
-        }
-    },
-    
-    // #### [NIL](#nil)
-    //
-    // Unique object reference. Used by [`edit`](#edit) and the related
-    // differential operation functions, where an object with a property whose
-    // value is set to `NIL` indicates the absence or deletion of the
-    // corresponding property on an associated operand.
-    NIL = O.NIL = ( function () { function NIL () {} return new NIL; }() ),
+var O = {
+    VERSION: '0.1.9',
+    env: {
+        server: typeof module !== 'undefined' &&
+                typeof require !== 'undefined' &&
+                !!module.exports,
+        client: typeof window !== 'undefined' && window === global,
+        debug:  false
+    }
+};
 
-    // #### [toString](#to-string)
-    //
-    toString = O.toString =
-        Object.prototype.toString,
 var rxWhitespace = /\s+/;
 
 var regexp = O.regexp = {
     whitespace: rxWhitespace
 };
 
+// #### [NIL](#nil)
+//
+// Unique object reference. Used by [`edit`](#edit) and the related
+// differential operation functions, where an object with a property whose
+// value is set to `NIL` indicates the absence or deletion of the
+// corresponding property on an associated operand.
+var NIL = O.NIL = ( function () { function NIL () {} return new NIL; }() );
+
+// #### [toString](#to-string)
+//
+var toString = O.toString =
+    Object.prototype.toString;
     
-    // #### [hasOwn](#has-own)
-    //
-    hasOwn = O.hasOwn =
-        Object.prototype.hasOwnProperty,
+// #### [hasOwn](#has-own)
+//
+var hasOwn = O.hasOwn =
+    Object.prototype.hasOwnProperty;
     
-    // #### [trim](#trim)
-    //
-    trim = O.trim =
-        String.prototype.trim ?
-            function ( text ) {
-                return text == null ? '' : String.prototype.trim.call( text );
-            } :
-            function ( text ) {
-                return text == null ?
-                    '' :
-                    text.toString()
-                        .replace( /^\s+/, '' )
-                        .replace( /\s+$/, '' );
-            },
+// #### [trim](#trim)
+//
+var trim = O.trim =
+    String.prototype.trim ?
+        function ( text ) {
+            return text == null ? '' : String.prototype.trim.call( text );
+        } :
+        function ( text ) {
+            return text == null ?
+                '' :
+                text.toString()
+                    .replace( /^\s+/, '' )
+                    .replace( /\s+$/, '' );
+        };
     
-    // #### [slice](#slice)
-    //
-    slice = O.slice =
-        Array.prototype.slice;
+// #### [slice](#slice)
+//
+var slice = O.slice =
+    Array.prototype.slice;
 
 
 // #### [noConflict](#no-conflict)
