@@ -596,17 +596,62 @@ O.thunk = thunk;
 //      lookup( x, 'a.b' );      // 42
 //      lookup( x, 'a.b.c' );    // undefined
 //
-function lookup ( obj, path, separator ) {
-    var cursor = obj,
-        i = 0, l = ( path = path.split( separator || '.' ) ).length, name;
-    while ( i < l && cursor != null ) {
-        if ( hasOwn.call( cursor, name = path[ i++ ] ) ) {
-            cursor = cursor[ name ];
-        } else return undefined;
+function lookup ( obj, path, separator, ownProperty ) {
+    var i, l, name;
+
+    if ( obj == null || typeof path !== 'string' ) return;
+    if ( typeof separator === 'boolean' && arguments.length < 4 ) {
+        ownProperty = separator; separator = undefined;
     }
-    return cursor;
+    path = path.split( separator || '.' );
+    for ( i = 0, l = path.length; i < l && obj != null; i++ ) {
+        if ( typeof obj !== 'object' && typeof obj !== 'function' ) return;
+        name = path[i];
+        if ( ownProperty && !hasOwn.call( obj, name ) ) return;
+        obj = obj[ name ];
+    }
+    return obj;
 }
 O.lookup = lookup;
+
+// #### [has](#has)
+//
+// Returns a boolean that verifies the existence of a key, indicated by the
+// provided `path` string, within a nested object `obj`.
+//
+//      var x = { a: { b: 42 } };
+//      has( x, 'a' );        // true
+//      has( x, 'a.b' );      // true
+//      has( x, 'a.b.c' );    // false
+//
+// > See also: [lookup](#lookup)
+//
+function has ( obj, path, separator, ownProperty ) {
+    var i, l, name;
+
+    if ( obj == null || typeof path !== 'string' ) return false;
+    if ( typeof separator === 'boolean' && arguments.length < 4 ) {
+        ownProperty = separator; separator = undefined;
+    }
+
+    separator || ( separator = '.' );
+    if ( !~path.indexOf( separator ) ) {
+        return ownProperty ? hasOwn.call( obj, path ) : path in obj;
+    }
+
+    path = path.split( separator );
+    for ( i = 0, l = path.length; i < l && obj != null; i++ ) {
+        if ( typeof obj !== 'object' && typeof obj !== 'function' ) {
+            return false;
+        }
+        name = path[i];
+        if ( ownProperty && !hasOwn.call( obj, name ) ) return false;
+        if ( i === l - 1 ) return name in obj;
+        obj = obj[ name ];
+    }
+    return false;
+}
+O.has = has;
 
 // #### [create](#create)
 //
