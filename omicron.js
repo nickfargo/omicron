@@ -407,15 +407,55 @@ O.diff = diff;
 //
 // Facilitates one or more assignments of a value to one or more keys of an
 // object.
-function assign ( target, map, value ) {
-    var valuesMirrorKeys, key, list, i, l;
+function assign ( target, map, value, separator ) {
+    var argLen, valuesMirrorKeys, key, list, i, l;
 
+    argLen = arguments.length;
     if ( typeof target === 'string' ) {
-        valuesMirrorKeys = arguments.length === 1;
+        valuesMirrorKeys = argLen === 1;
         value = map; map = target; target = {};
     } else {
-        valuesMirrorKeys = typeof map === 'string' && arguments.length === 2;
-        if ( map === undefined ) {
+        if ( typeof map === 'string' ) {
+            if ( argLen === 2 ) {
+                valuesMirrorKeys = true;
+            } else {
+                // `value` is present, and `map` is a key or "deep key";
+                // do `lookup`-style assignment
+                list = map.split( separator || '.' );
+                for ( i = 0, l = list.length; i < l; i++ ) {
+
+                    // To proceed `target` must be an `Object`.
+                    if ( !target || typeof target !== 'object' &&
+                        typeof target !== 'function' ) return;
+
+                    key = list[i];
+
+                    // If at the end of the deep-key, assign/delete and return.
+                    // For deletions, return `NIL` to indicate a `true` result
+                    // from the `delete` operator.
+                    if ( i === l - 1 ) {
+                        if ( value === NIL ) {
+                            return delete target[ key ] ? NIL : undefined;
+                        } else {
+                            return target[ key ] = value;
+                        }
+                    }
+
+                    // Advance `target` to the next level. If nothing is there
+                    // already, then: for an assignment, create a new object in
+                    // place and continue; for a deletion, return `NIL`
+                    // immediately to reflect what would have been a `true`
+                    // result from the `delete` operator.
+                    if ( hasOwn.call( target, key ) ) {
+                        target = target[ key ];
+                    } else {
+                        if ( value === NIL ) return NIL;
+                        target = target[ key ] = {};
+                    }
+                }
+            }
+        }
+        else if ( map === undefined ) {
             map = target; target = {};
         }
     }
@@ -424,7 +464,7 @@ function assign ( target, map, value ) {
     }
 
     for ( key in map ) if ( hasOwn.call( map, key ) ) {
-        list = key.split( regexp.whitespace );
+        list = key.split( rxWhitespace );
         if ( valuesMirrorKeys ) {
             for ( i = 0, l = list.length; i < l; i++ ) {
                 value = list[i];
@@ -440,6 +480,7 @@ function assign ( target, map, value ) {
 
     return target;
 }
+
 O.assign = assign;
 
 // #### [flatten](#flatten)
