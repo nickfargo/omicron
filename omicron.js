@@ -128,11 +128,11 @@ each( 'Array Boolean Date Function Number Object RegExp String'.split(' '),
 O.type = type;
 
 // #### [isBoolean](#is-boolean)
-function isBoolean ( obj ) { return type( obj ) === 'boolean'; }
+function isBoolean ( obj ) { return typeof obj === 'boolean'; }
 O.isBoolean = isBoolean;
 
 // #### [isString](#is-string)
-function isString ( obj ) { return type( obj ) === 'string'; }
+function isString ( obj ) { return typeof obj === 'string'; }
 O.isString = isString;
 
 // #### [isNumber](#is-number)
@@ -144,7 +144,7 @@ function isArray ( obj ) { return type( obj ) === 'array'; }
 O.isArray = isArray;
 
 // #### [isFunction](#is-function)
-function isFunction ( obj ) { return type( obj ) === 'function'; }
+function isFunction ( obj ) { return typeof obj === 'function'; }
 O.isFunction = isFunction;
 
 // #### [isPlainObject](#is-plain-object)
