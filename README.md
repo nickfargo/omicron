@@ -42,6 +42,7 @@ In the browser, **O** will add a single object `O` to the global `window` (which
 
 ## Usage
 
+
 ### Example: Differential history
 
 Consider a timeline object that efficiently stores history information. The differential functions of **O** can be used to make this a fairly straightforward task — in the code below, look for applications of functions [**delta**](#delta) and [**diff**](#diff) in particular, as well as usage of the special [**NIL**](#nil) object within the `history` array:
@@ -71,11 +72,11 @@ function Timeline () {
 
         back: function () {
             var subject;
-            
+
             if ( index === 0 ) return;
             subject = history[ index ];
             history[ index ] = O.delta( subject, history[ --index ] );
-            
+
             return O.clone( history[ index ] = subject );
         },
 
@@ -85,7 +86,7 @@ function Timeline () {
             if ( index === history.length - 1 ) return;
             subject = history[ index ];
             history[ index ] = O.delta( subject, history[ ++index ] );
-            
+
             return O.clone( history[ index ] = subject );
         },
 
@@ -224,26 +225,25 @@ Calling `replace` instates the new element at `index`, adjusts the elements ahea
 
 ## API
 
+
 * **[Object manipulation and differentiation](#object-manipulation-and-differentiation)**
     * [`edit`](#edit), [`clone`](#clone), [`delta`](#delta), [`diff`](#diff), [`assign`](#assign), [`alias`](#alias)
 * **[Inheritance](#inheritance)**
-    * [`inherit`](#inherit), [`privilege`](#privilege), [`create`](#create), [`getPrototypeOf`](#getprototypeof)
+    * [`inherit`](#inherit), [`create`](#create), [`getPrototypeOf`](#getprototypeof)
 * **[Typing and inspection](#typing-and-inspection)**
-    * [`type`](#type), [`isNumber`](#isnumber), [`isArray`](#isarray), [`isFunction`](#isfunction), [`isPlainObject`](#isplainobject), [`isEmpty`](#isempty), [`isEqual`](#isequal), [`lookup`](#lookup)
+    * [`type`](#type), [`isNumber`](#isnumber), [`isArray`](#isarray), [`isError`](#iserror), [`isPlainObject`](#isplainobject), [`isEmpty`](#isempty), [`isEqual`](#isequal), [`has`](#has), [`lookup`](#lookup)
 * **[Iteration](#iteration)**
-    * [`each`](#each), [`forEach`](#foreach)
+    * [`forEach`](#foreach)
 * **[Array/object composition](#array--object-composition)**
-    * [`flatten`](#flatten), [`keys`](#keys), [`invert`](#invert)
+    * [`flatten`](#flatten), [`indexOf`](#indexof), [`unique`](#unique), [`keys`](#keys), [`invert`](#invert)
 * **[Meta / Miscellaneous](#meta--miscellaneous)**
-    * [`env`](#env), [`noConflict`](#noconflict), [`regexp`](#regexp), [`NIL`](#nil), [`noop`](#noop), [`getThis`](#getthis), [`thunk`](#thunk), [`hasOwn`](#hasown), [`toString`](#tostring), [`slice`](#slice), [`trim`](#trim), [`stringFunction`](#stringfunction), [`valueFunction`](#valuefunction)
+    * [`env`](#env), [`noConflict`](#noconflict), [`NIL`](#nil), [`noop`](#noop), [`getThis`](#getthis), [`thunk`](#thunk), [`hasOwn`](#hasown), [`toString`](#tostring), [`slice`](#slice), [`trim`](#trim), [`randomHex`](#randomhex)
 
 * * *
 
 
 
 ### Object manipulation and differentiation
-
-* * *
 
 * [`edit`](#edit)
 * [`clone`](#clone)
@@ -498,14 +498,16 @@ object.on( /* ... */ );
 
 ### Inheritance
 
-* * *
-
-* [`inherit`](#inherit)
-* [`privilege`](#privilege)
 * [`create`](#create)
+* [`inherit`](#inherit)
 * [`getPrototypeOf`](#getprototypeof)
 
 * * *
+
+#### create
+
+`Object.create`, or partial shim.
+
 
 #### inherit
 
@@ -546,72 +548,6 @@ c.eat();             // "om nom nom"
 c.sing();            // "cluck"
 ```
 
-#### privilege
-
-```javascript
-O.privilege( object, methodStore, map )
-```
-
-Generates partially applied functions for use as methods on an `object`.
-
-Functions sourced from `methodStore` accept as arguments the set of variables to be closed over, and return the enclosed function that will become the `object`’s method.
-
-The `map` argument maps a space-delimited set of method names to an array of free variables. These variables are passed as arguments to each of the named methods as found within `methodStore`.
-
-This approach promotes reuse of a method’s logic by decoupling the function from the native scope of its free variables. A subsequent call to `privilege`, then, can be used on behalf of a distinct (though likely related) `object` to generate methods that are identical but closed over a distinct set of variables.
-
-A limitation of this technique is the fact that, since partially applied values are copied when passed as arguments, there is no direct way for the external privileged method to change a value held within the constructor. In this case, one workaround is to provide a setter function that is scoped within the constructor; another alternative is simply to contain any desired “privileged” values as properties of a private object.
-
-```javascript
-function Class () {
-    var aPrivateObject = { attachment: 0 },
-        aPrivateArray = [],
-        aPrivateFunction = function () {};
-
-    O.privilege( this, Class.privileged, {
-        'aPrivilegedMethod aSimilarMethod' : [ aPrivateObject, aPrivateArray ],
-        'aDifferentMethod' : [ aPrivateFunction ]
-    });
-}
-Class.privileged = {
-    aPrivilegedMethod: function ( thePrivateObject, thePrivateArray ) {
-        function theActualMethod ( arg1, arg2 ) {
-            thePrivateObject.attachment = arg1;
-            thePrivateArray.push( arg2 );
-        }
-        return theActualMethod;
-    },
-    aSimilarMethod: function ( thePrivateObject, thePrivateArray ) {
-        return function () { /*...*/ };
-    },
-    aDifferentMethod: function ( thePrivateFunction ) {
-        return function ( arg ) {
-            return thePrivateFunction( arg );
-        };
-    }
-}
-
-O.inherit( Subclass, Class );
-function Subclass () {
-    var myPrivateObject = { attachment: 'zero' },
-        myPrivateArray = [];
-
-    O.privilege( this, Class.privileged, {
-        'aPrivilegedMethod aSimilarMethod' : [ myPrivateObject, myPrivateArray ],
-        'aDifferentMethod' : [ aPrivateFunction ]
-    });
-}
-
-var c = new Class;
-c.aPrivilegedMethod( 1, 2 );
-
-var sc = new Subclass;
-sc.aPrivilegedMethod( 'one', 'two' );
-```
-
-#### create
-
-`Object.create`, or partial shim.
 
 #### getPrototypeOf
 
@@ -628,18 +564,18 @@ sc.aPrivilegedMethod( 'one', 'two' );
 
 ### Typing and inspection
 
-* * *
-
 * [`type`](#type)
 * [`isNumber`](#isnumber)
 * [`isArray`](#isarray)
-* [`isFunction`](#isfunction)
+* [`isError`](#iserror)
 * [`isPlainObject`](#isplainobject)
 * [`isEmpty`](#isempty)
 * [`isEqual`](#isequal)
+* [`has`](#has)
 * [`lookup`](#lookup)
 
 * * *
+
 
 #### type
 
@@ -649,6 +585,7 @@ O.type( object )
 
 Returns the lowercase type string as derived from `toString`.
 
+
 #### isNumber
 
 ```javascript
@@ -656,6 +593,7 @@ O.isNumber( number )
 ```
 
 Returns `true` if `number` is a valid numeric value.
+
 
 #### isArray
 
@@ -665,13 +603,15 @@ O.isArray( array )
 
 Returns `true` if `array` is a proper `Array`.
 
-#### isFunction
+
+#### isError
 
 ```javascript
-O.isFunction( fn )
+O.isError( e )
 ```
 
-Returns `true` if `fn` is a function.
+Returns `true` if `e` is an `Error`.
+
 
 #### isPlainObject
 
@@ -681,7 +621,8 @@ O.isPlainObject( object )
 
 Returns `false` for non-objects, `null`, arrays, constructed objects, the global object, and DOM nodes (a near-identical port from **jQuery**).
 
-In particular for this library, since “plain” objects are essentially just simple key-value stores, the `isPlainObject` test is especially useful for the allowance of deep-cloning routines, like those employed in the **[`edit`](#edit)**/`extend` family of functions.
+> The `isPlainObject` test is especially useful for deep-cloning routines, like those employed in the **[`edit`](#edit)**/`extend` family of functions, which pass over objects that may carry some state hidden in a constructor or similar, which cannot be cloned.
+
 
 #### isEmpty
 
@@ -690,6 +631,7 @@ O.isEmpty( object, [ andPrototype ] )
 ```
 
 Returns a boolean indicating whether the object or array at `object` contains any members. For an `Object` type, if `andPrototype` evaluates to `true`, then `object` must also be empty throughout its prototype chain.
+
 
 #### isEqual
 
@@ -712,6 +654,22 @@ O.isEqual( [1], { 0:1, 1:undefined } );
 O.isEqual( { 0:1, 1:undefined }, [1] );
 // >>> false
 ```
+
+#### has
+
+```javascript
+O.has( object, path, [ separator ] )
+```
+
+Retrieves the value at the location indicated by the provided `path` string inside a nested object `object`.
+
+```javascript
+var object = { a: { b:42 } };
+O.has( object, 'a' );     // >>> true
+O.has( object, 'a.b' );   // >>> true
+O.has( object, 'a.b.c' ); // >>> false
+```
+
 
 #### lookup
 
@@ -738,8 +696,6 @@ O.lookup( object, 'a.b.c' ); // >>> undefined
 
 
 ### Iteration
-
-* * *
 
 * [`each`](#each)
 * [`forEach`](#foreach)
@@ -790,8 +746,6 @@ O.forEach( { x:3, y:4, z:5 }, function ( value, axis, vector ) {
 
 
 ### Array/Object composition
-
-* * *
 
 * [`flatten`](#flatten)
 * [`indexOf`](#indexof)
@@ -862,8 +816,6 @@ For an `array` whose values are unique key strings, this returns an object that 
 
 ### Meta / Miscellaneous
 
-* * *
-
 * [`env`](#env)
 * [`noConflict`](#noconflict)
 * [`regexp`](#regexp)
@@ -875,8 +827,7 @@ For an `array` whose values are unique key strings, this returns an object that 
 * [`toString`](#tostring)
 * [`slice`](#slice)
 * [`trim`](#trim)
-* [`stringFunction`](#stringfunction)
-* [`valueFunction`](#valuefunction)
+* [`randomHex`](#randomhex)
 
 * * *
 
@@ -938,13 +889,13 @@ Returns a lazy evaluator function that closes over and returns the provided `obj
 
 `String.prototype.trim`, or shim.
 
-#### stringFunction
+#### randomHex
 
 ```javascript
-O.stringFunction( fn )
+O.randomHex( length )
 ```
 
-Cyclically references a function’s output as its own `toString` property.
+Returns a random hex string of arbitrary `length`
 
 #### valueFunction
 
