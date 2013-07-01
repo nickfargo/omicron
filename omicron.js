@@ -271,7 +271,7 @@ function forEach ( obj, fn, context ) {
   }
   return obj;
 }
-O.forEach = forEach;
+O.forEach = O.each = forEach;
 
 
 // #### [edit](#edit)
