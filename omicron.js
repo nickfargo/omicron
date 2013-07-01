@@ -115,18 +115,22 @@ __native.fn = {
 
 // #### [type](#type)
 //
-// An established browser-safe alternative to `typeof` that checks against
-// `Object.prototype.toString()`.
-function type ( obj ) {
-    return obj == null ?
-        String( obj ) :
-        type.map[ toString.call( obj ) ] || 'object';
-}
-type.map = {};
-each( 'Array Boolean Date Function Number Object RegExp String'.split(' '),
-    function( i, name ) {
-        type.map[ "[object " + name + "]" ] = name.toLowerCase();
+// A browser-safe universal alternative to `typeof` that checks against
+// `Object.prototype.toString`.
+
+var type = ( function () {
+    var map = {};
+    var types = 'Arguments Array Boolean Date Error Function Number Object \
+                 RegExp String';
+    forEach( types.split(/\s+/), function ( name ) {
+        map[ "[object " + name + "]" ] = name.toLowerCase();
     });
+    function type ( obj ) {
+        if ( obj == null ) return String( obj );
+        return map[ toString.call( obj ) ] || 'object';
+    }
+    return type;
+}() );
 O.type = type;
 
 // #### [isBoolean](#is-boolean)
