@@ -151,6 +151,9 @@ function isFunction ( obj ) { return typeof obj === 'function'; }
 O.isFunction = isFunction;
 
 // #### [isError](#is-error)
+//
+// > Requires: `toString`
+
 function isError ( e ) {
     return typeof e === 'object' && toString.call( e ) === '[object Error]';
 }
