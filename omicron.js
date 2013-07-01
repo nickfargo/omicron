@@ -159,6 +159,9 @@ O.isError = isError;
 // #### [isPlainObject](#is-plain-object)
 //
 // Near-straight port of jQuery `isPlainObject`.
+//
+// > Requires: `type`, `hasOwn`
+
 function isPlainObject ( obj ) {
     var key;
     if ( !obj || type( obj ) !== 'object' || obj.nodeType || obj === global ||
@@ -178,6 +181,9 @@ O.isPlainObject = isPlainObject;
 // Returns a boolean indicating whether the object or array at `obj` contains
 // any members. For an `Object` type, if `andPrototype` is included and truthy,
 // `obj` must be empty throughout its prototype chain as well.
+//
+// > Requires: `isArray`, `hasOwn`
+
 function isEmpty ( obj, andPrototype ) {
     var key;
     if ( isArray( obj ) && obj.length ) return false;
@@ -191,6 +197,9 @@ O.isEmpty = isEmpty;
 // #### [isEqual](#is-equal)
 //
 // Performs a deep equality test.
+//
+// > Requires: `edit`, `isEmpty`
+
 function isEqual ( subject, object ) {
     return subject === object ||
         isEmpty( edit(
@@ -360,6 +369,9 @@ O.edit = O.extend = edit;
 // #### [clone](#clone)
 //
 // Specialization of [`edit`](#edit).
+//
+// > Requires: `edit`, `isArray`
+
 function clone () {
     return edit.apply( O, [ 'deep all', isArray( arguments[0] ) ? [] : {} ]
         .concat( slice.call( arguments ) ) );
@@ -375,6 +387,9 @@ O.clone = clone;
 // The prior condition of `subject` can be restored in a single transaction
 // by immediately providing this anti-delta object as the `source` argument in
 // a subsequent `edit` operation upon `subject`.
+//
+// > Requires: `edit`
+
 function delta () {
     return edit.apply( O, [ 'deep delta' ]
         .concat( slice.call( arguments ) ) );
@@ -387,6 +402,9 @@ O.delta = delta;
 // provided `subject` and `source`. Operates similarly to [`delta`] except no
 // changes are made to `subject`, and `source` is evaluated absolutely rather
 // than applied relatively.
+//
+// > Requires: `edit`
+
 function diff () {
     return edit.apply( O, [ 'deep delta immutable absolute' ]
         .concat( slice.call( arguments ) ) );
@@ -397,6 +415,9 @@ O.diff = diff;
 //
 // Facilitates one or more assignments of a value to one or more keys of an
 // object.
+//
+// > Requires: `NIL`, `hasOwn`
+
 function assign ( target, map, value, separator ) {
     var argLen, valuesMirrorKeys, key, list, i, l;
 
@@ -476,6 +497,9 @@ O.assign = assign;
 // #### [flatten](#flatten)
 //
 // Extracts elements of nested arrays into a single flat array.
+//
+// > Requires: `isArray`
+
 function flatten ( array ) {
     isArray( array ) || ( array = [ array ] );
     var i = 0,
@@ -526,6 +550,9 @@ O.unique = O.uniq = unique;
 // #### [keys](#keys)
 //
 // Returns an array containing the keys of a hashmap.
+//
+// > Requires: `hasOwn`
+
 function keys ( obj ) {
     var key, result = [];
     if ( obj == null || typeof obj !== 'object' && typeof obj !== 'function' ) {
@@ -540,6 +567,9 @@ O.keys = isFunction( Object.keys ) ? Object.keys : keys;
 //
 // Returns a hashmap that is the key-value inversion of the supplied string
 // array.
+//
+// > Requires: `hasOwn`, `isArray`
+
 function invert ( obj ) {
     var i, l, map = {};
     if ( isArray( obj ) ) {
@@ -586,6 +616,8 @@ O.thunk = thunk;
 //      lookup( x, 'a.b' );      // 42
 //      lookup( x, 'a.b.c' );    // undefined
 //
+// > Requires: `hasOwn`
+
 function lookup ( obj, path, separator, ownProperty ) {
     var i, l, name;
 
@@ -616,6 +648,8 @@ O.lookup = lookup;
 //
 // > See also: [lookup](#lookup)
 //
+// > Requires: `hasOwn`
+
 function has ( obj, path, separator, ownProperty ) {
     var i, l, name;
 
@@ -680,6 +714,9 @@ function inherit (
       /*Object*/ statics      // optional
 ) {
     if ( isFunction( parent ) ) {
+//
+// > Requires: `edit`, `create`
+
         ( edit( child, parent ).prototype = create( parent.prototype ) )
             .constructor = child;
     } else {
