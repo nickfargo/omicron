@@ -140,22 +140,6 @@ var type = ( function () {
 O.type = type;
 
 
-// #### [isBoolean](#is-boolean)
-
-function isBoolean ( obj ) {
-  return typeof obj === 'boolean';
-}
-O.isBoolean = isBoolean;
-
-
-// #### [isString](#is-string)
-
-function isString ( obj ) {
-  return typeof obj === 'string';
-}
-O.isString = isString;
-
-
 // #### [isNumber](#is-number)
 
 function isNumber ( n ) {
@@ -172,14 +156,6 @@ function isArray ( obj ) {
   return toString.call( obj ) === '[object Array]';
 }
 O.isArray = isArray;
-
-
-// #### [isFunction](#is-function)
-
-function isFunction ( obj ) {
-  return typeof obj === 'function';
-}
-O.isFunction = isFunction;
 
 
 // #### [isError](#is-error)
