@@ -699,33 +699,6 @@ function inherit (
 }
 O.inherit = inherit;
 
-// #### [privilege](#privilege)
-//
-// Generates partially applied functions for use as methods on an `object`.
-//
-// Functions sourced from `methodStore` accept as arguments the set of
-// variables to be closed over, and return the enclosed function that will
-// become the `object`’s method.
-//
-// The `map` argument maps a space-delimited set of method names to an array
-// of free variables. These variables are passed as arguments to each of the
-// named methods as found within `methodStore`.
-//
-// This approach promotes reuse of a method’s logic by decoupling the function
-// from the native scope of its free variables. A subsequent call to
-// `privilege`, then, can be used on behalf of a distinct (though likely
-// related) `object` to generate methods that are identical but closed over a
-// distinct set of variables.
-function privilege ( object, methodStore, map ) {
-    each( map, function ( names, args ) {
-        each( names.split( rxWhitespace ), function ( i, methodName ) {
-            object[ methodName ] = methodStore[ methodName ]
-                .apply( undefined, args );
-        });
-    });
-    return object;
-}
-O.privilege = privilege;
 
 // #### [getPrototypeOf](#get-prototype-of)
 //
