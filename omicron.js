@@ -792,20 +792,6 @@ O.getPrototypeOf = typeof Object.getPrototypeOf === 'function' ?
   Object.getPrototypeOf : getPrototypeOf;
 
 
-// #### [valueFunction](#value-function)
-//
-// Cyclically references a function’s output as its own `valueOf` property.
-function valueFunction ( fn ) { return fn.valueOf = fn; }
-O.valueFunction = valueFunction;
-
-
-// #### [stringFunction](#string-function)
-//
-// Cyclically references a function’s output as its own `toString` property.
-function stringFunction ( fn ) { return fn.toString = fn; }
-O.stringFunction = stringFunction;
-
-
 // #### [randomHex](#random-hex)
 //
 // Returns a random hex string of arbitrary `length`, generated as a
