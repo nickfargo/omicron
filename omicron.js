@@ -211,7 +211,7 @@ function forEach ( obj, fn, context ) {
     var n, l, k, i;
     if ( obj == null ) return;
     if ( ( n = __native( 'forEach', obj, fn, context ) ) !== NIL ) return n;
-    if ( ( l = obj.length ) === undefined || isFunction( obj ) ) {
+    if ( ( l = obj.length ) === undefined || typeof obj === 'function' ) {
         for ( k in obj ) {
             if ( fn.call( context || obj[k], obj[k], k, obj ) === false ) {
                 break;
@@ -287,7 +287,9 @@ function edit () {
 
     subject = arguments[i] || {};
     i += 1;
-    typeof subject === 'object' || isFunction( subject ) || ( subject = {} );
+    if ( typeof subject !== 'object' && typeof subject !== 'function' ) {
+        subject = {};
+    }
     subjectIsArray = isArray( subject );
 
     flags.delta && l - 1 > i && ( deltas = [] );
@@ -316,10 +318,8 @@ function edit () {
                         target :
                         [];
                 } else {
-                    clone = target && ( isFunction( target ) ||
-                            typeof target === 'object' ) ?
-                        target :
-                        {};
+                    clone = target && ( typeof target === 'object' ||
+                        typeof target === 'function' ) ? target : {};
                 }
                 result = edit( flagsString, clone, value );
                 if ( delta ) {
@@ -531,7 +531,7 @@ O.unique = O.uniq = unique;
 // Returns an array containing the keys of a hashmap.
 function keys ( obj ) {
     var key, result = [];
-    if ( !( isPlainObject( obj ) || isFunction( obj ) ) ) {
+    if ( obj == null || typeof obj !== 'object' && typeof obj !== 'function' ) {
         throw new TypeError;
     }
     for ( key in obj ) { hasOwn.call( obj, key ) && result.push( key ); }
