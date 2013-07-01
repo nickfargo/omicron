@@ -646,15 +646,19 @@ O.has = has;
 // #### [create](#create)
 //
 // Reference to or partial shim for `Object.create`.
-function create ( prototype ) {
-    var object, constructor = function () {};
-    constructor.prototype = prototype;
-    object = new constructor;
-    object.__proto__ = prototype;
-    object.constructor = prototype.constructor;
-    return object;
-}
-O.create = isFunction( Object.create ) ? Object.create : create;
+
+var create = ( function () {
+    function constructor () {}
+    return function ( prototype ) {
+        constructor.prototype = prototype;
+        var object = new constructor;
+        object.__proto__ = prototype;
+        object.constructor = prototype.constructor;
+        return object;
+    };
+}() );
+O.create = Object.create? ( create = Object.create ) : create;
+
 
 // #### [inherit](#inherit)
 //
