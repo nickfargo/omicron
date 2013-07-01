@@ -724,6 +724,25 @@ function stringFunction ( fn ) { return fn.toString = fn; }
 O.stringFunction = stringFunction;
 
 
+// #### [randomHex](#random-hex)
+//
+// Returns a random hex string of arbitrary `length`, generated as a
+// concatenation of 32-bit (eight-character) chunks.
+function randomHex ( length ) {
+    if ( length === 0 ) return '';
+    if ( length == null ) length = 8;
+    if ( !( ( 0 < length && length < Infinity ) ) ) throw RangeError;
+    var random = Math.random;
+    var i = 0;
+    var n = 1 + ( ( length - 1 ) >> 3 )|0;
+    var result = '';
+    while ( i++ < n ) {
+        result += ( random().toString(16) + '00000000' ).slice( 2, 10 );
+    }
+    return length | -8 ? result.slice( 0, length ) : result;
+}
+O.randomHex = randomHex;
+
 //
 O.env.server && ( module.exports = O );
 O.env.client && ( global['O'] = O );
