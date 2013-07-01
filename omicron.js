@@ -20,7 +20,7 @@
 var global = this;
 
 var O = {
-  VERSION: '0.1.9',
+  VERSION: '0.2.0',
   env: {
     server: typeof module !== 'undefined' &&
             typeof require !== 'undefined' &&
