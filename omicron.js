@@ -78,9 +78,9 @@ var slice = O.slice =
 // #### [noConflict](#no-conflict)
 //
 O.noConflict = ( function () {
-    var autochthon = global.O;
+    var original = global.O;
     return function () {
-        global.O = autochthon;
+        global.O = original;
         return this;
     };
 }() );
