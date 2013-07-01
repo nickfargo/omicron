@@ -149,6 +149,12 @@ O.isArray = isArray;
 function isFunction ( obj ) { return typeof obj === 'function'; }
 O.isFunction = isFunction;
 
+// #### [isError](#is-error)
+function isError ( e ) {
+    return typeof e === 'object' && toString.call( e ) === '[object Error]';
+}
+O.isError = isError;
+
 // #### [isPlainObject](#is-plain-object)
 //
 // Near-straight port of jQuery `isPlainObject`.
