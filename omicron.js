@@ -574,7 +574,7 @@ O.unique = O.uniq = unique;
 
 // #### [keys](#keys)
 //
-// Returns an array containing the keys of a hashmap.
+// Returns an array containing the enumerable keys of an object.
 //
 // > Requires: `hasOwn`
 
@@ -591,7 +591,7 @@ O.keys = typeof Object.keys === 'function' ? ( keys = Object.keys ) : keys;
 
 // #### [invert](#invert)
 //
-// Returns a hashmap that is the key-value inversion of the supplied string
+// Returns an object that is the key-value inversion of the supplied string
 // array.
 //
 // > Requires: `hasOwn`, `isArray`
