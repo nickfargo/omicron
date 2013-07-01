@@ -11,7 +11,7 @@
 // * Selected general tasks: safe typing, functional iteration, etc.
 //
 // [omicronjs.org](http://omicronjs.org/)
-// 
+//
 // <a class="icon-large icon-octocat"
 //    href="http://github.com/nickfargo/omicron/"></a>
 
@@ -39,16 +39,19 @@ var O = {
 // corresponding property on an associated operand.
 var NIL = O.NIL = ( function () { function NIL () {} return new NIL; }() );
 
+
 // #### [toString](#to-string)
 //
 var toString = O.toString =
     Object.prototype.toString;
-    
+
+
 // #### [hasOwn](#has-own)
 //
 var hasOwn = O.hasOwn =
     Object.prototype.hasOwnProperty;
-    
+
+
 // #### [trim](#trim)
 //
 var trim = O.trim =
@@ -63,7 +66,8 @@ var trim = O.trim =
                     .replace( /^\s+/, '' )
                     .replace( /\s+$/, '' );
         };
-    
+
+
 // #### [slice](#slice)
 //
 var slice = O.slice =
@@ -80,23 +84,29 @@ O.noConflict = ( function () {
     };
 }() );
 
+
 // #### [noop](#noop)
 //
 // General-purpose empty function.
+
 function noop () {}
 O.noop = noop;
+
 
 // #### [getThis](#get-this)
 //
 // Like [`noop`](#noop), except suited for substitution on methods that would
 // normally return their context object.
+
 function getThis () { return this; }
 O.getThis = getThis;
+
 
 // Calls the specified native function if it exists and returns its result; if
 // no such function exists on `obj` as registered in `__native.fn`, the unique
 // [`NIL`](#nil) is returned (as opposed to `null` or `undefined`, either of
 // which may be a valid result from the native function itself).
+
 function __native ( item, obj /* , ... */ ) {
     var n = __native.fn[ item ];
     return n && obj[ item ] === n ?
@@ -107,6 +117,7 @@ __native.fn = {
     forEach: Array.prototype.forEach,
     indexOf: Array.prototype.indexOf
 };
+
 
 // #### [type](#type)
 //
@@ -128,17 +139,24 @@ var type = ( function () {
 }() );
 O.type = type;
 
+
 // #### [isBoolean](#is-boolean)
 function isBoolean ( obj ) { return typeof obj === 'boolean'; }
+
 O.isBoolean = isBoolean;
+
 
 // #### [isString](#is-string)
 function isString ( obj ) { return typeof obj === 'string'; }
+
 O.isString = isString;
+
 
 // #### [isNumber](#is-number)
 function isNumber ( n ) { return !isNaN( parseFloat( n ) ) && isFinite( n ); }
+
 O.isNumber = isNumber;
+
 
 // #### [isArray](#is-array)
 //
@@ -149,9 +167,12 @@ function isArray ( obj ) {
 }
 O.isArray = isArray;
 
+
 // #### [isFunction](#is-function)
 function isFunction ( obj ) { return typeof obj === 'function'; }
+
 O.isFunction = isFunction;
+
 
 // #### [isError](#is-error)
 //
@@ -161,6 +182,7 @@ function isError ( e ) {
     return typeof e === 'object' && toString.call( e ) === '[object Error]';
 }
 O.isError = isError;
+
 
 // #### [isPlainObject](#is-plain-object)
 //
@@ -182,6 +204,7 @@ function isPlainObject ( obj ) {
 }
 O.isPlainObject = isPlainObject;
 
+
 // #### [isEmpty](#is-empty)
 //
 // Returns a boolean indicating whether the object or array at `obj` contains
@@ -199,6 +222,7 @@ function isEmpty ( obj, andPrototype ) {
     return true;
 }
 O.isEmpty = isEmpty;
+
 
 // #### [isEqual](#is-equal)
 //
@@ -219,6 +243,7 @@ O.isEqual = isEqual;
 //
 // Functional iterator with ES5-style callback signature of
 // `value, key, object`.
+
 function forEach ( obj, fn, context ) {
     var n, l, k, i;
     if ( obj == null ) return;
@@ -239,6 +264,7 @@ function forEach ( obj, fn, context ) {
     return obj;
 }
 O.forEach = forEach;
+
 
 // #### [edit](#edit)
 //
@@ -372,6 +398,7 @@ function edit () {
 }
 O.edit = O.extend = edit;
 
+
 // #### [clone](#clone)
 //
 // Specialization of [`edit`](#edit).
@@ -383,6 +410,7 @@ function clone () {
         .concat( slice.call( arguments ) ) );
 }
 O.clone = clone;
+
 
 // #### [delta](#delta)
 //
@@ -402,6 +430,7 @@ function delta () {
 }
 O.delta = delta;
 
+
 // #### [diff](#diff)
 //
 // Specialization of [`edit`](#edit) that returns the delta between the
@@ -416,6 +445,7 @@ function diff () {
         .concat( slice.call( arguments ) ) );
 }
 O.diff = diff;
+
 
 // #### [assign](#assign)
 //
@@ -497,8 +527,8 @@ function assign ( target, map, value, separator ) {
 
     return target;
 }
-
 O.assign = assign;
+
 
 // #### [flatten](#flatten)
 //
@@ -524,9 +554,11 @@ function flatten ( array ) {
 }
 O.flatten = flatten;
 
+
 // #### [indexOf](#index-of)
 //
 // Emulates (IE<9) or calls native `Array.prototype.indexOf`.
+
 function indexOf ( array, target, startIndex ) {
     var n, i, l;
     if ( array == null ) return -1;
@@ -538,9 +570,11 @@ function indexOf ( array, target, startIndex ) {
 }
 O.indexOf = indexOf;
 
+
 // #### [unique](#unique)
 //
 // Returns a copy of `array` with any duplicate elements removed.
+
 function unique ( array ) {
     var result, i, l, item;
     if ( !array ) return [];
@@ -552,6 +586,7 @@ function unique ( array ) {
     return result;
 }
 O.unique = O.uniq = unique;
+
 
 // #### [keys](#keys)
 //
@@ -568,6 +603,7 @@ function keys ( obj ) {
     return result;
 }
 O.keys = isFunction( Object.keys ) ? Object.keys : keys;
+
 
 // #### [invert](#invert)
 //
@@ -587,10 +623,12 @@ function invert ( obj ) {
 }
 O.invert = invert;
 
+
 // #### [alias](#alias)
 //
 // Copies the values of members of an object to one or more different keys on
 // that same object.
+
 function alias ( object, map ) {
     var key, value, names, i, l;
     for ( key in map ) if ( key in object ) {
@@ -603,14 +641,17 @@ function alias ( object, map ) {
 }
 O.alias = alias;
 
+
 // #### [thunk](#thunk)
 //
 // Creates and returns a lazy evaluator, a function that returns the enclosed
 // argument.
+
 function thunk ( obj ) {
     return function () { return obj; };
 }
 O.thunk = thunk;
+
 
 // #### [lookup](#lookup)
 //
@@ -641,6 +682,7 @@ function lookup ( obj, path, separator, ownProperty ) {
     return obj;
 }
 O.lookup = lookup;
+
 
 // #### [has](#has)
 //
@@ -682,6 +724,7 @@ function has ( obj, path, separator, ownProperty ) {
     return false;
 }
 O.has = has;
+
 
 // #### [create](#create)
 //
@@ -746,11 +789,13 @@ function getPrototypeOf ( obj ) {
 O.getPrototypeOf = isFunction( Object.getPrototypeOf ) ?
     Object.getPrototypeOf : getPrototypeOf;
 
+
 // #### [valueFunction](#value-function)
 //
 // Cyclically references a function’s output as its own `valueOf` property.
 function valueFunction ( fn ) { return fn.valueOf = fn; }
 O.valueFunction = valueFunction;
+
 
 // #### [stringFunction](#string-function)
 //
