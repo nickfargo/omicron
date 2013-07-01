@@ -141,20 +141,26 @@ O.type = type;
 
 
 // #### [isBoolean](#is-boolean)
-function isBoolean ( obj ) { return typeof obj === 'boolean'; }
 
+function isBoolean ( obj ) {
+    return typeof obj === 'boolean';
+}
 O.isBoolean = isBoolean;
 
 
 // #### [isString](#is-string)
-function isString ( obj ) { return typeof obj === 'string'; }
 
+function isString ( obj ) {
+    return typeof obj === 'string';
+}
 O.isString = isString;
 
 
 // #### [isNumber](#is-number)
-function isNumber ( n ) { return !isNaN( parseFloat( n ) ) && isFinite( n ); }
 
+function isNumber ( n ) {
+    return isFinite( n ) && !isNaN( parseFloat( n ) );
+}
 O.isNumber = isNumber;
 
 
@@ -169,8 +175,10 @@ O.isArray = isArray;
 
 
 // #### [isFunction](#is-function)
-function isFunction ( obj ) { return typeof obj === 'function'; }
 
+function isFunction ( obj ) {
+    return typeof obj === 'function';
+}
 O.isFunction = isFunction;
 
 
@@ -472,7 +480,7 @@ function assign ( target, map, value, separator ) {
                 for ( i = 0, l = list.length; i < l; i++ ) {
 
                     // To proceed `target` must be an `Object`.
-                    if ( !target || typeof target !== 'object' &&
+                    if ( target == null || typeof target !== 'object' &&
                         typeof target !== 'function' ) return;
 
                     key = list[i];
@@ -537,11 +545,11 @@ O.assign = assign;
 // > Requires: `isArray`
 
 function flatten ( array ) {
-    isArray( array ) || ( array = [ array ] );
-    var i = 0,
-        l = array.length,
-        item,
-        result = [];
+    if ( !isArray( array ) ) array = [ array ];
+    var i = 0;
+    var l = array.length;
+    var item;
+    var result = [];
     while ( i < l ) {
         item = array[ i++ ];
         if ( isArray( item ) ) {
@@ -595,14 +603,14 @@ O.unique = O.uniq = unique;
 // > Requires: `hasOwn`
 
 function keys ( obj ) {
-    var key, result = [];
     if ( obj == null || typeof obj !== 'object' && typeof obj !== 'function' ) {
         throw new TypeError;
     }
-    for ( key in obj ) { hasOwn.call( obj, key ) && result.push( key ); }
+    var key, result = [];
+    for ( key in obj ) if ( hasOwn.call( obj, key ) ) result.push( key );
     return result;
 }
-O.keys = isFunction( Object.keys ) ? Object.keys : keys;
+O.keys = typeof Object.keys === 'function' ? ( keys = Object.keys ) : keys;
 
 
 // #### [invert](#invert)
@@ -756,16 +764,11 @@ O.create = Object.create? ( create = Object.create ) : create;
 //       prototype of `child`
 // * `statics` is an object containing properties to be added to `child`
 //       itself.
-function inherit (
-    /*Function*/ child,
-    /*Function*/ parent,      // optional
-      /*Object*/ properties,  // optional
-      /*Object*/ statics      // optional
-) {
-    if ( isFunction( parent ) ) {
 //
 // > Requires: `edit`, `create`
 
+function inherit ( child, parent, properties, statics ) {
+    if ( typeof parent === 'function' ) {
         ( edit( child, parent ).prototype = create( parent.prototype ) )
             .constructor = child;
     } else {
@@ -786,7 +789,7 @@ O.inherit = inherit;
 function getPrototypeOf ( obj ) {
     return obj.__proto__ || obj.constructor.prototype;
 }
-O.getPrototypeOf = isFunction( Object.getPrototypeOf ) ?
+O.getPrototypeOf = typeof Object.getPrototypeOf === 'function' ?
     Object.getPrototypeOf : getPrototypeOf;
 
 
