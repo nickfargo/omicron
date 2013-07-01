@@ -30,11 +30,6 @@ var O = {
     }
 };
 
-var rxWhitespace = /\s+/;
-
-var regexp = O.regexp = {
-    whitespace: rxWhitespace
-};
 
 // #### [NIL](#nil)
 //
@@ -459,7 +454,7 @@ function assign ( target, map, value, separator ) {
     }
 
     for ( key in map ) if ( hasOwn.call( map, key ) ) {
-        list = key.split( rxWhitespace );
+        list = key.split(/\s+/);
         if ( valuesMirrorKeys ) {
             for ( i = 0, l = list.length; i < l; i++ ) {
                 value = list[i];
@@ -563,7 +558,7 @@ O.invert = invert;
 function alias ( object, map ) {
     var key, value, names, i, l;
     for ( key in map ) if ( key in object ) {
-        names = map[ key ].split( rxWhitespace );
+        names = map[ key ].split(/\s+/);
         for ( i = 0, l = names.length; i < l; i++ ) {
             object[ names[i] ] = object[ key ];
         }
