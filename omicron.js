@@ -1,4 +1,4 @@
-// Copyright (C) 2011-2012
+// Copyright (C) 2011-2013
 // Nick Fargo, Z Vector Inc.
 //
 // [`LICENSE`](https://github.com/nickfargo/omicron/blob/master/LICENSE) MIT.
