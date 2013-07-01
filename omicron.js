@@ -146,7 +146,9 @@ function isNumber ( n ) { return !isNaN( parseFloat( n ) ) && isFinite( n ); }
 O.isNumber = isNumber;
 
 // #### [isArray](#is-array)
-function isArray ( obj ) { return type( obj ) === 'array'; }
+function isArray ( obj ) {
+    return toString.call( obj ) === '[object Array]';
+}
 O.isArray = isArray;
 
 // #### [isFunction](#is-function)
