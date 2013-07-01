@@ -1,10 +1,10 @@
 {
 	"name"          : "omicron",
 	"version"       : "0.1.9",
-	"description"   : "A library for object manipulation and differential operations, prototypal inheritance, and more.",
+	"description"   : "A utility library for object manipulation and differential operations, prototypal inheritance, and more.",
 	"homepage"      : "http://github.com/nickfargo/omicron",
 	"keywords"      : [ "utility", "util", "object", "differential", "diff", "delta", "inherit", "inheritance" ],
-	"author"        : "Nick Fargo <nick@zvector.com>",
+	"author"        : "Nick Fargo <nick.fargo@gmail.com>",
 	"contributors"  : [],
 	"dependencies"  : [],
 	"repository"    : {
