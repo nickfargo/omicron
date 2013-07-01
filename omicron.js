@@ -20,14 +20,14 @@
 var global = this;
 
 var O = {
-    VERSION: '0.1.9',
-    env: {
-        server: typeof module !== 'undefined' &&
-                typeof require !== 'undefined' &&
-                !!module.exports,
-        client: typeof window !== 'undefined' && window === global,
-        debug:  false
-    }
+  VERSION: '0.1.9',
+  env: {
+    server: typeof module !== 'undefined' &&
+            typeof require !== 'undefined' &&
+            !!module.exports,
+    client: typeof window !== 'undefined' && window === global,
+    debug:  false
+  }
 };
 
 
@@ -43,45 +43,45 @@ var NIL = O.NIL = ( function () { function NIL () {} return new NIL; }() );
 // #### [toString](#to-string)
 //
 var toString = O.toString =
-    Object.prototype.toString;
+  Object.prototype.toString;
 
 
 // #### [hasOwn](#has-own)
 //
 var hasOwn = O.hasOwn =
-    Object.prototype.hasOwnProperty;
+  Object.prototype.hasOwnProperty;
 
 
 // #### [trim](#trim)
 //
 var trim = O.trim =
-    String.prototype.trim ?
-        function ( text ) {
-            return text == null ? '' : String.prototype.trim.call( text );
-        } :
-        function ( text ) {
-            return text == null ?
-                '' :
-                text.toString()
-                    .replace( /^\s+/, '' )
-                    .replace( /\s+$/, '' );
-        };
+  String.prototype.trim ?
+    function ( text ) {
+      return text == null ? '' : String.prototype.trim.call( text );
+    } :
+    function ( text ) {
+      return text == null ?
+        '' :
+        text.toString()
+          .replace( /^\s+/, '' )
+          .replace( /\s+$/, '' );
+    };
 
 
 // #### [slice](#slice)
 //
 var slice = O.slice =
-    Array.prototype.slice;
+  Array.prototype.slice;
 
 
 // #### [noConflict](#no-conflict)
 //
 O.noConflict = ( function () {
-    var original = global.O;
-    return function () {
-        global.O = original;
-        return this;
-    };
+  var original = global.O;
+  return function () {
+    global.O = original;
+    return this;
+  };
 }() );
 
 
@@ -108,14 +108,14 @@ O.getThis = getThis;
 // which may be a valid result from the native function itself).
 
 function __native ( item, obj /* , ... */ ) {
-    var n = __native.fn[ item ];
-    return n && obj[ item ] === n ?
-        n.apply( obj, slice.call( arguments, 2 ) ) :
-        NIL;
+  var n = __native.fn[ item ];
+  return n && obj[ item ] === n ?
+    n.apply( obj, slice.call( arguments, 2 ) ) :
+    NIL;
 }
 __native.fn = {
-    forEach: Array.prototype.forEach,
-    indexOf: Array.prototype.indexOf
+  forEach: Array.prototype.forEach,
+  indexOf: Array.prototype.indexOf
 };
 
 
@@ -125,17 +125,17 @@ __native.fn = {
 // `Object.prototype.toString`.
 
 var type = ( function () {
-    var map = {};
-    var types = 'Arguments Array Boolean Date Error Function Number Object \
-                 RegExp String';
-    forEach( types.split(/\s+/), function ( name ) {
-        map[ "[object " + name + "]" ] = name.toLowerCase();
-    });
-    function type ( obj ) {
-        if ( obj == null ) return String( obj );
-        return map[ toString.call( obj ) ] || 'object';
-    }
-    return type;
+  var map = {};
+  var types = 'Arguments Array Boolean Date Error Function Number Object \
+               RegExp String';
+  forEach( types.split(/\s+/), function ( name ) {
+    map[ "[object " + name + "]" ] = name.toLowerCase();
+  });
+  function type ( obj ) {
+    if ( obj == null ) return String( obj );
+    return map[ toString.call( obj ) ] || 'object';
+  }
+  return type;
 }() );
 O.type = type;
 
@@ -143,7 +143,7 @@ O.type = type;
 // #### [isBoolean](#is-boolean)
 
 function isBoolean ( obj ) {
-    return typeof obj === 'boolean';
+  return typeof obj === 'boolean';
 }
 O.isBoolean = isBoolean;
 
@@ -151,7 +151,7 @@ O.isBoolean = isBoolean;
 // #### [isString](#is-string)
 
 function isString ( obj ) {
-    return typeof obj === 'string';
+  return typeof obj === 'string';
 }
 O.isString = isString;
 
@@ -159,7 +159,7 @@ O.isString = isString;
 // #### [isNumber](#is-number)
 
 function isNumber ( n ) {
-    return isFinite( n ) && !isNaN( parseFloat( n ) );
+  return isFinite( n ) && !isNaN( parseFloat( n ) );
 }
 O.isNumber = isNumber;
 
@@ -169,7 +169,7 @@ O.isNumber = isNumber;
 // > Requires: `toString`
 
 function isArray ( obj ) {
-    return toString.call( obj ) === '[object Array]';
+  return toString.call( obj ) === '[object Array]';
 }
 O.isArray = isArray;
 
@@ -177,7 +177,7 @@ O.isArray = isArray;
 // #### [isFunction](#is-function)
 
 function isFunction ( obj ) {
-    return typeof obj === 'function';
+  return typeof obj === 'function';
 }
 O.isFunction = isFunction;
 
@@ -187,7 +187,7 @@ O.isFunction = isFunction;
 // > Requires: `toString`
 
 function isError ( e ) {
-    return typeof e === 'object' && toString.call( e ) === '[object Error]';
+  return typeof e === 'object' && toString.call( e ) === '[object Error]';
 }
 O.isError = isError;
 
@@ -199,16 +199,16 @@ O.isError = isError;
 // > Requires: `type`, `hasOwn`
 
 function isPlainObject ( obj ) {
-    var key;
-    if ( !obj || type( obj ) !== 'object' || obj.nodeType || obj === global ||
-        obj.constructor &&
-        !hasOwn.call( obj, 'constructor' ) &&
-        !hasOwn.call( obj.constructor.prototype, 'isPrototypeOf' )
-    ) {
-        return false;
-    }
-    for ( key in obj ) {}
-    return key === undefined || hasOwn.call( obj, key );
+  var key;
+  if ( !obj || type( obj ) !== 'object' || obj.nodeType || obj === global ||
+    obj.constructor &&
+    !hasOwn.call( obj, 'constructor' ) &&
+    !hasOwn.call( obj.constructor.prototype, 'isPrototypeOf' )
+  ) {
+    return false;
+  }
+  for ( key in obj ) {}
+  return key === undefined || hasOwn.call( obj, key );
 }
 O.isPlainObject = isPlainObject;
 
@@ -222,12 +222,12 @@ O.isPlainObject = isPlainObject;
 // > Requires: `isArray`, `hasOwn`
 
 function isEmpty ( obj, andPrototype ) {
-    var key;
-    if ( isArray( obj ) && obj.length ) return false;
-    for ( key in obj ) if ( andPrototype || hasOwn.call( obj, key ) ) {
-        return false;
-    }
-    return true;
+  var key;
+  if ( isArray( obj ) && obj.length ) return false;
+  for ( key in obj ) if ( andPrototype || hasOwn.call( obj, key ) ) {
+    return false;
+  }
+  return true;
 }
 O.isEmpty = isEmpty;
 
@@ -239,10 +239,10 @@ O.isEmpty = isEmpty;
 // > Requires: `edit`, `isEmpty`
 
 function isEqual ( subject, object ) {
-    return subject === object ||
-        isEmpty( edit(
-            'deep all absolute immutable delta', subject, object || {}
-        ));
+  return subject === object ||
+    isEmpty( edit(
+      'deep all absolute immutable delta', subject, object || {}
+    ));
 }
 O.isEqual = isEqual;
 
@@ -253,23 +253,23 @@ O.isEqual = isEqual;
 // `value, key, object`.
 
 function forEach ( obj, fn, context ) {
-    var n, l, k, i;
-    if ( obj == null ) return;
-    if ( ( n = __native( 'forEach', obj, fn, context ) ) !== NIL ) return n;
-    if ( ( l = obj.length ) === undefined || typeof obj === 'function' ) {
-        for ( k in obj ) {
-            if ( fn.call( context || obj[k], obj[k], k, obj ) === false ) {
-                break;
-            }
-        }
-    } else {
-        for ( i = 0, l = obj.length; i < l; ) {
-            if ( fn.call( context || obj[i], obj[i], i++, obj ) === false ) {
-                break;
-            }
-        }
+  var n, l, k, i;
+  if ( obj == null ) return;
+  if ( ( n = __native( 'forEach', obj, fn, context ) ) !== NIL ) return n;
+  if ( ( l = obj.length ) === undefined || typeof obj === 'function' ) {
+    for ( k in obj ) {
+      if ( fn.call( context || obj[k], obj[k], k, obj ) === false ) {
+        break;
+      }
     }
-    return obj;
+  } else {
+    for ( i = 0, l = obj.length; i < l; ) {
+      if ( fn.call( context || obj[i], obj[i], i++, obj ) === false ) {
+        break;
+      }
+    }
+  }
+  return obj;
 }
 O.forEach = forEach;
 
@@ -313,96 +313,96 @@ O.forEach = forEach;
 // > See also: [`clone`](#clone), [`delta`](#delta), [`diff`](#diff),
 // [`assign`](#assign)
 function edit () {
-    var i, l, t, flags, flagsString, subject, subjectIsArray, deltas, delta,
-        key, value, valueIsArray, source, target, clone, result;
+  var i, l, t, flags, flagsString, subject, subjectIsArray, deltas, delta,
+    key, value, valueIsArray, source, target, clone, result;
 
-    i = 0; l = arguments.length;
-    t = type( arguments[0] );
+  i = 0; l = arguments.length;
+  t = type( arguments[0] );
 
-    if ( t === 'boolean' ) {
-        flagsString = 'deep';
-        flags = { deep: flagsString };
-        i += 1;
-    } else if ( t === 'string' ) {
-        flagsString = arguments[i];
-        flags = assign( flagsString );
-        i += 1;
-    } else {
-        flags = NIL;
-    }
-
-    subject = arguments[i] || {};
+  if ( t === 'boolean' ) {
+    flagsString = 'deep';
+    flags = { deep: flagsString };
     i += 1;
-    if ( typeof subject !== 'object' && typeof subject !== 'function' ) {
-        subject = {};
-    }
-    subjectIsArray = isArray( subject );
+  } else if ( t === 'string' ) {
+    flagsString = arguments[i];
+    flags = assign( flagsString );
+    i += 1;
+  } else {
+    flags = NIL;
+  }
 
-    flags.delta && l - 1 > i && ( deltas = [] );
+  subject = arguments[i] || {};
+  i += 1;
+  if ( typeof subject !== 'object' && typeof subject !== 'function' ) {
+    subject = {};
+  }
+  subjectIsArray = isArray( subject );
 
-    for ( ; i < l; i++ ) {
-        flags.delta && ( delta = subjectIsArray ? [] : {} );
-        deltas && deltas.push( delta );
-        source = arguments[i];
+  flags.delta && l - 1 > i && ( deltas = [] );
 
-        if ( source == null ) continue;
+  for ( ; i < l; i++ ) {
+    flags.delta && ( delta = subjectIsArray ? [] : {} );
+    deltas && deltas.push( delta );
+    source = arguments[i];
 
-        for ( key in source ) if ( !flags.own || hasOwn.call( source, key ) ) {
-            value = source[ key ];
-            if ( value === subject ) continue;
-            if ( value === NIL && !flags.all ) {
-                delta && ( delta[ key ] = subject[ key ] );
-                flags.immutable || delete subject[ key ];
-            }
-            else if ( flags.deep && value && ( isPlainObject( value ) ||
-                ( valueIsArray = isArray( value ) ) )
-            ) {
-                target = subject[ key ];
-                if ( valueIsArray ) {
-                    valueIsArray = false;
-                    clone = target && isArray( target ) ?
-                        target :
-                        [];
-                } else {
-                    clone = target && ( typeof target === 'object' ||
-                        typeof target === 'function' ) ? target : {};
-                }
-                result = edit( flagsString, clone, value );
-                if ( delta ) {
-                    if ( hasOwn.call( subject, key ) ) {
-                        if ( result && !isEmpty( result ) ) {
-                            delta[ key ] = result;
-                        }
-                    } else {
-                        delta[ key ] = NIL;
-                    }
-                }
-                flags.immutable || ( subject[ key ] = clone );
-            }
-            else if ( ( value !== undefined || flags.all ) &&
-                ( !hasOwn.call( subject, key ) || subject[ key ] !== value )
-            ) {
-                if ( delta ) {
-                    delta[ key ] = hasOwn.call( subject, key ) ?
-                        subject[ key ] :
-                        NIL;
-                }
-                flags.immutable || ( subject[ key ] = value );
-            }
+    if ( source == null ) continue;
+
+    for ( key in source ) if ( !flags.own || hasOwn.call( source, key ) ) {
+      value = source[ key ];
+      if ( value === subject ) continue;
+      if ( value === NIL && !flags.all ) {
+        delta && ( delta[ key ] = subject[ key ] );
+        flags.immutable || delete subject[ key ];
+      }
+      else if ( flags.deep && value && ( isPlainObject( value ) ||
+        ( valueIsArray = isArray( value ) ) )
+      ) {
+        target = subject[ key ];
+        if ( valueIsArray ) {
+          valueIsArray = false;
+          clone = target && isArray( target ) ?
+            target :
+            [];
+        } else {
+          clone = target && ( typeof target === 'object' ||
+            typeof target === 'function' ) ? target : {};
         }
-        if ( flags.absolute && ( flags.delta || !flags.immutable ) ) {
-            for ( key in subject ) if ( hasOwn.call( subject, key ) ) {
-                if ( !( flags.own ?
-                            hasOwn.call( source, key ) :
-                            key in source )
-                ) {
-                    delta && ( delta[ key ] = subject[ key ] );
-                    flags.immutable || delete subject[ key ];
-                }
+        result = edit( flagsString, clone, value );
+        if ( delta ) {
+          if ( hasOwn.call( subject, key ) ) {
+            if ( result && !isEmpty( result ) ) {
+              delta[ key ] = result;
             }
+          } else {
+            delta[ key ] = NIL;
+          }
         }
+        flags.immutable || ( subject[ key ] = clone );
+      }
+      else if ( ( value !== undefined || flags.all ) &&
+        ( !hasOwn.call( subject, key ) || subject[ key ] !== value )
+      ) {
+        if ( delta ) {
+          delta[ key ] = hasOwn.call( subject, key ) ?
+            subject[ key ] :
+            NIL;
+        }
+        flags.immutable || ( subject[ key ] = value );
+      }
     }
-    return deltas || delta || subject;
+    if ( flags.absolute && ( flags.delta || !flags.immutable ) ) {
+      for ( key in subject ) if ( hasOwn.call( subject, key ) ) {
+        if ( !( flags.own ?
+              hasOwn.call( source, key ) :
+              key in source )
+        ) {
+          delta && ( delta[ key ] = subject[ key ] );
+          flags.immutable || delete subject[ key ];
+        }
+      }
+    }
+  }
+  return deltas || delta || subject;
 }
 O.edit = O.extend = edit;
 
@@ -414,8 +414,8 @@ O.edit = O.extend = edit;
 // > Requires: `edit`, `isArray`
 
 function clone () {
-    return edit.apply( O, [ 'deep all', isArray( arguments[0] ) ? [] : {} ]
-        .concat( slice.call( arguments ) ) );
+  return edit.apply( O, [ 'deep all', isArray( arguments[0] ) ? [] : {} ]
+    .concat( slice.call( arguments ) ) );
 }
 O.clone = clone;
 
@@ -433,8 +433,8 @@ O.clone = clone;
 // > Requires: `edit`
 
 function delta () {
-    return edit.apply( O, [ 'deep delta' ]
-        .concat( slice.call( arguments ) ) );
+  return edit.apply( O, [ 'deep delta' ]
+    .concat( slice.call( arguments ) ) );
 }
 O.delta = delta;
 
@@ -449,8 +449,8 @@ O.delta = delta;
 // > Requires: `edit`
 
 function diff () {
-    return edit.apply( O, [ 'deep delta immutable absolute' ]
-        .concat( slice.call( arguments ) ) );
+  return edit.apply( O, [ 'deep delta immutable absolute' ]
+    .concat( slice.call( arguments ) ) );
 }
 O.diff = diff;
 
@@ -463,77 +463,77 @@ O.diff = diff;
 // > Requires: `NIL`, `hasOwn`
 
 function assign ( target, map, value, separator ) {
-    var argLen, valuesMirrorKeys, key, list, i, l;
+  var argLen, valuesMirrorKeys, key, list, i, l;
 
-    argLen = arguments.length;
-    if ( typeof target === 'string' ) {
-        valuesMirrorKeys = argLen === 1;
-        value = map; map = target; target = {};
-    } else {
-        if ( typeof map === 'string' ) {
-            if ( argLen === 2 ) {
-                valuesMirrorKeys = true;
-            } else {
-                // `value` is present, and `map` is a key or "deep key";
-                // do `lookup`-style assignment
-                list = map.split( separator || '.' );
-                for ( i = 0, l = list.length; i < l; i++ ) {
-
-                    // To proceed `target` must be an `Object`.
-                    if ( target == null || typeof target !== 'object' &&
-                        typeof target !== 'function' ) return;
-
-                    key = list[i];
-
-                    // If at the end of the deep-key, assign/delete and return.
-                    // For deletions, return `NIL` to indicate a `true` result
-                    // from the `delete` operator.
-                    if ( i === l - 1 ) {
-                        if ( value === NIL ) {
-                            return delete target[ key ] ? NIL : undefined;
-                        } else {
-                            return target[ key ] = value;
-                        }
-                    }
-
-                    // Advance `target` to the next level. If nothing is there
-                    // already, then: for an assignment, create a new object in
-                    // place and continue; for a deletion, return `NIL`
-                    // immediately to reflect what would have been a `true`
-                    // result from the `delete` operator.
-                    if ( hasOwn.call( target, key ) ) {
-                        target = target[ key ];
-                    } else {
-                        if ( value === NIL ) return NIL;
-                        target = target[ key ] = {};
-                    }
-                }
-            }
-        }
-        else if ( map === undefined ) {
-            map = target; target = {};
-        }
-    }
+  argLen = arguments.length;
+  if ( typeof target === 'string' ) {
+    valuesMirrorKeys = argLen === 1;
+    value = map; map = target; target = {};
+  } else {
     if ( typeof map === 'string' ) {
-        key = map; ( map = {} )[ key ] = value;
-    }
+      if ( argLen === 2 ) {
+        valuesMirrorKeys = true;
+      } else {
+        // `value` is present, and `map` is a key or "deep key";
+        // do `lookup`-style assignment
+        list = map.split( separator || '.' );
+        for ( i = 0, l = list.length; i < l; i++ ) {
 
-    for ( key in map ) if ( hasOwn.call( map, key ) ) {
-        list = key.split(/\s+/);
-        if ( valuesMirrorKeys ) {
-            for ( i = 0, l = list.length; i < l; i++ ) {
-                value = list[i];
-                target[ value ] = value;
+          // To proceed `target` must be an `Object`.
+          if ( target == null || typeof target !== 'object' &&
+            typeof target !== 'function' ) return;
+
+          key = list[i];
+
+          // If at the end of the deep-key, assign/delete and return.
+          // For deletions, return `NIL` to indicate a `true` result
+          // from the `delete` operator.
+          if ( i === l - 1 ) {
+            if ( value === NIL ) {
+              return delete target[ key ] ? NIL : undefined;
+            } else {
+              return target[ key ] = value;
             }
-        } else {
-            value = map[ key ];
-            for ( i = 0, l = list.length; i < l; i++ ) {
-                target[ list[i] ] = value;
-            }
+          }
+
+          // Advance `target` to the next level. If nothing is there
+          // already, then: for an assignment, create a new object in
+          // place and continue; for a deletion, return `NIL`
+          // immediately to reflect what would have been a `true`
+          // result from the `delete` operator.
+          if ( hasOwn.call( target, key ) ) {
+            target = target[ key ];
+          } else {
+            if ( value === NIL ) return NIL;
+            target = target[ key ] = {};
+          }
         }
+      }
     }
+    else if ( map === undefined ) {
+      map = target; target = {};
+    }
+  }
+  if ( typeof map === 'string' ) {
+    key = map; ( map = {} )[ key ] = value;
+  }
 
-    return target;
+  for ( key in map ) if ( hasOwn.call( map, key ) ) {
+    list = key.split(/\s+/);
+    if ( valuesMirrorKeys ) {
+      for ( i = 0, l = list.length; i < l; i++ ) {
+        value = list[i];
+        target[ value ] = value;
+      }
+    } else {
+      value = map[ key ];
+      for ( i = 0, l = list.length; i < l; i++ ) {
+        target[ list[i] ] = value;
+      }
+    }
+  }
+
+  return target;
 }
 O.assign = assign;
 
@@ -545,20 +545,20 @@ O.assign = assign;
 // > Requires: `isArray`
 
 function flatten ( array ) {
-    if ( !isArray( array ) ) array = [ array ];
-    var i = 0;
-    var l = array.length;
-    var item;
-    var result = [];
-    while ( i < l ) {
-        item = array[ i++ ];
-        if ( isArray( item ) ) {
-            result = result.concat( flatten( item ) );
-        } else {
-            result.push( item );
-        }
+  if ( !isArray( array ) ) array = [ array ];
+  var i = 0;
+  var l = array.length;
+  var item;
+  var result = [];
+  while ( i < l ) {
+    item = array[ i++ ];
+    if ( isArray( item ) ) {
+      result = result.concat( flatten( item ) );
+    } else {
+      result.push( item );
     }
-    return result;
+  }
+  return result;
 }
 O.flatten = flatten;
 
@@ -568,13 +568,13 @@ O.flatten = flatten;
 // Emulates (IE<9) or calls native `Array.prototype.indexOf`.
 
 function indexOf ( array, target, startIndex ) {
-    var n, i, l;
-    if ( array == null ) return -1;
-    if ( ( n = __native( 'indexOf', array, target ) ) !== NIL ) return n;
-    for ( i = startIndex || 0, l = array.length; i < l; i++ ) {
-        if ( i in array && array[i] === target ) return i;
-    }
-    return -1;
+  var n, i, l;
+  if ( array == null ) return -1;
+  if ( ( n = __native( 'indexOf', array, target ) ) !== NIL ) return n;
+  for ( i = startIndex || 0, l = array.length; i < l; i++ ) {
+    if ( i in array && array[i] === target ) return i;
+  }
+  return -1;
 }
 O.indexOf = indexOf;
 
@@ -584,14 +584,14 @@ O.indexOf = indexOf;
 // Returns a copy of `array` with any duplicate elements removed.
 
 function unique ( array ) {
-    var result, i, l, item;
-    if ( !array ) return [];
-    result = [];
-    for ( i = 0, l = array.length; i < l; i++ ) {
-        item = array[i];
-        ~indexOf( result, item ) || result.push( item );
-    }
-    return result;
+  var result, i, l, item;
+  if ( !array ) return [];
+  result = [];
+  for ( i = 0, l = array.length; i < l; i++ ) {
+    item = array[i];
+    ~indexOf( result, item ) || result.push( item );
+  }
+  return result;
 }
 O.unique = O.uniq = unique;
 
@@ -603,12 +603,12 @@ O.unique = O.uniq = unique;
 // > Requires: `hasOwn`
 
 function keys ( obj ) {
-    if ( obj == null || typeof obj !== 'object' && typeof obj !== 'function' ) {
-        throw new TypeError;
-    }
-    var key, result = [];
-    for ( key in obj ) if ( hasOwn.call( obj, key ) ) result.push( key );
-    return result;
+  if ( obj == null || typeof obj !== 'object' && typeof obj !== 'function' ) {
+    throw new TypeError;
+  }
+  var key, result = [];
+  for ( key in obj ) if ( hasOwn.call( obj, key ) ) result.push( key );
+  return result;
 }
 O.keys = typeof Object.keys === 'function' ? ( keys = Object.keys ) : keys;
 
@@ -621,13 +621,13 @@ O.keys = typeof Object.keys === 'function' ? ( keys = Object.keys ) : keys;
 // > Requires: `hasOwn`, `isArray`
 
 function invert ( obj ) {
-    var i, l, map = {};
-    if ( isArray( obj ) ) {
-        for ( i = 0, l = obj.length; i < l; i++ ) map[ ''+obj[i] ] = i;
-    } else {
-        for ( i in obj ) if ( hasOwn.call( obj, i ) ) map[ ''+obj[i] ] = i;
-    }
-    return map;
+  var i, l, map = {};
+  if ( isArray( obj ) ) {
+    for ( i = 0, l = obj.length; i < l; i++ ) map[ ''+obj[i] ] = i;
+  } else {
+    for ( i in obj ) if ( hasOwn.call( obj, i ) ) map[ ''+obj[i] ] = i;
+  }
+  return map;
 }
 O.invert = invert;
 
@@ -638,14 +638,14 @@ O.invert = invert;
 // that same object.
 
 function alias ( object, map ) {
-    var key, value, names, i, l;
-    for ( key in map ) if ( key in object ) {
-        names = map[ key ].split(/\s+/);
-        for ( i = 0, l = names.length; i < l; i++ ) {
-            object[ names[i] ] = object[ key ];
-        }
+  var key, value, names, i, l;
+  for ( key in map ) if ( key in object ) {
+    names = map[ key ].split(/\s+/);
+    for ( i = 0, l = names.length; i < l; i++ ) {
+      object[ names[i] ] = object[ key ];
     }
-    return object;
+  }
+  return object;
 }
 O.alias = alias;
 
@@ -656,7 +656,7 @@ O.alias = alias;
 // argument.
 
 function thunk ( obj ) {
-    return function () { return obj; };
+  return function () { return obj; };
 }
 O.thunk = thunk;
 
@@ -674,20 +674,20 @@ O.thunk = thunk;
 // > Requires: `hasOwn`
 
 function lookup ( obj, path, separator, ownProperty ) {
-    var i, l, name;
+  var i, l, name;
 
-    if ( obj == null || typeof path !== 'string' ) return;
-    if ( typeof separator === 'boolean' && arguments.length < 4 ) {
-        ownProperty = separator; separator = undefined;
-    }
-    path = path.split( separator || '.' );
-    for ( i = 0, l = path.length; i < l && obj != null; i++ ) {
-        if ( typeof obj !== 'object' && typeof obj !== 'function' ) return;
-        name = path[i];
-        if ( ownProperty && !hasOwn.call( obj, name ) ) return;
-        obj = obj[ name ];
-    }
-    return obj;
+  if ( obj == null || typeof path !== 'string' ) return;
+  if ( typeof separator === 'boolean' && arguments.length < 4 ) {
+    ownProperty = separator; separator = undefined;
+  }
+  path = path.split( separator || '.' );
+  for ( i = 0, l = path.length; i < l && obj != null; i++ ) {
+    if ( typeof obj !== 'object' && typeof obj !== 'function' ) return;
+    name = path[i];
+    if ( ownProperty && !hasOwn.call( obj, name ) ) return;
+    obj = obj[ name ];
+  }
+  return obj;
 }
 O.lookup = lookup;
 
@@ -707,29 +707,29 @@ O.lookup = lookup;
 // > Requires: `hasOwn`
 
 function has ( obj, path, separator, ownProperty ) {
-    var i, l, name;
+  var i, l, name;
 
-    if ( obj == null || typeof path !== 'string' ) return false;
-    if ( typeof separator === 'boolean' && arguments.length < 4 ) {
-        ownProperty = separator; separator = undefined;
-    }
+  if ( obj == null || typeof path !== 'string' ) return false;
+  if ( typeof separator === 'boolean' && arguments.length < 4 ) {
+    ownProperty = separator; separator = undefined;
+  }
 
-    separator || ( separator = '.' );
-    if ( !~path.indexOf( separator ) ) {
-        return ownProperty ? hasOwn.call( obj, path ) : path in obj;
-    }
+  separator || ( separator = '.' );
+  if ( !~path.indexOf( separator ) ) {
+    return ownProperty ? hasOwn.call( obj, path ) : path in obj;
+  }
 
-    path = path.split( separator );
-    for ( i = 0, l = path.length; i < l && obj != null; i++ ) {
-        if ( typeof obj !== 'object' && typeof obj !== 'function' ) {
-            return false;
-        }
-        name = path[i];
-        if ( ownProperty && !hasOwn.call( obj, name ) ) return false;
-        if ( i === l - 1 ) return name in obj;
-        obj = obj[ name ];
+  path = path.split( separator );
+  for ( i = 0, l = path.length; i < l && obj != null; i++ ) {
+    if ( typeof obj !== 'object' && typeof obj !== 'function' ) {
+      return false;
     }
-    return false;
+    name = path[i];
+    if ( ownProperty && !hasOwn.call( obj, name ) ) return false;
+    if ( i === l - 1 ) return name in obj;
+    obj = obj[ name ];
+  }
+  return false;
 }
 O.has = has;
 
@@ -739,14 +739,14 @@ O.has = has;
 // Reference to or partial shim for `Object.create`.
 
 var create = ( function () {
-    function constructor () {}
-    return function ( prototype ) {
-        constructor.prototype = prototype;
-        var object = new constructor;
-        object.__proto__ = prototype;
-        object.constructor = prototype.constructor;
-        return object;
-    };
+  function constructor () {}
+  return function ( prototype ) {
+    constructor.prototype = prototype;
+    var object = new constructor;
+    object.__proto__ = prototype;
+    object.constructor = prototype.constructor;
+    return object;
+  };
 }() );
 O.create = Object.create? ( create = Object.create ) : create;
 
@@ -758,25 +758,24 @@ O.create = Object.create? ( create = Object.create ) : create;
 //
 // * `child` and `parent` are constructor functions, such that
 //       `new child instanceof parent === true`
-// * `child` also inherits static members that are direct properties of
-//       `parent`
-// * `properties` is an object containing properties to be added to the
-//       prototype of `child`
-// * `statics` is an object containing properties to be added to `child`
-//       itself.
+// * `child` inherits static properties of `parent` as its own static members
+// * `properties` is an optional object containing properties to be added to
+//       the prototype of `child`
+// * `statics` is an optional object containing properties to be added to
+//       `child` itself.
 //
 // > Requires: `edit`, `create`
 
 function inherit ( child, parent, properties, statics ) {
-    if ( typeof parent === 'function' ) {
-        ( edit( child, parent ).prototype = create( parent.prototype ) )
-            .constructor = child;
-    } else {
-        statics = properties; properties = parent;
-    }
-    properties && edit( child.prototype, properties );
-    statics && edit( child, statics );
-    return child;
+  if ( typeof parent === 'function' ) {
+    ( edit( child, parent ).prototype = create( parent.prototype ) )
+      .constructor = child;
+  } else {
+    statics = properties; properties = parent;
+  }
+  properties && edit( child.prototype, properties );
+  statics && edit( child, statics );
+  return child;
 }
 O.inherit = inherit;
 
@@ -787,10 +786,10 @@ O.inherit = inherit;
 // may only work if the object’s constructor and its prototype are properly
 // associated, e.g., as facilitated by the `create` function.
 function getPrototypeOf ( obj ) {
-    return obj.__proto__ || obj.constructor.prototype;
+  return obj.__proto__ || obj.constructor.prototype;
 }
 O.getPrototypeOf = typeof Object.getPrototypeOf === 'function' ?
-    Object.getPrototypeOf : getPrototypeOf;
+  Object.getPrototypeOf : getPrototypeOf;
 
 
 // #### [valueFunction](#value-function)
@@ -812,17 +811,17 @@ O.stringFunction = stringFunction;
 // Returns a random hex string of arbitrary `length`, generated as a
 // concatenation of 32-bit (eight-character) chunks.
 function randomHex ( length ) {
-    if ( length === 0 ) return '';
-    if ( length == null ) length = 8;
-    if ( !( ( 0 < length && length < Infinity ) ) ) throw RangeError;
-    var random = Math.random;
-    var i = 0;
-    var n = 1 + ( ( length - 1 ) >> 3 )|0;
-    var result = '';
-    while ( i++ < n ) {
-        result += ( random().toString(16) + '00000000' ).slice( 2, 10 );
-    }
-    return length | -8 ? result.slice( 0, length ) : result;
+  if ( length === 0 ) return '';
+  if ( length == null ) length = 8;
+  if ( !( ( 0 < length && length < Infinity ) ) ) throw RangeError;
+  var random = Math.random;
+  var i = 0;
+  var n = 1 + ( ( length - 1 ) >> 3 )|0;
+  var result = '';
+  while ( i++ < n ) {
+    result += ( random().toString(16) + '00000000' ).slice( 2, 10 );
+  }
+  return length | -8 ? result.slice( 0, length ) : result;
 }
 O.randomHex = randomHex;
 
