@@ -637,37 +637,6 @@ function thunk ( obj ) {
 O.thunk = thunk;
 
 
-// #### [lookup](#lookup)
-//
-// Retrieves the value at the location indicated by the provided `path` string
-// inside a nested object `obj`. For example:
-//
-//      var x = { a: { b: 42 } };
-//      lookup( x, 'a' );        // { "b": 42 }
-//      lookup( x, 'a.b' );      // 42
-//      lookup( x, 'a.b.c' );    // undefined
-//
-// > Requires: `hasOwn`
-
-function lookup ( obj, path, separator, ownProperty ) {
-  var i, l, name;
-
-  if ( obj == null || typeof path !== 'string' ) return;
-  if ( typeof separator === 'boolean' && arguments.length < 4 ) {
-    ownProperty = separator; separator = undefined;
-  }
-  path = path.split( separator || '.' );
-  for ( i = 0, l = path.length; i < l && obj != null; i++ ) {
-    if ( typeof obj !== 'object' && typeof obj !== 'function' ) return;
-    name = path[i];
-    if ( ownProperty && !hasOwn.call( obj, name ) ) return;
-    obj = obj[ name ];
-  }
-  return obj;
-}
-O.lookup = lookup;
-
-
 // #### [has](#has)
 //
 // Returns a boolean that verifies the existence of a key, indicated by the
@@ -708,6 +677,37 @@ function has ( obj, path, separator, ownProperty ) {
   return false;
 }
 O.has = has;
+
+
+// #### [lookup](#lookup)
+//
+// Retrieves the value at the location indicated by the provided `path` string
+// inside a nested object `obj`. For example:
+//
+//      var x = { a: { b: 42 } };
+//      lookup( x, 'a' );        // { "b": 42 }
+//      lookup( x, 'a.b' );      // 42
+//      lookup( x, 'a.b.c' );    // undefined
+//
+// > Requires: `hasOwn`
+
+function lookup ( obj, path, separator, ownProperty ) {
+  var i, l, name;
+
+  if ( obj == null || typeof path !== 'string' ) return;
+  if ( typeof separator === 'boolean' && arguments.length < 4 ) {
+    ownProperty = separator; separator = undefined;
+  }
+  path = path.split( separator || '.' );
+  for ( i = 0, l = path.length; i < l && obj != null; i++ ) {
+    if ( typeof obj !== 'object' && typeof obj !== 'function' ) return;
+    name = path[i];
+    if ( ownProperty && !hasOwn.call( obj, name ) ) return;
+    obj = obj[ name ];
+  }
+  return obj;
+}
+O.lookup = lookup;
 
 
 // #### [create](#create)
