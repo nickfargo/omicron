@@ -202,25 +202,6 @@ function isEqual ( subject, object ) {
 }
 O.isEqual = isEqual;
 
-// #### [each](#each)
-//
-// Functional iterator with jQuery-style callback signature of
-// `key, value, object`.
-function each ( obj, fn ) {
-    if ( !obj ) return;
-    var k, i, l = obj.length;
-    if ( l === undefined || isFunction( obj ) ) {
-        for ( k in obj ) {
-            if ( fn.call( obj[k], k, obj[k], obj ) === false ) break;
-        }
-    } else {
-        for ( i = 0, l = obj.length; i < l; ) {
-            if ( fn.call( obj[i], i, obj[ i++ ], obj ) === false ) break;
-        }
-    }
-    return obj;
-}
-O.each = each;
 
 // #### [forEach](#for-each)
 //
