@@ -897,14 +897,6 @@ O.randomHex( length )
 
 Returns a random hex string of arbitrary `length`
 
-#### valueFunction
-
-```javascript
-O.valueFunction( fn )
-```
-
-Cyclically references a function’s output as its own `valueOf` property.
-
 
 * * *
 
