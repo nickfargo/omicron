@@ -661,7 +661,7 @@ O.isEqual( { 0:1, 1:undefined }, [1] );
 O.has( object, path, [ separator ] )
 ```
 
-Retrieves the value at the location indicated by the provided `path` string inside a nested object `object`.
+Returns a boolean indicating whether a key exists at the location indicated by the provided `path` string inside a nested `object`.
 
 ```javascript
 var object = { a: { b:42 } };
@@ -677,7 +677,7 @@ O.has( object, 'a.b.c' ); // >>> false
 O.lookup( object, path, [ separator ] )
 ```
 
-Retrieves the value at the location indicated by the provided `path` string inside a nested object `object`.
+Retrieves the value at the location indicated by the provided `path` string inside a nested `object`.
 
 ```javascript
 var object = { a: { b:42 } };
